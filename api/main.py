@@ -25,7 +25,7 @@ async def read_index():
     # 루트 접속 시 같은 폴더나 상위의 index.html을 반환
     return FileResponse('index.html')
 
-@app.get("/api/main/generate-k-identity")
+@app.get("/api/generate-k-identity")
 async def generate_k_identity(english_name: str, vibe: str, gender: str, lang: str, strategy: str):
     # 1. Gemini 이름 생성
     text_prompt = f"Suggest 1 Korean name for a {gender} named '{english_name}' with a '{vibe}' vibe based on {strategy}. Answer in {lang}. Line 1: Name(Hanja), Line 2: Meaning, Line 3: Explanation."
