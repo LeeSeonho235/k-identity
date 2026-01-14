@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K-Identity: Find Your Name</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .track { width: 100%; height: 50px; position: relative; background: #f1f5f9; border-radius: 25px; overflow: hidden; border: 2px solid #e2e8f0; }
+        #tiger { position: absolute; left: 0; top: 50%; transform: translateY(-50%); font-size: 28px; transition: left 0.5s linear; z-index: 10; }
+        .rabbit { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 28px; }
+        .scale-in { animation: scaleIn 0.3s ease-out; }
+        @keyframes scaleIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex items-center justify-center p-6">
+    
+    <div class="bg-white max-w-md w-full rounded-[2.5rem] shadow-2xl p-10 space-y-8 relative overflow-hidden">
+        
+        <div class="absolute top-6 right-8">
+            <select id="lang" class="text-xs bg-slate-50 border-none rounded-lg px-2 py-1 outline-none text-slate-500 cursor-pointer font-bold hover:bg-slate-100 transition-all">
+                <option value="en">🇺🇸 English</option>
+                <option value="es">🇪🇸 Español</option>
+                <option value="zh">🇨🇳 中文</option>
+                <option value="ja">🇯🇵 日本語</option>
+            </select>
+        </div>
+
+        <div class="text-center">
+            <h1 class="text-3xl font-black text-slate-800 tracking-tighter">🇰🇷 K-Identity</h1>
+            <p class="text-slate-500 mt-2 text-sm italic">Get a meaningful name for your soul.</p>
+        </div>
+
+        <div class="space-y-4">
+            <div class="flex gap-2">
+                <select id="strategy" class="flex-1 px-4 py-3 rounded-xl border-2 border-slate-50 text-xs font-bold text-slate-400 outline-none bg-slate-50/50">
+                    <option value="meaning">Focus: Meaning (Origin)</option>
+                    <option value="phonetic">Focus: Sound (Similar)</option>
+                </select>
+            </div>
+            
+            <input type="text" id="engName" placeholder="Enter name (Any language)" 
+                class="w-full px-6 py-4 rounded-2xl border-2 border-slate-100 focus:border-blue-500 outline-none transition-all text-center font-bold">
+            
+            <div class="flex gap-3">
+                <select id="gender" class="flex-1 px-4 py-4 rounded-2xl border-2 border-slate-100 outline-none bg-white font-medium">
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="unisex">Unisex</option>
+                </select>
+                <select id="vibe" class="flex-1 px-4 py-4 rounded-2xl border-2 border-slate-100 outline-none bg-white font-medium">
+                    <option value="Cool & Charismatic">Cool</option>
+                    <option value="Lovely & Sweet">Lovely</option>
+                    <option value="Elegant & Calm">Elegant</option>
+                </select>
+            </div>
+
+            <button onclick="generate()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-2xl shadow-lg transform active:scale-[0.98] text-lg transition-all">
+                Find My Name ✨
+            </button>
+            <p class="text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest">Credits: <span id="creditDisplay" class="text-blue-500">0</span> Left</p>
+        </div>
+
+        <div id="loading" class="hidden text-center space-y-6 py-6">
+            <div class="track">
+                <div id="tiger">🐯</div>
+                <div class="rabbit">🐇</div>
+            </div>
+            <div class="space-y-2">
+                <h3 class="text-lg font-black text-slate-800 tracking-tight uppercase">Tiger is chasing your name... 🐯💨</h3>
+                <p class="text-blue-500 font-bold text-xs uppercase animate-pulse">Estimated time: 0.5 mins</p>
+                <p class="text-slate-400 text-[10px] font-bold tracking-widest uppercase">Please Wait <span id="countdown">30</span>s</p>
+            </div>
+        </div>
+
+        <div id="resultSection" class="hidden space-y-6 pt-4 border-t-2 border-slate-50 scale-in">
+            <div id="captureArea" class="bg-blue-50 p-8 rounded-[2.5rem] text-center space-y-6 shadow-inner">
+                <img id="aiImage" class="w-40 h-40 mx-auto rounded-full shadow-2xl border-4 border-white object-cover" src="">
+                <h2 id="kNameResult" class="text-5xl font-black text-slate-800 tracking-tight"></h2>
+                <div class="space-y-3 bg-white/60 p-6 rounded-3xl shadow-sm">
+                    <p id="hanjaMeaning" class="text-blue-600 font-black text-xs uppercase tracking-widest"></p>
+                    <p id="explainResult" class="text-slate-700 leading-relaxed text-sm font-medium"></p>
+                </div>
+            </div>
+            
+            <button onclick="shareResultOnInsta()" class="w-full py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-black rounded-2xl shadow-lg hover:brightness-110 transition-all flex items-center justify-center gap-2">
+                Download Card & Share on Instagram
+            </button>
+        </div>
+    </div>
+
+    <div id="rechargeModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-6 z-50">
+        <div class="bg-white w-full max-w-sm rounded-[2.5rem] p-10 text-center space-y-6 shadow-2xl scale-in">
+            <h3 class="text-2xl font-black text-slate-800 tracking-tighter uppercase">Energy Depleted! 🔋</h3>
+            <p class="text-slate-500 text-sm italic">Get more credits to find more names:</p>
+            
+            <div class="space-y-3">
+                <a href="https://www.buymeacoffee.com/seonho" target="_blank" onclick="buyCredits(3)" class="block w-full py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl transition-all text-sm text-center">
+                    💸 Try 3 more names ($1)
+                </a>
+                
+                <a href="https://www.buymeacoffee.com/seonho" target="_blank" onclick="buyCredits(20)" class="block w-full py-4 bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-black rounded-2xl transition-all shadow-md text-center">
+                    ☕️ Full Pack - 20 names ($3)
+                </a>
+
+                <a href="https://www.buymeacoffee.com/seonho" target="_blank" onclick="buyCredits(50)" class="block w-full py-4 bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold rounded-2xl transition-all text-sm text-center">
+                    🎁 Family Pack - 50 names ($5)
+                </a>
+
+                <div class="pt-2 flex flex-col gap-2">
+                    <button onclick="shareOnInsta()" class="w-full py-3 bg-pink-50 text-pink-600 font-bold rounded-xl text-xs">📸 Share for +3 Credits</button>
+                    <button onclick="startAdTimer()" id="adBtn" class="w-full py-2 text-slate-400 text-[10px] font-bold underline italic uppercase tracking-widest">Or watch 30s ad for 1 credit</button>
+                </div>
+            </div>
+            <button onclick="closeModal()" class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Maybe Later</button>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. Credit Logic ---
+        if (!localStorage.getItem('k_credits')) localStorage.setItem('k_credits', '1');
+        updateCreditUI();
+        function getCredits() { return parseInt(localStorage.getItem('k_credits')); }
+        function updateCreditUI() { document.getElementById('creditDisplay').innerText = localStorage.getItem('k_credits'); }
+
+        // --- 2. UI Controls ---
+        function showRechargeModal() { document.getElementById('rechargeModal').classList.remove('hidden'); }
+        function closeModal() { document.getElementById('rechargeModal').classList.add('hidden'); }
+
+        let timerIdx;
+        let progressIdx;
+
+        function startTigerMotion() {
+            let leftPos = 0; let seconds = 30;
+            const tiger = document.getElementById('tiger');
+            const countdown = document.getElementById('countdown');
+            tiger.style.left = "0%";
+            progressIdx = setInterval(() => {
+                leftPos += 3; seconds--;
+                tiger.style.left = leftPos + "%";
+                countdown.innerText = Math.max(0, seconds);
+                if (leftPos >= 85) clearInterval(progressIdx);
+            }, 1000);
+        }
+
+        // --- 3. Feature Functions (Capture & Share) ---
+        async function shareResultOnInsta() {
+            const area = document.getElementById('captureArea');
+            const canvas = await html2canvas(area, { backgroundColor: null, borderRadius: 40, scale: 2 });
+            const dataUrl = canvas.toDataURL("image/png");
+            const a = document.createElement('a'); a.href = dataUrl; a.download = 'My_K-Identity.png';
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+
+            setTimeout(() => {
+                alert("Identity card saved! 🎁\nUpload it to your Instagram!");
+                window.open('https://instagram.com', '_blank');
+            }, 2000);
+        }
+
+        // [추가] 보상형 결제 로직
+        function buyCredits(amount) {
+            setTimeout(() => {
+                if(confirm(`Did you complete the purchase? \nClick 'OK' to receive your ${amount} credits!`)) {
+                    recharge(amount);
+                    closeModal();
+                    alert(`Success! ${amount} credits added.`);
+                }
+            }, 3000);
+        }
+
+        function shareOnInsta() {
+            window.open('https://instagram.com', '_blank');
+            setTimeout(() => { if(confirm("Shared on Story?")) { recharge(3); closeModal(); } }, 2000);
+        }
+
+        function startAdTimer() {
+            const btn = document.getElementById('adBtn'); let timeLeft = 30; btn.disabled = true;
+            const interval = setInterval(() => {
+                btn.innerText = `WAITING... ${timeLeft}s`; timeLeft--;
+                if (timeLeft < 0) {
+                    clearInterval(interval); recharge(1);
+                    btn.innerText = "OR WATCH 30S AD FOR 1 CREDIT"; btn.disabled = false; closeModal();
+                }
+            }, 1000);
+        }
+
+        function recharge(amount) {
+            localStorage.setItem('k_credits', (getCredits() + amount).toString());
+            updateCreditUI();
+        }
+
+        // --- 4. Main Generation ---
+        async function generate() {
+            if (getCredits() <= 0) return showRechargeModal();
+            const name = document.getElementById('engName').value;
+            if(!name) return alert("Please enter name!");
+
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('resultSection').classList.add('hidden');
+            startTigerMotion();
+
+            try {
+                const params = new URLSearchParams({
+                    english_name: name,
+                    vibe: document.getElementById('vibe').value,
+                    gender: document.getElementById('gender').value,
+                    lang: document.getElementById('lang').value,
+                    strategy: document.getElementById('strategy').value
+                });
+                
+                const res = await fetch(`http://127.0.0.1:8000/generate-k-identity?${params}`);
+                const data = await res.json();
+
+                localStorage.setItem('k_credits', (getCredits() - 1).toString());
+                updateCreditUI();
+
+                document.getElementById('aiImage').src = data.image_url;
+                document.getElementById('kNameResult').innerText = data.korean_name;
+                document.getElementById('hanjaMeaning').innerText = data.hanja_meaning;
+                document.getElementById('explainResult').innerText = data.explanation;
+
+                clearInterval(progressIdx);
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('resultSection').classList.remove('hidden');
+            } catch(e) {
+                clearInterval(progressIdx); alert("Server Error!"); document.getElementById('loading').classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
