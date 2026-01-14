@@ -2,20 +2,12 @@ from fastapi.responses import FileResponse
 import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 import google.generativeai as genai
 import openai
 from dotenv import load_dotenv
-import uuid
-import requests
 
 load_dotenv()
 app = FastAPI()
-
-
-@app.get("/")
-async def read_index():
-    return FileResponse('index.html') # 접속 시 index.html을 보여줍니다
 
 app.add_middleware(
     CORSMiddleware,
@@ -24,58 +16,35 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-gemini_client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+# Gemini 설정 (SDK 방식에 맞춰 수정)
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 openai_client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-def generate_dalle_image(prompt_text, filename):
-    try:
-        response = openai_client.images.generate(
-            model="dall-e-3",
-            prompt=prompt_text,
-            size="1024x1024",
-            quality="standard",
-            n=1,
-        )
-        image_url = response.data[0].url
-        img_data = requests.get(image_url).content
-        file_path = f"static/{filename}"
-        with open(file_path, "wb") as f:
-            f.write(img_data)
-        return f"http://127.0.0.1:8000/{file_path}"
-    except Exception as e:
-        print(f"DALL-E 3 Error: {e}")
-        return "https://via.placeholder.com/512x512.png?text=Image+Error"
+@app.get("/")
+async def read_index():
+    return FileResponse('index.html')
 
 @app.get("/generate-k-identity")
 async def generate_k_identity(english_name: str, vibe: str, gender: str, lang: str, strategy: str):
-    # 전략과 언어에 따른 맞춤 프롬프트
-    text_prompt = f"""
-    Suggest 1 best Korean name for a {gender} named '{english_name}' with a '{vibe}' vibe.
-    Constraint: Base the name on {strategy} (sound or meaning).
+    # 1. Gemini로 이름 및 설명 생성
+    text_prompt = f"Suggest 1 Korean name for a {gender} named '{english_name}' with a '{vibe}' vibe based on {strategy}. Answer in {lang}. Line 1: Name(Hanja), Line 2: Meaning, Line 3: Explanation."
     
-    IMPORTANT: Write the entire output in {lang} language (except the Korean name itself).
-    Line 1: Name in Hangeul (Hanja)
-    Line 2: Hanja meanings in {lang}
-    Line 3: One poetic explanation in {lang}
-    """
-    
-    text_response = gemini_client.models.generate_content(model="gemini-2.5-flash", contents=text_prompt)
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    text_response = model.generate_content(text_prompt)
     lines = text_response.text.strip().split('\n')
     
-    k_name_hanja = lines[0] if len(lines) > 0 else "Error"
-    hanja_meaning = lines[1] if len(lines) > 1 else ""
-    explanation = lines[2] if len(lines) > 2 else text_response.text
-
-    # DALL-E 이미지 프롬프트에 성별 반영
-    dalle_prompt = f"A stylish K-pop {gender} portrait, inspired by the name '{k_name_hanja}'. Vibe: {vibe}. High-quality photography."
-    
-    image_filename = f"{uuid.uuid4()}.png"
-    final_image_url = generate_dalle_image(dalle_prompt, image_filename)
+    # 2. DALL-E로 이미지 생성 (URL만 가져오기)
+    dalle_prompt = f"A stylish K-pop {gender} portrait, inspired by the name '{lines[0]}'. Vibe: {vibe}."
+    response = openai_client.images.generate(
+        model="dall-e-3",
+        prompt=dalle_prompt,
+        n=1
+    )
+    final_image_url = response.data[0].url # 파일을 저장하지 않고 주소만 씁니다!
 
     return {
-        "korean_name": k_name_hanja,
-        "hanja_meaning": hanja_meaning,
-        "explanation": explanation,
-        "image_url": final_image_url,
-        "english_name_original": english_name
+        "korean_name": lines[0] if len(lines) > 0 else "Error",
+        "hanja_meaning": lines[1] if len(lines) > 1 else "",
+        "explanation": lines[2] if len(lines) > 2 else text_response.text,
+        "image_url": final_image_url
     }
