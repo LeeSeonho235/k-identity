@@ -12,9 +12,7 @@ import requests
 load_dotenv()
 app = FastAPI()
 
-if not os.path.exists("static"):
-    os.makedirs("static")
-app.mount("/static", StaticFiles(directory="static"), name="static")
+
 @app.get("/")
 async def read_index():
     return FileResponse('index.html') # 접속 시 index.html을 보여줍니다
