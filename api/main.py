@@ -3,7 +3,7 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from google import genai
+import google.generativeai as genai
 import openai
 from dotenv import load_dotenv
 import uuid
