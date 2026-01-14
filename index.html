@@ -211,7 +211,8 @@
                     strategy: document.getElementById('strategy').value
                 });
                 
-                const res = await fetch(`http://127.0.0.1:8000/generate-k-identity?${params}`);
+                
+                const res = await fetch(`/api/main/generate-k-identity?${params}`);
                 const data = await res.json();
 
                 localStorage.setItem('k_credits', (getCredits() - 1).toString());
