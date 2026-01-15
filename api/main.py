@@ -5,6 +5,7 @@ import openai
 import os
 from dotenv import load_dotenv
 
+# 환경 변수 로드
 load_dotenv()
 
 app = FastAPI()
@@ -16,15 +17,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# API 키 설정
+# API 키 가져오기
 GEMINI_KEY = os.getenv("GEMINI_API_KEY")
 OPENAI_KEY = os.getenv("OPENAI_API_KEY")
 
 # 제미나이 설정
 genai.configure(api_key=GEMINI_KEY)
-# 모델명을 'gemini-1.5-flash-latest'로 쓰면 404 에러를 피할 가능성이 매우 높습니다.
-# 만약 2.0을 써보고 싶다면 'gemini-2.0-flash-exp' (또는 2026년 기준 'gemini-2.0-flash')를 넣으세요.
-gemini_model = genai.GenerativeModel('gemini-1.5-flash-latest')
+
+# 💡 핵심: Gemini 2.0 Flash (실험적 버전) 모델명을 정확히 입력합니다.
+# 이 모델명은 현재 가장 최신이며, 404 에러를 피할 수 있는 공식 명칭입니다.
+model = genai.GenerativeModel('gemini-2.0-flash-exp')
 
 openai_client = openai.OpenAI(api_key=OPENAI_KEY)
 
@@ -40,11 +42,11 @@ async def get_name(english_name: str, vibe: str, gender: str, lang: str, strateg
             f"Line 3: A brief, warm explanation about the name."
         )
         
-        # 안전한 호출 방식
-        response = gemini_model.generate_content(text_prompt)
+        # 호출 방식
+        response = model.generate_content(text_prompt)
         
         if not response or not response.text:
-            raise ValueError("Gemini API에서 응답을 받지 못했습니다.")
+            raise ValueError("Gemini API 응답 없음")
 
         lines = [line.strip() for line in response.text.strip().split('\n') if line.strip()]
         
@@ -54,11 +56,10 @@ async def get_name(english_name: str, vibe: str, gender: str, lang: str, strateg
             "explanation": lines[2] if len(lines) > 2 else response.text
         }
     except Exception as e:
-        print(f"Detailed Error: {str(e)}")
-        # 에러 메시지를 프론트엔드에 구체적으로 보냅니다.
-        raise HTTPException(status_code=500, detail=str(e))
+        print(f"Error Details: {str(e)}")
+        # 에러 발생 시 상세 내용을 브라우저에 표시하여 원인 파악을 돕습니다.
+        raise HTTPException(status_code=500, detail=f"Gemini 2.0 Error: {str(e)}")
 
-# 이미지 생성 API (동일)
 @app.get("/api/get-image")
 async def get_image(k_name: str, gender: str, vibe: str):
     try:
