@@ -83,7 +83,7 @@
                     <div id="imagePlaceholder" class="w-40 h-40 rounded-full bg-slate-200 flex items-center justify-center text-4xl border-4 border-white shadow-inner">👤</div>
                 </div>
 
-                <h2 id="kNameResult" class="text-5xl font-black text-slate-800 tracking-tight"></h2>
+                <h2 id="kNameResult" class="text-4xl font-black text-slate-800 tracking-tight leading-tight break-keep py-2"></h2>
 
                 <div class="space-y-3 bg-white/60 p-6 rounded-3xl shadow-sm">
                     <p id="hanjaMeaning" class="text-blue-600 font-black text-xs uppercase tracking-widest"></p>
@@ -132,13 +132,17 @@
             updateCreditUI();
         }
 
-        function buyCredits(amount) {
-            if(confirm(`Purchase ${amount} credits?`)) {
-                recharge(amount);
-                closeModal();
-                alert("Success! Credits added.");
-            }
-        }
+        
+        function checkPayment(amount) {
+            // 1. 바로 크레딧을 주지 않고, 나중에 돌아왔을 때 확인창을 띄우게 예약합니다.
+            setTimeout(() => {
+                if(confirm("Thank you for your support! ☕️\nDid you finish the donation?")) {
+                    recharge(amount);
+                    closeModal();
+                    updateCreditUI();
+                }
+            }, 2000); // 2초 뒤에 물어봄 (사용자가 페이지로 이동한 뒤)
+}
 
         // --- 2. 공유 및 캡처 로직 ---
         // 1. html 내 <img> 태그에 속성 추가 (필수!)
