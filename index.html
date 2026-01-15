@@ -17,9 +17,7 @@
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen flex items-center justify-center p-6">
-    
     <div class="bg-white max-w-md w-full rounded-[2.5rem] shadow-2xl p-10 space-y-8 relative overflow-hidden">
-        
         <div class="absolute top-6 right-8">
             <select id="lang" class="text-xs bg-slate-50 border-none rounded-lg px-2 py-1 outline-none text-slate-500 cursor-pointer font-bold hover:bg-slate-100 transition-all">
                 <option value="en">🇺🇸 English</option>
@@ -35,16 +33,11 @@
         </div>
 
         <div class="space-y-4">
-            <div class="flex gap-2">
-                <select id="strategy" class="flex-1 px-4 py-3 rounded-xl border-2 border-slate-50 text-xs font-bold text-slate-400 outline-none bg-slate-50/50">
-                    <option value="meaning">Focus: Meaning (Origin)</option>
-                    <option value="phonetic">Focus: Sound (Similar)</option>
-                </select>
-            </div>
-            
-            <input type="text" id="engName" placeholder="Enter name (Any language)" 
-                class="w-full px-6 py-4 rounded-2xl border-2 border-slate-100 focus:border-blue-500 outline-none transition-all text-center font-bold">
-            
+            <select id="strategy" class="w-full px-4 py-3 rounded-xl border-2 border-slate-50 text-xs font-bold text-slate-400 outline-none bg-slate-50/50">
+                <option value="meaning">Focus: Meaning (Origin)</option>
+                <option value="phonetic">Focus: Sound (Similar)</option>
+            </select>
+            <input type="text" id="engName" placeholder="Enter name (Any language)" class="w-full px-6 py-4 rounded-2xl border-2 border-slate-100 focus:border-blue-500 outline-none transition-all text-center font-bold">
             <div class="flex gap-3">
                 <select id="gender" class="flex-1 px-4 py-4 rounded-2xl border-2 border-slate-100 outline-none bg-white font-medium">
                     <option value="male">Male</option>
@@ -57,169 +50,51 @@
                     <option value="Elegant & Calm">Elegant</option>
                 </select>
             </div>
-
-            <button onclick="generate()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-2xl shadow-lg transform active:scale-[0.98] text-lg transition-all">
-                Find My Name ✨
-            </button>
+            <button onclick="generate()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-2xl shadow-lg transform active:scale-[0.98] text-lg transition-all">Find My Name ✨</button>
             <p class="text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest">Credits: <span id="creditDisplay" class="text-blue-500">0</span> Left</p>
         </div>
 
         <div id="loading" class="hidden text-center space-y-6 py-6">
-            <div class="track">
-                <div id="tiger">🐯</div>
-                <div class="rabbit">🐇</div>
-            </div>
-            <div class="space-y-2">
-                <h3 class="text-lg font-black text-slate-800 tracking-tight uppercase">Tiger is chasing your name... 🐯💨</h3>
-                <p class="text-blue-500 font-bold text-xs uppercase animate-pulse">Estimated time: 0.5 mins</p>
-                <p class="text-slate-400 text-[10px] font-bold tracking-widest uppercase">Please Wait <span id="countdown">30</span>s</p>
-            </div>
+            <div class="track"><div id="tiger">🐯</div><div class="rabbit">🐇</div></div>
+            <h3 class="text-lg font-black text-slate-800 uppercase">Tiger is chasing your name... 🐯💨</h3>
+            <p class="text-slate-400 text-[10px] font-bold uppercase">Please Wait <span id="countdown">30</span>s</p>
         </div>
 
-        <div id="resultSection" class="hidden space-y-6 pt-4 border-t-2 border-slate-50 scale-in">
+        <div id="resultSection" class="hidden space-y-6 pt-4 scale-in">
             <div id="captureArea" class="bg-blue-50 p-8 rounded-[2.5rem] text-center space-y-6 shadow-inner">
-                <div id="imageContainer" class="relative w-40 h-40 mx-auto">
+                <div class="relative w-40 h-40 mx-auto">
                     <img id="aiImage" crossorigin="anonymous" class="w-40 h-40 rounded-full shadow-2xl border-4 border-white object-cover hidden" src="">
-                    <div id="imagePlaceholder" class="w-40 h-40 rounded-full bg-slate-200 flex items-center justify-center text-4xl border-4 border-white shadow-inner">👤</div>
+                    <div id="imagePlaceholder" class="w-40 h-40 rounded-full bg-slate-200 flex items-center justify-center text-4xl border-4 border-white">👤</div>
                 </div>
-
-                <h2 id="kNameResult" class="text-4xl font-black text-slate-800 tracking-tight leading-tight break-keep py-2"></h2>
-
+                <h2 id="kNameResult" class="text-4xl font-black text-blue-600 tracking-tight break-keep px-2"></h2>
                 <div class="space-y-3 bg-white/60 p-6 rounded-3xl shadow-sm">
-                    <p id="hanjaMeaning" class="text-blue-600 font-black text-xs uppercase tracking-widest"></p>
+                    <p id="hanjaMeaning" class="text-slate-500 font-black text-[10px] uppercase tracking-widest"></p>
                     <p id="explainResult" class="text-slate-700 leading-relaxed text-sm font-medium"></p>
                 </div>
             </div>
-            
-            <button onclick="shareResultOnInsta()" class="w-full py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-black rounded-2xl shadow-lg hover:brightness-110 transition-all flex items-center justify-center gap-2">
-                Download Card & Share on Instagram
-            </button>
+            <button onclick="shareResultOnInsta()" class="w-full py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-black rounded-2xl shadow-lg hover:brightness-110 transition-all">Download Card & Share on Instagram</button>
         </div>
     </div>
 
     <div id="rechargeModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-6 z-50">
         <div class="bg-white w-full max-w-sm rounded-[2.5rem] p-10 text-center space-y-6 shadow-2xl scale-in">
             <h3 class="text-2xl font-black text-slate-800 tracking-tighter uppercase">Energy Depleted! 🔋</h3>
-            <p class="text-slate-500 text-sm italic">Get more credits to find more names:</p>
-            
             <div class="space-y-3">
-                <button onclick="buyCredits(3)" class="block w-full py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl transition-all text-sm">
-                    💸 Try 3 more names ($1)
-                </button>
-                <button onclick="buyCredits(20)" class="block w-full py-4 bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-black rounded-2xl transition-all shadow-md">
-                    ☕️ Full Pack - 20 names ($3)
-                </button>
-                <div class="pt-2 flex flex-col gap-2">
-                    <button onclick="shareOnInsta()" class="w-full py-3 bg-pink-50 text-pink-600 font-bold rounded-xl text-xs">📸 Share for +3 Credits</button>
-                    <button onclick="startAdTimer()" id="adBtn" class="w-full py-2 text-slate-400 text-[10px] font-bold underline italic uppercase tracking-widest">Or watch 30s ad for 1 credit</button>
-                </div>
+                <a href="https://www.buymeacoffee.com/seonho" target="_blank" onclick="buyCredits(3)" class="block w-full py-4 bg-slate-100 font-bold rounded-2xl text-sm">💸 Try 3 more names ($1)</a>
+                <a href="https://www.buymeacoffee.com/seonho" target="_blank" onclick="buyCredits(20)" class="block w-full py-4 bg-yellow-400 font-black rounded-2xl shadow-md">☕️ Full Pack - 20 names ($3)</a>
+                <button onclick="shareOnInsta()" class="w-full py-3 bg-pink-50 text-pink-600 font-bold rounded-xl text-xs">📸 Share for +3 Credits</button>
             </div>
-            <button onclick="closeModal()" class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Maybe Later</button>
+            <button onclick="closeModal()" class="text-slate-400 text-[10px] font-bold uppercase">Maybe Later</button>
         </div>
     </div>
 
     <script>
-        // --- 1. 크레딧 로직 ---
         if (!localStorage.getItem('k_credits')) localStorage.setItem('k_credits', '1');
         updateCreditUI();
-
         function getCredits() { return parseInt(localStorage.getItem('k_credits')); }
         function updateCreditUI() { document.getElementById('creditDisplay').innerText = localStorage.getItem('k_credits'); }
-
-        function recharge(amount) {
-            const current = getCredits();
-            localStorage.setItem('k_credits', (current + amount).toString());
-            updateCreditUI();
-        }
-
-        
-        function checkPayment(amount) {
-            // 1. 바로 크레딧을 주지 않고, 나중에 돌아왔을 때 확인창을 띄우게 예약합니다.
-            setTimeout(() => {
-                if(confirm("Thank you for your support! ☕️\nDid you finish the donation?")) {
-                    recharge(amount);
-                    closeModal();
-                    updateCreditUI();
-                }
-            }, 2000); // 2초 뒤에 물어봄 (사용자가 페이지로 이동한 뒤)
-}
-
-        // --- 2. 공유 및 캡처 로직 ---
-        // 1. html 내 <img> 태그에 속성 추가 (필수!)
-// <img id="aiImage" crossorigin="anonymous" ... >
-
-async function shareResultOnInsta() {
-    const area = document.getElementById('captureArea');
-    // useCORS 옵션을 넣어야 AI 사진까지 같이 저장됩니다.
-    const canvas = await html2canvas(area, { 
-        backgroundColor: null, 
-        borderRadius: 40, 
-        scale: 2,
-        useCORS: true  
-    });
-    const dataUrl = canvas.toDataURL("image/png");
-    const a = document.createElement('a');
-    a.href = dataUrl;
-    a.download = 'My_K-Identity.png';
-    a.click();
-    
-    // 인스타그램 이동 (팝업 차단 방지 위해 바로 실행)
-    setTimeout(() => { window.location.href = 'https://instagram.com'; }, 1000);
-}
-            // 이미지 다운로드 시도 (기본 저장)
-            const link = document.createElement('a');
-            link.href = dataUrl;
-            link.download = 'My_K_Identity.png';
-            link.click();
-
-            // Blob으로 변환하여 공유하기 시도 (모바일 공유창 호출)
-            try {
-                const response = await fetch(dataUrl);
-                const blob = await response.blob();
-                const file = new File([blob], 'K-Identity.png', { type: 'image/png' });
-
-                if (navigator.share && navigator.canShare({ files: [file] })) {
-                    await navigator.share({
-                        files: [file],
-                        title: 'My Korean Identity',
-                        text: 'Check out my new Korean name! 🇰🇷'
-                    });
-                } else {
-                    // PC 브라우저 등에서 지원 안할 경우 안내
-                    alert("Card saved! Open Instagram and upload your photo. 📸");
-                    window.open('https://www.instagram.com/', '_blank');
-                }
-            } catch (error) {
-                console.error("Share failed", error);
-                alert("Saved to gallery! Please upload to Instagram manually.");
-            }
-        
-
-        // 결제 버튼용: 클릭 시 바로 충전되지 않게 수정
-function buyCredits(amount) {
-    // 0.5초 뒤에 물어봄 (사용자가 새 탭으로 이동한 직후)
-    setTimeout(() => {
-        if(confirm("Did you complete the purchase on Buy Me a Coffee? ☕️")) {
-            recharge(amount);
-            closeModal();
-        }
-    }, 500);
-}
-
-// 인스타 공유용: 1초 뒤에 확인창 띄움
-function shareOnInsta() {
-    window.open('https://instagram.com', '_blank');
-    setTimeout(() => { 
-        if(confirm("Shared on your Story? +3 Credits will be added!")) { 
-            recharge(3); 
-            closeModal(); 
-        } 
-    }, 1000);
-}
-
-        // --- 3. UI 및 애니메이션 ---
-        function showRechargeModal() { document.getElementById('rechargeModal').classList.remove('hidden'); }
         function closeModal() { document.getElementById('rechargeModal').classList.add('hidden'); }
+        function showRechargeModal() { document.getElementById('rechargeModal').classList.remove('hidden'); }
 
         let progressIdx;
         function startTigerMotion() {
@@ -235,68 +110,66 @@ function shareOnInsta() {
             }, 1000);
         }
 
-        function startAdTimer() {
-            const btn = document.getElementById('adBtn'); let timeLeft = 30; btn.disabled = true;
-            const interval = setInterval(() => {
-                btn.innerText = `WAITING... ${timeLeft}s`; timeLeft--;
-                if (timeLeft < 0) {
-                    clearInterval(interval); recharge(1);
-                    btn.innerText = "OR WATCH 30S AD FOR 1 CREDIT"; btn.disabled = false; closeModal();
-                }
-            }, 1000);
-        }
-
-        // --- 4. 메인 생성 함수 ---
         async function generate() {
             if (getCredits() <= 0) return showRechargeModal();
             const name = document.getElementById('engName').value;
-            if(!name) return alert("Please enter your name!");
+            if(!name) return alert("Please enter name!");
 
             document.getElementById('loading').classList.remove('hidden');
             document.getElementById('resultSection').classList.add('hidden');
             startTigerMotion();
 
             try {
-                const lang = document.getElementById('lang').value;
-                const params = `english_name=${encodeURIComponent(name)}&vibe=${document.getElementById('vibe').value}&gender=${document.getElementById('gender').value}&lang=${lang}&strategy=${document.getElementById('strategy').value}`;
-
-                // 통합 API 호출 (main.py의 새 주소)
+                const params = `english_name=${name}&vibe=${document.getElementById('vibe').value}&gender=${document.getElementById('gender').value}&lang=${document.getElementById('lang').value}&strategy=${document.getElementById('strategy').value}`;
                 const res = await fetch(`/api/generate-k-identity?${params}`);
-                
-                if (!res.ok) throw new Error("Server Error");
-                
                 const data = await res.json();
 
-                // UI 업데이트
                 document.getElementById('kNameResult').innerText = data.k_name;
                 document.getElementById('hanjaMeaning').innerText = data.meaning;
                 document.getElementById('explainResult').innerText = data.explain;
-                
-                const imgElement = document.getElementById('aiImage');
-                if (data.image_url) {
-                    imgElement.src = data.image_url;
-                    imgElement.onload = () => {
-                        imgElement.classList.remove('hidden');
-                        document.getElementById('imagePlaceholder').classList.add('hidden');
-                        finishLoading();
-                    };
-                } else {
-                    finishLoading();
-                }
+
+                const img = document.getElementById('aiImage');
+                img.onload = () => {
+                    clearInterval(progressIdx);
+                    document.getElementById('loading').classList.add('hidden');
+                    document.getElementById('resultSection').classList.remove('hidden');
+                    recharge(-1);
+                };
+                img.src = data.image_url;
+                img.classList.remove('hidden');
+                document.getElementById('imagePlaceholder').classList.add('hidden');
 
             } catch(e) {
-                console.error(e);
-                clearInterval(progressIdx);
-                document.getElementById('loading').classList.add('hidden');
-                alert("Something went wrong. Please check your API key or connection.");
+                clearInterval(progressIdx); alert("Server Error!"); document.getElementById('loading').classList.add('hidden');
             }
         }
 
-        function finishLoading() {
-            clearInterval(progressIdx);
-            document.getElementById('loading').classList.add('hidden');
-            document.getElementById('resultSection').classList.remove('hidden');
-            recharge(-1); // 크레딧 차감
+        async function shareResultOnInsta() {
+            const area = document.getElementById('captureArea');
+            // useCORS 필수
+            const canvas = await html2canvas(area, { backgroundColor: null, borderRadius: 40, scale: 2, useCORS: true });
+            const dataUrl = canvas.toDataURL("image/png");
+            const a = document.createElement('a'); a.href = dataUrl; a.download = 'My_K-Identity.png'; a.click();
+            alert("Card saved! Opening Instagram...");
+            window.location.href = 'https://instagram.com';
+        }
+
+        function recharge(amount) {
+            localStorage.setItem('k_credits', (getCredits() + amount).toString());
+            updateCreditUI();
+        }
+
+        function buyCredits(amount) {
+            setTimeout(() => {
+                if(confirm("Did you complete the donation? ☕️")) {
+                    recharge(amount); closeModal();
+                }
+            }, 2000);
+        }
+
+        function shareOnInsta() {
+            window.open('https://instagram.com', '_blank');
+            setTimeout(() => { if(confirm("Shared on Story? +3 Credits!")) { recharge(3); closeModal(); } }, 2000);
         }
     </script>
 </body>
