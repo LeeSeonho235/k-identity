@@ -204,51 +204,54 @@
 
         // --- 4. Main Generation ---
         async function generate() {
-            const currentCredits = getCredits();
-            if (currentCredits <= 0) {
-                showRechargeModal();
-                return;
-            }
+    if (getCredits() <= 0) return showRechargeModal();
+    const name = document.getElementById('engName').value;
+    if(!name) return alert("Please enter name!");
 
-            const name = document.getElementById('engName').value;
-            if(!name) return alert("Please enter your name!");
+    // 로딩 시작
+    document.getElementById('loading').classList.remove('hidden');
+    document.getElementById('resultSection').classList.add('hidden');
+    startTigerMotion();
 
-            const loading = document.getElementById('loading');
-            const result = document.getElementById('resultSection');
+    try {
+        const params = `english_name=${name}&vibe=${document.getElementById('vibe').value}&gender=${document.getElementById('gender').value}&lang=${document.getElementById('lang').value}&strategy=${document.getElementById('strategy').value}`;
 
-            loading.classList.remove('hidden');
-            result.classList.add('hidden');
-            startLoadingTimer(); // [추가] 타이머 시작
+        // 통합 API 호출 (이름 + 이미지를 한 번에 가져옴)
+        const res = await fetch(`/api/generate-k-identity?${params}`);
+        const data = await res.json();
 
-            try {
-                const params = new URLSearchParams({
-                    english_name: name,
-                    vibe: document.getElementById('vibe').value,
-                    gender: document.getElementById('gender').value,
-                    lang: document.getElementById('lang').value,
-                    strategy: document.getElementById('strategy').value
-                });
-                
-                const res = await fetch(`http://127.0.0.1:8000/generate-k-identity?${params}`);
-                const data = await res.json();
-
-                localStorage.setItem('k_credits', (currentCredits - 1).toString());
-                updateCreditUI();
-
-                document.getElementById('aiImage').src = data.image_url;
-                document.getElementById('kNameResult').innerText = data.korean_name;
-                document.getElementById('hanjaMeaning').innerText = data.hanja_meaning;
-                document.getElementById('explainResult').innerText = data.explanation;
-
-                clearInterval(timerIdx); // [추가] 성공 시 타이머 정지
-                loading.classList.add('hidden');
-                result.classList.remove('hidden');
-            } catch(e) {
-                clearInterval(timerIdx);
-                alert("Server Error!");
-                loading.classList.add('hidden');
-            }
+        // 데이터 화면에 미리 넣어두기 (아직 숨김 상태)
+        document.getElementById('kNameResult').innerText = data.k_name;
+        document.getElementById('hanjaMeaning').innerText = data.meaning;
+        document.getElementById('explainResult').innerText = data.explain;
+        
+        // 이미지가 오면 넣고, 아니면 기본 이미지 설정
+        const imgElement = document.getElementById('aiImage');
+        if (data.image_url) {
+            imgElement.src = data.image_url;
+            // 이미지가 다 로딩되면 화면에 짠! 하고 보여줌
+            imgElement.onload = () => {
+                clearInterval(progressIdx);
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('resultSection').classList.remove('hidden');
+                recharge(-1);
+            };
+        } else {
+            // 이미지 생성 실패 시 (예비용)
+            clearInterval(progressIdx);
+            alert("Image generation failed, but name is ready!");
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('resultSection').classList.remove('hidden');
+            recharge(-1);
         }
+
+    } catch(e) {
+        console.error(e); // 에러 로그 출력
+        clearInterval(progressIdx);
+        alert("Server Busy! Try once more."); // 5초 만에 끊기면 이 창이 뜹니다.
+        document.getElementById('loading').classList.add('hidden');
+    }
+}
     </script>
 </body>
 </html>
