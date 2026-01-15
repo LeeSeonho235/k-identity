@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-import google.generativeai as genai # 안정적인 라이브러리로 변경
+import google.generativeai as genai
 import openai
 import os
 from dotenv import load_dotenv
@@ -20,14 +20,14 @@ app.add_middleware(
 GEMINI_KEY = os.getenv("GEMINI_API_KEY")
 OPENAI_KEY = os.getenv("OPENAI_API_KEY")
 
-# 제미나이 설정 (기존 안정 방식)
+# 제미나이 설정
 genai.configure(api_key=GEMINI_KEY)
-# 모델 선언 (버전 명시를 피하고 표준 명칭 사용)
-gemini_model = genai.GenerativeModel('gemini-1.5-flash')
+# 모델명을 'gemini-1.5-flash-latest'로 쓰면 404 에러를 피할 가능성이 매우 높습니다.
+# 만약 2.0을 써보고 싶다면 'gemini-2.0-flash-exp' (또는 2026년 기준 'gemini-2.0-flash')를 넣으세요.
+gemini_model = genai.GenerativeModel('gemini-1.5-flash-latest')
 
 openai_client = openai.OpenAI(api_key=OPENAI_KEY)
 
-# 1단계: 이름 생성 API
 @app.get("/api/get-name")
 async def get_name(english_name: str, vibe: str, gender: str, lang: str, strategy: str):
     try:
@@ -40,11 +40,11 @@ async def get_name(english_name: str, vibe: str, gender: str, lang: str, strateg
             f"Line 3: A brief, warm explanation about the name."
         )
         
-        # 호출 방식 변경
+        # 안전한 호출 방식
         response = gemini_model.generate_content(text_prompt)
         
-        if not response.text:
-            raise ValueError("Gemini response is empty")
+        if not response or not response.text:
+            raise ValueError("Gemini API에서 응답을 받지 못했습니다.")
 
         lines = [line.strip() for line in response.text.strip().split('\n') if line.strip()]
         
@@ -54,17 +54,16 @@ async def get_name(english_name: str, vibe: str, gender: str, lang: str, strateg
             "explanation": lines[2] if len(lines) > 2 else response.text
         }
     except Exception as e:
-        print(f"Gemini Error Trace: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Gemini Error: {str(e)}")
+        print(f"Detailed Error: {str(e)}")
+        # 에러 메시지를 프론트엔드에 구체적으로 보냅니다.
+        raise HTTPException(status_code=500, detail=str(e))
 
-# 2단계: 이미지 생성 API
+# 이미지 생성 API (동일)
 @app.get("/api/get-image")
 async def get_image(k_name: str, gender: str, vibe: str):
     try:
         dalle_prompt = (
-            f"A high-quality, stylish K-pop {gender} portrait photo, "
-            f"inspired by the Korean name '{k_name}'. "
-            f"Overall vibe is {vibe}. Clean background, soft lighting, 4k resolution."
+            f"A high-quality, stylish K-pop {gender} portrait photo, inspired by the Korean name '{k_name}'. Overall vibe is {vibe}. Clean background, 4k resolution."
         )
         img_response = openai_client.images.generate(model="dall-e-3", prompt=dalle_prompt, n=1)
         return {"image_url": img_response.data[0].url}
