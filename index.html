@@ -215,25 +215,25 @@
     try {
         const params = `english_name=${name}&vibe=${document.getElementById('vibe').value}&gender=${document.getElementById('gender').value}&lang=${document.getElementById('lang').value}&strategy=${document.getElementById('strategy').value}`;
 
-        // 통합된 API 하나만 호출 (이름/이미지 동시 생성)
+        // 통합 API 호출
         const res = await fetch(`/api/generate-k-identity?${params}`);
         const data = await res.json();
 
-        // 화면에 데이터 미리 넣어두기 (아직 숨김 상태)
+        // Python에서 준 변수명(k_name, meaning, explain)과 100% 일치!
         document.getElementById('kNameResult').innerText = data.k_name;
         document.getElementById('hanjaMeaning').innerText = data.meaning;
         document.getElementById('explainResult').innerText = data.explain;
         document.getElementById('aiImage').src = data.image_url;
 
-        // 이미지가 실제로 다 그려져서 화면에 뜰 준비가 되면 그때 짠! 하고 보여줌
+        // 이미지가 다 로딩되면 화면을 한 번에 보여줌 (선호님 요청 사항)
         document.getElementById('aiImage').onload = () => {
             clearInterval(progressIdx);
             document.getElementById('loading').classList.add('hidden');
-            document.getElementById('resultSection').classList.remove('hidden'); // 이름+이미지 동시 노출!
+            document.getElementById('resultSection').classList.remove('hidden');
             recharge(-1);
         };
     } catch(e) {
-        clearInterval(progressIdx); alert("Server Busy! Try once more."); document.getElementById('loading').classList.add('hidden');
+        clearInterval(progressIdx); alert("Server Busy! Try again."); document.getElementById('loading').classList.add('hidden');
     }
 }
     </script>
