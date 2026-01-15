@@ -25,14 +25,20 @@ async def read_index():
     # 루트 접속 시 같은 폴더나 상위의 index.html을 반환
     return FileResponse('index.html')
 
-@app.get("/api/generate-k-identity")
-async def generate_k_identity(english_name: str, vibe: str, gender: str, lang: str, strategy: str):
-    # 1. Gemini 이름 생성
-    text_prompt = f"Suggest 1 Korean name for a {gender} named '{english_name}' with a '{vibe}' vibe based on {strategy}. Answer in {lang}. Line 1: Name(Hanja), Line 2: Meaning, Line 3: Explanation."
-    
-    
+# API 1: 한국어 이름만 빨리 생성 (약 2~3초)
+@app.get("/api/get-name")
+async def get_name(english_name: str, vibe: str, gender: str, lang: str, strategy: str):
+    text_prompt = f"Suggest 1 Korean name for a {gender} named '{english_name}'..."
     response = gemini_client.models.generate_content(model="gemini-1.5-flash", contents=text_prompt)
     lines = response.text.strip().split('\n')
+    return {"k_name": lines[0], "meaning": lines[1], "explain": lines[2]}
+
+# API 2: 생성된 이름으로 이미지 생성 (약 10초 내외)
+@app.get("/api/get-image")
+async def get_image(k_name: str, vibe: str, gender: str):
+    dalle_prompt = f"A stylish K-pop portrait inspired by '{k_name}'..."
+    img_response = openai_client.images.generate(model="dall-e-3", prompt=dalle_prompt)
+    return {"image_url": img_response.data[0].url}
     
     # 2. DALL-E 이미지 생성 (저장하지 않고 URL만 반환)
     dalle_prompt = f"A stylish K-pop {gender} portrait, inspired by the name '{lines[0]}'. Vibe: {vibe}."
