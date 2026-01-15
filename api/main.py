@@ -1,9 +1,9 @@
-from fastapi.responses import FileResponse 
-import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from google import genai  # 최신 라이브러리 임포트 방식
+from fastapi.responses import FileResponse
+from google import genai
 import openai
+import os
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -16,43 +16,35 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 클라이언트 설정
 gemini_client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 openai_client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 @app.get("/")
 async def read_index():
-    # 루트 접속 시 같은 폴더나 상위의 index.html을 반환
     return FileResponse('index.html')
 
-# API 1: 한국어 이름만 빨리 생성 (약 2~3초)
+# 1단계: 이름만 생성 (빠름)
 @app.get("/api/get-name")
 async def get_name(english_name: str, vibe: str, gender: str, lang: str, strategy: str):
-    text_prompt = f"Suggest 1 Korean name for a {gender} named '{english_name}'..."
-    response = gemini_client.models.generate_content(model="gemini-1.5-flash", contents=text_prompt)
-    lines = response.text.strip().split('\n')
-    return {"k_name": lines[0], "meaning": lines[1], "explain": lines[2]}
+    try:
+        text_prompt = f"Suggest 1 Korean name for a {gender} named '{english_name}'. Vibe: {vibe}. Strategy: {strategy}. Answer in {lang}."
+        response = gemini_client.models.generate_content(model="gemini-1.5-flash", contents=text_prompt)
+        
+        lines = response.text.strip().split('\n')
+        return {
+            "korean_name": lines[0] if len(lines) > 0 else "Error",
+            "hanja_meaning": lines[1] if len(lines) > 1 else "",
+            "explanation": lines[2] if len(lines) > 2 else response.text
+        }
+    except Exception as e:
+        return {"error": str(e)}, 500
 
-# API 2: 생성된 이름으로 이미지 생성 (약 10초 내외)
+# 2단계: 이미지 생성 (DALL-E 3 호출, 약 10초 소요)
 @app.get("/api/get-image")
-async def get_image(k_name: str, vibe: str, gender: str):
-    dalle_prompt = f"A stylish K-pop portrait inspired by '{k_name}'..."
-    img_response = openai_client.images.generate(model="dall-e-3", prompt=dalle_prompt)
-    return {"image_url": img_response.data[0].url}
-    
-    # 2. DALL-E 이미지 생성 (저장하지 않고 URL만 반환)
-    dalle_prompt = f"A stylish K-pop {gender} portrait, inspired by the name '{lines[0]}'. Vibe: {vibe}."
-    img_response = openai_client.images.generate(
-        model="dall-e-3",
-        prompt=dalle_prompt,
-        n=1
-    )
-    # Vercel은 파일을 저장할 수 없으므로, OpenAI가 준 임시 URL을 그대로 씁니다.
-    final_image_url = img_response.data[0].url
-
-    return {
-        "korean_name": lines[0] if len(lines) > 0 else "Error",
-        "hanja_meaning": lines[1] if len(lines) > 1 else "",
-        "explanation": lines[2] if len(lines) > 2 else response.text,
-        "image_url": final_image_url
-    }
+async def get_image(k_name: str, gender: str, vibe: str):
+    try:
+        dalle_prompt = f"A stylish K-pop {gender} portrait, inspired by the name '{k_name}'. Vibe: {vibe}."
+        img_response = openai_client.images.generate(model="dall-e-3", prompt=dalle_prompt, n=1)
+        return {"image_url": img_response.data[0].url}
+    except Exception as e:
+        return {"error": str(e)}, 500
