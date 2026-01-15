@@ -79,11 +79,15 @@
         <div id="resultSection" class="hidden space-y-6 pt-4 border-t-2 border-slate-50 scale-in">
             <div id="captureArea" class="bg-blue-50 p-8 rounded-[2.5rem] text-center space-y-6 shadow-inner">
                 <div id="imageContainer" class="relative w-40 h-40 mx-auto">
-                    <img id="aiImage" crossorigin="anonymous" class="w-40 h-40 rounded-full shadow-2xl border-4 border-white object-cover hidden" src="">
+                    <img id="aiImage" class="w-40 h-40 rounded-full shadow-2xl border-4 border-white object-cover hidden" src="">
                     <div id="imagePlaceholder" class="w-40 h-40 rounded-full bg-slate-200 flex items-center justify-center text-4xl border-4 border-white shadow-inner">👤</div>
                 </div>
 
-                <h2 id="kNameResult" class="text-4xl font-black text-slate-800 tracking-tight leading-tight break-keep py-2"></h2>
+                <h2 id="kNameResult" class="text-5xl font-black text-slate-800 tracking-tight"></h2>
+                
+                <button id="genImgBtn" onclick="generateImage()" class="px-4 py-2 bg-blue-100 text-blue-600 rounded-full text-[11px] font-black uppercase tracking-wider hover:bg-blue-200 transition-all">
+                    ✨ Generate AI Profile Image
+                </button>
 
                 <div class="space-y-3 bg-white/60 p-6 rounded-3xl shadow-sm">
                     <p id="hanjaMeaning" class="text-blue-600 font-black text-xs uppercase tracking-widest"></p>
@@ -103,12 +107,18 @@
             <p class="text-slate-500 text-sm italic">Get more credits to find more names:</p>
             
             <div class="space-y-3">
-                <button onclick="buyCredits(3)" class="block w-full py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl transition-all text-sm">
+                <a href="https://www.buymeacoffee.com/seonho" target="_blank" onclick="buyCredits(3)" class="block w-full py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl transition-all text-sm text-center">
                     💸 Try 3 more names ($1)
-                </button>
-                <button onclick="buyCredits(20)" class="block w-full py-4 bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-black rounded-2xl transition-all shadow-md">
+                </a>
+                
+                <a href="https://www.buymeacoffee.com/seonho" target="_blank" onclick="buyCredits(20)" class="block w-full py-4 bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-black rounded-2xl transition-all shadow-md text-center">
                     ☕️ Full Pack - 20 names ($3)
-                </button>
+                </a>
+
+                <a href="https://www.buymeacoffee.com/seonho" target="_blank" onclick="buyCredits(50)" class="block w-full py-4 bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold rounded-2xl transition-all text-sm text-center">
+                    🎁 Family Pack - 50 names ($5)
+                </a>
+
                 <div class="pt-2 flex flex-col gap-2">
                     <button onclick="shareOnInsta()" class="w-full py-3 bg-pink-50 text-pink-600 font-bold rounded-xl text-xs">📸 Share for +3 Credits</button>
                     <button onclick="startAdTimer()" id="adBtn" class="w-full py-2 text-slate-400 text-[10px] font-bold underline italic uppercase tracking-widest">Or watch 30s ad for 1 credit</button>
@@ -119,109 +129,21 @@
     </div>
 
     <script>
-        // --- 1. 크레딧 로직 ---
+        // --- 1. Credit Logic ---
         if (!localStorage.getItem('k_credits')) localStorage.setItem('k_credits', '1');
         updateCreditUI();
-
         function getCredits() { return parseInt(localStorage.getItem('k_credits')); }
         function updateCreditUI() { document.getElementById('creditDisplay').innerText = localStorage.getItem('k_credits'); }
 
-        function recharge(amount) {
-            const current = getCredits();
-            localStorage.setItem('k_credits', (current + amount).toString());
-            updateCreditUI();
-        }
-
-        
-        function checkPayment(amount) {
-            // 1. 바로 크레딧을 주지 않고, 나중에 돌아왔을 때 확인창을 띄우게 예약합니다.
-            setTimeout(() => {
-                if(confirm("Thank you for your support! ☕️\nDid you finish the donation?")) {
-                    recharge(amount);
-                    closeModal();
-                    updateCreditUI();
-                }
-            }, 2000); // 2초 뒤에 물어봄 (사용자가 페이지로 이동한 뒤)
-}
-
-        // --- 2. 공유 및 캡처 로직 ---
-        // 1. html 내 <img> 태그에 속성 추가 (필수!)
-// <img id="aiImage" crossorigin="anonymous" ... >
-
-async function shareResultOnInsta() {
-    const area = document.getElementById('captureArea');
-    // useCORS 옵션을 넣어야 AI 사진까지 같이 저장됩니다.
-    const canvas = await html2canvas(area, { 
-        backgroundColor: null, 
-        borderRadius: 40, 
-        scale: 2,
-        useCORS: true  
-    });
-    const dataUrl = canvas.toDataURL("image/png");
-    const a = document.createElement('a');
-    a.href = dataUrl;
-    a.download = 'My_K-Identity.png';
-    a.click();
-    
-    // 인스타그램 이동 (팝업 차단 방지 위해 바로 실행)
-    setTimeout(() => { window.location.href = 'https://instagram.com'; }, 1000);
-}
-            // 이미지 다운로드 시도 (기본 저장)
-            const link = document.createElement('a');
-            link.href = dataUrl;
-            link.download = 'My_K_Identity.png';
-            link.click();
-
-            // Blob으로 변환하여 공유하기 시도 (모바일 공유창 호출)
-            try {
-                const response = await fetch(dataUrl);
-                const blob = await response.blob();
-                const file = new File([blob], 'K-Identity.png', { type: 'image/png' });
-
-                if (navigator.share && navigator.canShare({ files: [file] })) {
-                    await navigator.share({
-                        files: [file],
-                        title: 'My Korean Identity',
-                        text: 'Check out my new Korean name! 🇰🇷'
-                    });
-                } else {
-                    // PC 브라우저 등에서 지원 안할 경우 안내
-                    alert("Card saved! Open Instagram and upload your photo. 📸");
-                    window.open('https://www.instagram.com/', '_blank');
-                }
-            } catch (error) {
-                console.error("Share failed", error);
-                alert("Saved to gallery! Please upload to Instagram manually.");
-            }
-        
-
-        // 결제 버튼용: 클릭 시 바로 충전되지 않게 수정
-function buyCredits(amount) {
-    // 0.5초 뒤에 물어봄 (사용자가 새 탭으로 이동한 직후)
-    setTimeout(() => {
-        if(confirm("Did you complete the purchase on Buy Me a Coffee? ☕️")) {
-            recharge(amount);
-            closeModal();
-        }
-    }, 500);
-}
-
-// 인스타 공유용: 1초 뒤에 확인창 띄움
-function shareOnInsta() {
-    window.open('https://instagram.com', '_blank');
-    setTimeout(() => { 
-        if(confirm("Shared on your Story? +3 Credits will be added!")) { 
-            recharge(3); 
-            closeModal(); 
-        } 
-    }, 1000);
-}
-
-        // --- 3. UI 및 애니메이션 ---
+        // --- 2. UI Controls ---
         function showRechargeModal() { document.getElementById('rechargeModal').classList.remove('hidden'); }
         function closeModal() { document.getElementById('rechargeModal').classList.add('hidden'); }
 
+        let timerIdx;
         let progressIdx;
+        // 전역 변수로 현재 생성된 이름 정보 저장
+        let currentResult = { name: '', gender: '', vibe: '' };
+
         function startTigerMotion() {
             let leftPos = 0; let seconds = 30;
             const tiger = document.getElementById('tiger');
@@ -235,6 +157,35 @@ function shareOnInsta() {
             }, 1000);
         }
 
+        // --- 3. Feature Functions (Capture & Share) ---
+        async function shareResultOnInsta() {
+            const area = document.getElementById('captureArea');
+            const canvas = await html2canvas(area, { backgroundColor: null, borderRadius: 40, scale: 2 });
+            const dataUrl = canvas.toDataURL("image/png");
+            const a = document.createElement('a'); a.href = dataUrl; a.download = 'My_K-Identity.png';
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+
+            setTimeout(() => {
+                alert("Identity card saved! 🎁\nUpload it to your Instagram!");
+                window.open('https://instagram.com', '_blank');
+            }, 2000);
+        }
+
+        function buyCredits(amount) {
+            setTimeout(() => {
+                if(confirm(`Did you complete the purchase? \nClick 'OK' to receive your ${amount} credits!`)) {
+                    recharge(amount);
+                    closeModal();
+                    alert(`Success! ${amount} credits added.`);
+                }
+            }, 3000);
+        }
+
+        function shareOnInsta() {
+            window.open('https://instagram.com', '_blank');
+            setTimeout(() => { if(confirm("Shared on Story?")) { recharge(3); closeModal(); } }, 2000);
+        }
+
         function startAdTimer() {
             const btn = document.getElementById('adBtn'); let timeLeft = 30; btn.disabled = true;
             const interval = setInterval(() => {
@@ -246,55 +197,63 @@ function shareOnInsta() {
             }, 1000);
         }
 
-        // --- 4. 메인 생성 함수 ---
+        function recharge(amount) {
+            localStorage.setItem('k_credits', (getCredits() + amount).toString());
+            updateCreditUI();
+        }
+
+        // --- 4. Main Generation ---
         async function generate() {
     if (getCredits() <= 0) return showRechargeModal();
     const name = document.getElementById('engName').value;
     if(!name) return alert("Please enter name!");
 
+    // 로딩 시작
     document.getElementById('loading').classList.remove('hidden');
     document.getElementById('resultSection').classList.add('hidden');
     startTigerMotion();
 
     try {
         const params = `english_name=${name}&vibe=${document.getElementById('vibe').value}&gender=${document.getElementById('gender').value}&lang=${document.getElementById('lang').value}&strategy=${document.getElementById('strategy').value}`;
+
+        // [중요] main.py에 있는 딱 하나의 통합 주소만 부릅니다!
         const res = await fetch(`/api/generate-k-identity?${params}`);
         const data = await res.json();
 
-        // 텍스트 데이터 먼저 삽입
+        // main.py가 주는 변수명(k_name, meaning, explain, image_url)에 맞춤
         document.getElementById('kNameResult').innerText = data.k_name;
         document.getElementById('hanjaMeaning').innerText = data.meaning;
         document.getElementById('explainResult').innerText = data.explain;
-
-        const img = document.getElementById('aiImage');
         
-        // 결과창을 보여주는 공통 함수 (예외 처리용)
-        const showFinalResult = () => {
-            clearInterval(progressIdx);
-            document.getElementById('loading').classList.add('hidden');
-            document.getElementById('resultSection').classList.remove('hidden');
-            recharge(-1);
-        };
+        const imgElement = document.getElementById('aiImage');
+        if (data.image_url) {
+            imgElement.src = data.image_url;
+            imgElement.classList.remove('hidden'); // 이미지 숨김 해제
+            document.getElementById('imagePlaceholder').classList.add('hidden'); // 기본 아이콘 숨김
 
-        // 사진 주소가 있는 경우에만 로딩 대기
-        if (data.image_url && data.image_url !== "") {
-            img.onload = showFinalResult;
-            img.onerror = showFinalResult; // 사진 로딩 실패 시에도 텍스트는 보여줌!
-            img.src = data.image_url;
-            img.classList.remove('hidden');
-            document.getElementById('imagePlaceholder').classList.add('hidden');
+            // 이미지가 실제로 다 불러와지면 화면을 보여줌
+            imgElement.onload = () => {
+                finishLoading();
+            };
         } else {
-            // 사진이 없으면 즉시 결과 표시
-            img.classList.add('hidden');
-            document.getElementById('imagePlaceholder').classList.remove('hidden');
-            showFinalResult();
+            // 이미지가 없을 때의 예외 처리
+            finishLoading();
+            alert("Name is ready, but image failed to load.");
         }
 
     } catch(e) {
-        clearInterval(progressIdx); 
-        alert("Server Busy! Please try once more."); 
+        console.error("Fetch Error:", e);
+        clearInterval(progressIdx);
         document.getElementById('loading').classList.add('hidden');
+        alert("Server Busy! Please try once more.");
     }
+}
+
+function finishLoading() {
+    clearInterval(progressIdx);
+    document.getElementById('loading').classList.add('hidden');
+    document.getElementById('resultSection').classList.remove('hidden');
+    recharge(-1);
 }
     </script>
 </body>
