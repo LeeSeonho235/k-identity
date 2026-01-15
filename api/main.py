@@ -31,7 +31,7 @@ async def generate_k_identity(english_name: str, vibe: str, gender: str, lang: s
     text_prompt = f"Suggest 1 Korean name for a {gender} named '{english_name}' with a '{vibe}' vibe based on {strategy}. Answer in {lang}. Line 1: Name(Hanja), Line 2: Meaning, Line 3: Explanation."
     
     
-    response = gemini_client.models.generate_content(model="models/gemini-1.5-flash", contents=text_prompt)
+    response = gemini_client.models.generate_content(model="gemini-2.0-flash", contents=text_prompt)
     lines = response.text.strip().split('\n')
     
     # 2. DALL-E 이미지 생성 (저장하지 않고 URL만 반환)
