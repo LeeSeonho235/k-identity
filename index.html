@@ -84,10 +84,6 @@
                 </div>
 
                 <h2 id="kNameResult" class="text-5xl font-black text-slate-800 tracking-tight"></h2>
-                
-                <button id="genImgBtn" onclick="generateImage()" class="px-4 py-2 bg-blue-100 text-blue-600 rounded-full text-[11px] font-black uppercase tracking-wider hover:bg-blue-200 transition-all">
-                    ✨ Generate AI Profile Image
-                </button>
 
                 <div class="space-y-3 bg-white/60 p-6 rounded-3xl shadow-sm">
                     <p id="hanjaMeaning" class="text-blue-600 font-black text-xs uppercase tracking-widest"></p>
@@ -107,18 +103,12 @@
             <p class="text-slate-500 text-sm italic">Get more credits to find more names:</p>
             
             <div class="space-y-3">
-                <a href="https://www.buymeacoffee.com/seonho" target="_blank" onclick="buyCredits(3)" class="block w-full py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl transition-all text-sm text-center">
+                <button onclick="buyCredits(3)" class="block w-full py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl transition-all text-sm">
                     💸 Try 3 more names ($1)
-                </a>
-                
-                <a href="https://www.buymeacoffee.com/seonho" target="_blank" onclick="buyCredits(20)" class="block w-full py-4 bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-black rounded-2xl transition-all shadow-md text-center">
+                </button>
+                <button onclick="buyCredits(20)" class="block w-full py-4 bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-black rounded-2xl transition-all shadow-md">
                     ☕️ Full Pack - 20 names ($3)
-                </a>
-
-                <a href="https://www.buymeacoffee.com/seonho" target="_blank" onclick="buyCredits(50)" class="block w-full py-4 bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold rounded-2xl transition-all text-sm text-center">
-                    🎁 Family Pack - 50 names ($5)
-                </a>
-
+                </button>
                 <div class="pt-2 flex flex-col gap-2">
                     <button onclick="shareOnInsta()" class="w-full py-3 bg-pink-50 text-pink-600 font-bold rounded-xl text-xs">📸 Share for +3 Credits</button>
                     <button onclick="startAdTimer()" id="adBtn" class="w-full py-2 text-slate-400 text-[10px] font-bold underline italic uppercase tracking-widest">Or watch 30s ad for 1 credit</button>
@@ -129,21 +119,73 @@
     </div>
 
     <script>
-        // --- 1. Credit Logic ---
+        // --- 1. 크레딧 로직 ---
         if (!localStorage.getItem('k_credits')) localStorage.setItem('k_credits', '1');
         updateCreditUI();
+
         function getCredits() { return parseInt(localStorage.getItem('k_credits')); }
         function updateCreditUI() { document.getElementById('creditDisplay').innerText = localStorage.getItem('k_credits'); }
 
-        // --- 2. UI Controls ---
+        function recharge(amount) {
+            const current = getCredits();
+            localStorage.setItem('k_credits', (current + amount).toString());
+            updateCreditUI();
+        }
+
+        function buyCredits(amount) {
+            if(confirm(`Purchase ${amount} credits?`)) {
+                recharge(amount);
+                closeModal();
+                alert("Success! Credits added.");
+            }
+        }
+
+        // --- 2. 공유 및 캡처 로직 ---
+        async function shareResultOnInsta() {
+            const area = document.getElementById('captureArea');
+            // html2canvas로 이미지 생성
+            const canvas = await html2canvas(area, { scale: 2, backgroundColor: null });
+            const dataUrl = canvas.toDataURL("image/png");
+
+            // 이미지 다운로드 시도 (기본 저장)
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = 'My_K_Identity.png';
+            link.click();
+
+            // Blob으로 변환하여 공유하기 시도 (모바일 공유창 호출)
+            try {
+                const response = await fetch(dataUrl);
+                const blob = await response.blob();
+                const file = new File([blob], 'K-Identity.png', { type: 'image/png' });
+
+                if (navigator.share && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        files: [file],
+                        title: 'My Korean Identity',
+                        text: 'Check out my new Korean name! 🇰🇷'
+                    });
+                } else {
+                    // PC 브라우저 등에서 지원 안할 경우 안내
+                    alert("Card saved! Open Instagram and upload your photo. 📸");
+                    window.open('https://www.instagram.com/', '_blank');
+                }
+            } catch (error) {
+                console.error("Share failed", error);
+                alert("Saved to gallery! Please upload to Instagram manually.");
+            }
+        }
+
+        function shareOnInsta() {
+            window.open('https://instagram.com', '_blank');
+            setTimeout(() => { if(confirm("Did you share on your story?")) { recharge(3); closeModal(); } }, 3000);
+        }
+
+        // --- 3. UI 및 애니메이션 ---
         function showRechargeModal() { document.getElementById('rechargeModal').classList.remove('hidden'); }
         function closeModal() { document.getElementById('rechargeModal').classList.add('hidden'); }
 
-        let timerIdx;
         let progressIdx;
-        // 전역 변수로 현재 생성된 이름 정보 저장
-        let currentResult = { name: '', gender: '', vibe: '' };
-
         function startTigerMotion() {
             let leftPos = 0; let seconds = 30;
             const tiger = document.getElementById('tiger');
@@ -157,35 +199,6 @@
             }, 1000);
         }
 
-        // --- 3. Feature Functions (Capture & Share) ---
-        async function shareResultOnInsta() {
-            const area = document.getElementById('captureArea');
-            const canvas = await html2canvas(area, { backgroundColor: null, borderRadius: 40, scale: 2 });
-            const dataUrl = canvas.toDataURL("image/png");
-            const a = document.createElement('a'); a.href = dataUrl; a.download = 'My_K-Identity.png';
-            document.body.appendChild(a); a.click(); document.body.removeChild(a);
-
-            setTimeout(() => {
-                alert("Identity card saved! 🎁\nUpload it to your Instagram!");
-                window.open('https://instagram.com', '_blank');
-            }, 2000);
-        }
-
-        function buyCredits(amount) {
-            setTimeout(() => {
-                if(confirm(`Did you complete the purchase? \nClick 'OK' to receive your ${amount} credits!`)) {
-                    recharge(amount);
-                    closeModal();
-                    alert(`Success! ${amount} credits added.`);
-                }
-            }, 3000);
-        }
-
-        function shareOnInsta() {
-            window.open('https://instagram.com', '_blank');
-            setTimeout(() => { if(confirm("Shared on Story?")) { recharge(3); closeModal(); } }, 2000);
-        }
-
         function startAdTimer() {
             const btn = document.getElementById('adBtn'); let timeLeft = 30; btn.disabled = true;
             const interval = setInterval(() => {
@@ -197,64 +210,58 @@
             }, 1000);
         }
 
-        function recharge(amount) {
-            localStorage.setItem('k_credits', (getCredits() + amount).toString());
-            updateCreditUI();
-        }
-
-        // --- 4. Main Generation ---
+        // --- 4. 메인 생성 함수 ---
         async function generate() {
-    if (getCredits() <= 0) return showRechargeModal();
-    const name = document.getElementById('engName').value;
-    if(!name) return alert("Please enter name!");
+            if (getCredits() <= 0) return showRechargeModal();
+            const name = document.getElementById('engName').value;
+            if(!name) return alert("Please enter your name!");
 
-    // 로딩 시작
-    document.getElementById('loading').classList.remove('hidden');
-    document.getElementById('resultSection').classList.add('hidden');
-    startTigerMotion();
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('resultSection').classList.add('hidden');
+            startTigerMotion();
 
-    try {
-        const params = `english_name=${name}&vibe=${document.getElementById('vibe').value}&gender=${document.getElementById('gender').value}&lang=${document.getElementById('lang').value}&strategy=${document.getElementById('strategy').value}`;
+            try {
+                const lang = document.getElementById('lang').value;
+                const params = `english_name=${encodeURIComponent(name)}&vibe=${document.getElementById('vibe').value}&gender=${document.getElementById('gender').value}&lang=${lang}&strategy=${document.getElementById('strategy').value}`;
 
-        // [중요] main.py에 있는 딱 하나의 통합 주소만 부릅니다!
-        const res = await fetch(`/api/generate-k-identity?${params}`);
-        const data = await res.json();
+                // 통합 API 호출 (main.py의 새 주소)
+                const res = await fetch(`/api/generate-k-identity?${params}`);
+                
+                if (!res.ok) throw new Error("Server Error");
+                
+                const data = await res.json();
 
-        // main.py가 주는 변수명(k_name, meaning, explain, image_url)에 맞춤
-        document.getElementById('kNameResult').innerText = data.k_name;
-        document.getElementById('hanjaMeaning').innerText = data.meaning;
-        document.getElementById('explainResult').innerText = data.explain;
-        
-        const imgElement = document.getElementById('aiImage');
-        if (data.image_url) {
-            imgElement.src = data.image_url;
-            imgElement.classList.remove('hidden'); // 이미지 숨김 해제
-            document.getElementById('imagePlaceholder').classList.add('hidden'); // 기본 아이콘 숨김
+                // UI 업데이트
+                document.getElementById('kNameResult').innerText = data.k_name;
+                document.getElementById('hanjaMeaning').innerText = data.meaning;
+                document.getElementById('explainResult').innerText = data.explain;
+                
+                const imgElement = document.getElementById('aiImage');
+                if (data.image_url) {
+                    imgElement.src = data.image_url;
+                    imgElement.onload = () => {
+                        imgElement.classList.remove('hidden');
+                        document.getElementById('imagePlaceholder').classList.add('hidden');
+                        finishLoading();
+                    };
+                } else {
+                    finishLoading();
+                }
 
-            // 이미지가 실제로 다 불러와지면 화면을 보여줌
-            imgElement.onload = () => {
-                finishLoading();
-            };
-        } else {
-            // 이미지가 없을 때의 예외 처리
-            finishLoading();
-            alert("Name is ready, but image failed to load.");
+            } catch(e) {
+                console.error(e);
+                clearInterval(progressIdx);
+                document.getElementById('loading').classList.add('hidden');
+                alert("Something went wrong. Please check your API key or connection.");
+            }
         }
 
-    } catch(e) {
-        console.error("Fetch Error:", e);
-        clearInterval(progressIdx);
-        document.getElementById('loading').classList.add('hidden');
-        alert("Server Busy! Please try once more.");
-    }
-}
-
-function finishLoading() {
-    clearInterval(progressIdx);
-    document.getElementById('loading').classList.add('hidden');
-    document.getElementById('resultSection').classList.remove('hidden');
-    recharge(-1);
-}
+        function finishLoading() {
+            clearInterval(progressIdx);
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('resultSection').classList.remove('hidden');
+            recharge(-1); // 크레딧 차감
+        }
     </script>
 </body>
 </html>

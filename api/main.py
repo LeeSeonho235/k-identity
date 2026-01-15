@@ -24,17 +24,16 @@ async def read_index():
 async def generate_k_identity(english_name: str, vibe: str, gender: str, lang: str, strategy: str):
     
     # --- 1. Gemini 프롬프트: "지혜" 스타일로 상세 요청 ---
-    text_prompt = f"""
-    Suggest 1 best Korean name for a {gender} named '{english_name}' with a '{vibe}' vibe based on {strategy}.
-    
-    IMPORTANT: Answer strictly in {lang} language. 
-    DO NOT include labels like 'Line 1:', 'Name:', 'Meaning:', or '[...]'. Just the raw text.
-    
-    Format:
-    Line 1: [Hangeul Name] ([Hanja Name])
-    Line 2: [Hanja Breakdown with meanings, e.g., 智 (JI): WISDOM; 慧 (HYE): BRIGHT]
-    Line 3: [A poetic 2-3 sentence explanation about why this name fits the person's vibe]
-    """
+    # prompt 부분을 아래와 같이 수정하세요.
+    text_prompt = (
+    f"You are a Korean naming expert. Suggest 1 Korean name for a {gender} named '{english_name}'. "
+    f"Vibe: {vibe}. Strategy: {strategy}. "
+    f"IMPORTANT: You must write the 'Hanja meaning' and 'Explanation' ONLY in the language code: {lang}. " # 언어 지시 강화
+    f"Provide the answer in exactly 3 lines:\n"
+    f"Line 1: Only the Korean name (e.g., 김도윤)\n"
+    f"Line 2: Hanja meaning in {lang}\n"
+    f"Line 3: Warm explanation in {lang}"
+)
     
     response = gemini_client.models.generate_content(model="gemini-2.0-flash", contents=text_prompt)
     
