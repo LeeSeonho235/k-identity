@@ -1,7 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
-from google import genai
+import google.generativeai as genai # 안정적인 라이브러리로 변경
 import openai
 import os
 from dotenv import load_dotenv
@@ -21,16 +20,14 @@ app.add_middleware(
 GEMINI_KEY = os.getenv("GEMINI_API_KEY")
 OPENAI_KEY = os.getenv("OPENAI_API_KEY")
 
-gemini_client = genai.Client(api_key=GEMINI_KEY)
+# 제미나이 설정 (기존 안정 방식)
+genai.configure(api_key=GEMINI_KEY)
+# 모델 선언 (버전 명시를 피하고 표준 명칭 사용)
+gemini_model = genai.GenerativeModel('gemini-1.5-flash')
+
 openai_client = openai.OpenAI(api_key=OPENAI_KEY)
 
-# --- 화면을 띄워주는 부분 (이게 없어서 404가 떴습니다) ---
-@app.get("/")
-async def read_index():
-    # 루트 폴더에 있는 index.html을 반환합니다.
-    return FileResponse('index.html')
-
-# --- 1단계: 이름 생성 API ---
+# 1단계: 이름 생성 API
 @app.get("/api/get-name")
 async def get_name(english_name: str, vibe: str, gender: str, lang: str, strategy: str):
     try:
@@ -43,11 +40,12 @@ async def get_name(english_name: str, vibe: str, gender: str, lang: str, strateg
             f"Line 3: A brief, warm explanation about the name."
         )
         
-        response = gemini_client.models.generate_content(
-            model="gemini-1.5-flash", 
-            contents=text_prompt
-        )
+        # 호출 방식 변경
+        response = gemini_model.generate_content(text_prompt)
         
+        if not response.text:
+            raise ValueError("Gemini response is empty")
+
         lines = [line.strip() for line in response.text.strip().split('\n') if line.strip()]
         
         return {
@@ -56,10 +54,10 @@ async def get_name(english_name: str, vibe: str, gender: str, lang: str, strateg
             "explanation": lines[2] if len(lines) > 2 else response.text
         }
     except Exception as e:
-        print(f"Gemini Error: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+        print(f"Gemini Error Trace: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Gemini Error: {str(e)}")
 
-# --- 2단계: 이미지 생성 API ---
+# 2단계: 이미지 생성 API
 @app.get("/api/get-image")
 async def get_image(k_name: str, gender: str, vibe: str):
     try:
@@ -68,14 +66,7 @@ async def get_image(k_name: str, gender: str, vibe: str):
             f"inspired by the Korean name '{k_name}'. "
             f"Overall vibe is {vibe}. Clean background, soft lighting, 4k resolution."
         )
-        
-        img_response = openai_client.images.generate(
-            model="dall-e-3", 
-            prompt=dalle_prompt, 
-            n=1
-        )
-        
+        img_response = openai_client.images.generate(model="dall-e-3", prompt=dalle_prompt, n=1)
         return {"image_url": img_response.data[0].url}
     except Exception as e:
-        print(f"DALL-E Error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
