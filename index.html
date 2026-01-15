@@ -208,6 +208,7 @@
     const name = document.getElementById('engName').value;
     if(!name) return alert("Please enter name!");
 
+    // 로딩 시작
     document.getElementById('loading').classList.remove('hidden');
     document.getElementById('resultSection').classList.add('hidden');
     startTigerMotion();
@@ -215,25 +216,40 @@
     try {
         const params = `english_name=${name}&vibe=${document.getElementById('vibe').value}&gender=${document.getElementById('gender').value}&lang=${document.getElementById('lang').value}&strategy=${document.getElementById('strategy').value}`;
 
-        // 통합 API 호출
+        // 통합 API 호출 (이름 + 이미지를 한 번에 가져옴)
         const res = await fetch(`/api/generate-k-identity?${params}`);
         const data = await res.json();
 
-        // Python에서 준 변수명(k_name, meaning, explain)과 100% 일치!
+        // 데이터 화면에 미리 넣어두기 (아직 숨김 상태)
         document.getElementById('kNameResult').innerText = data.k_name;
         document.getElementById('hanjaMeaning').innerText = data.meaning;
         document.getElementById('explainResult').innerText = data.explain;
-        document.getElementById('aiImage').src = data.image_url;
-
-        // 이미지가 다 로딩되면 화면을 한 번에 보여줌 (선호님 요청 사항)
-        document.getElementById('aiImage').onload = () => {
+        
+        // 이미지가 오면 넣고, 아니면 기본 이미지 설정
+        const imgElement = document.getElementById('aiImage');
+        if (data.image_url) {
+            imgElement.src = data.image_url;
+            // 이미지가 다 로딩되면 화면에 짠! 하고 보여줌
+            imgElement.onload = () => {
+                clearInterval(progressIdx);
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('resultSection').classList.remove('hidden');
+                recharge(-1);
+            };
+        } else {
+            // 이미지 생성 실패 시 (예비용)
             clearInterval(progressIdx);
+            alert("Image generation failed, but name is ready!");
             document.getElementById('loading').classList.add('hidden');
             document.getElementById('resultSection').classList.remove('hidden');
             recharge(-1);
-        };
+        }
+
     } catch(e) {
-        clearInterval(progressIdx); alert("Server Busy! Try again."); document.getElementById('loading').classList.add('hidden');
+        console.error(e); // 에러 로그 출력
+        clearInterval(progressIdx);
+        alert("Server Busy! Try once more."); // 5초 만에 끊기면 이 창이 뜹니다.
+        document.getElementById('loading').classList.add('hidden');
     }
 }
     </script>
