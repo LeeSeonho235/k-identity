@@ -79,7 +79,7 @@
         <div id="resultSection" class="hidden space-y-6 pt-4 border-t-2 border-slate-50 scale-in">
             <div id="captureArea" class="bg-blue-50 p-8 rounded-[2.5rem] text-center space-y-6 shadow-inner">
                 <div id="imageContainer" class="relative w-40 h-40 mx-auto">
-                    <img id="aiImage" class="w-40 h-40 rounded-full shadow-2xl border-4 border-white object-cover hidden" src="">
+                    <img id="aiImage" crossorigin="anonymous" class="w-40 h-40 rounded-full shadow-2xl border-4 border-white object-cover hidden" src="">
                     <div id="imagePlaceholder" class="w-40 h-40 rounded-full bg-slate-200 flex items-center justify-center text-4xl border-4 border-white shadow-inner">👤</div>
                 </div>
 
@@ -150,34 +150,22 @@
 
 async function shareResultOnInsta() {
     const area = document.getElementById('captureArea');
-    try {
-        // html2canvas 옵션에 useCORS 추가
-        const canvas = await html2canvas(area, { 
-            backgroundColor: null, 
-            borderRadius: 40, 
-            scale: 2,
-            useCORS: true, // 외부 이미지 캡처 허용
-            logging: true
-        });
-
-        const dataUrl = canvas.toDataURL("image/png");
-        const a = document.createElement('a');
-        a.href = dataUrl;
-        a.download = 'My_K-Identity.png';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-
-        // 팝업 차단을 피하기 위해 알림창 없이 바로 이동하거나, 
-        // 사용자가 명확히 인지할 수 있는 버튼으로 유도해야 합니다.
-        alert("Card saved! Please upload it to your Instagram story. Opening Instagram...");
-        window.location.href = 'https://instagram.com'; // 현재 창에서 이동
-    } catch (e) {
-        console.error("Capture Error:", e);
-        alert("Failed to save image. Please take a screenshot instead!");
-    }
+    // useCORS 옵션을 넣어야 AI 사진까지 같이 저장됩니다.
+    const canvas = await html2canvas(area, { 
+        backgroundColor: null, 
+        borderRadius: 40, 
+        scale: 2,
+        useCORS: true  
+    });
+    const dataUrl = canvas.toDataURL("image/png");
+    const a = document.createElement('a');
+    a.href = dataUrl;
+    a.download = 'My_K-Identity.png';
+    a.click();
+    
+    // 인스타그램 이동 (팝업 차단 방지 위해 바로 실행)
+    setTimeout(() => { window.location.href = 'https://instagram.com'; }, 1000);
 }
-
             // 이미지 다운로드 시도 (기본 저장)
             const link = document.createElement('a');
             link.href = dataUrl;
@@ -207,17 +195,25 @@ async function shareResultOnInsta() {
             }
         
 
-        function shareOnInsta() {
-    // 1. 먼저 인스타를 새 탭으로 엽니다.
-    window.open('https://instagram.com', '_blank');
-    
-    // 2. 약간의 딜레이 후 크레딧 지급 여부를 묻습니다.
+        // 결제 버튼용: 클릭 시 바로 충전되지 않게 수정
+function buyCredits(amount) {
+    // 0.5초 뒤에 물어봄 (사용자가 새 탭으로 이동한 직후)
     setTimeout(() => {
-        if(confirm("Did you share it on your Story? 🎁\nPress OK to get +3 Credits!")) {
-            recharge(3);
+        if(confirm("Did you complete the purchase on Buy Me a Coffee? ☕️")) {
+            recharge(amount);
             closeModal();
-            alert("3 Credits added! 🐯");
         }
+    }, 500);
+}
+
+// 인스타 공유용: 1초 뒤에 확인창 띄움
+function shareOnInsta() {
+    window.open('https://instagram.com', '_blank');
+    setTimeout(() => { 
+        if(confirm("Shared on your Story? +3 Credits will be added!")) { 
+            recharge(3); 
+            closeModal(); 
+        } 
     }, 1000);
 }
 
