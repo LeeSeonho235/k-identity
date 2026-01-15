@@ -79,11 +79,11 @@
         <div id="resultSection" class="hidden space-y-6 pt-4 border-t-2 border-slate-50 scale-in">
             <div id="captureArea" class="bg-blue-50 p-8 rounded-[2.5rem] text-center space-y-6 shadow-inner">
                 <div id="imageContainer" class="relative w-40 h-40 mx-auto">
-                    <img id="aiImage" class="w-40 h-40 rounded-full shadow-2xl border-4 border-white object-cover hidden" src="">
+                    <img id="aiImage" crossorigin="anonymous" class="w-40 h-40 rounded-full shadow-2xl border-4 border-white object-cover hidden" src="">
                     <div id="imagePlaceholder" class="w-40 h-40 rounded-full bg-slate-200 flex items-center justify-center text-4xl border-4 border-white shadow-inner">👤</div>
                 </div>
 
-                <h2 id="kNameResult" class="text-5xl font-black text-slate-800 tracking-tight"></h2>
+                <h2 id="kNameResult" class="text-4xl font-black text-slate-800 tracking-tight leading-tight break-keep py-2"></h2>
 
                 <div class="space-y-3 bg-white/60 p-6 rounded-3xl shadow-sm">
                     <p id="hanjaMeaning" class="text-blue-600 font-black text-xs uppercase tracking-widest"></p>
@@ -132,21 +132,40 @@
             updateCreditUI();
         }
 
-        function buyCredits(amount) {
-            if(confirm(`Purchase ${amount} credits?`)) {
-                recharge(amount);
-                closeModal();
-                alert("Success! Credits added.");
-            }
-        }
+        
+        function checkPayment(amount) {
+            // 1. 바로 크레딧을 주지 않고, 나중에 돌아왔을 때 확인창을 띄우게 예약합니다.
+            setTimeout(() => {
+                if(confirm("Thank you for your support! ☕️\nDid you finish the donation?")) {
+                    recharge(amount);
+                    closeModal();
+                    updateCreditUI();
+                }
+            }, 2000); // 2초 뒤에 물어봄 (사용자가 페이지로 이동한 뒤)
+}
 
         // --- 2. 공유 및 캡처 로직 ---
-        async function shareResultOnInsta() {
-            const area = document.getElementById('captureArea');
-            // html2canvas로 이미지 생성
-            const canvas = await html2canvas(area, { scale: 2, backgroundColor: null });
-            const dataUrl = canvas.toDataURL("image/png");
+        // 1. html 내 <img> 태그에 속성 추가 (필수!)
+// <img id="aiImage" crossorigin="anonymous" ... >
 
+async function shareResultOnInsta() {
+    const area = document.getElementById('captureArea');
+    // useCORS 옵션을 넣어야 AI 사진까지 같이 저장됩니다.
+    const canvas = await html2canvas(area, { 
+        backgroundColor: null, 
+        borderRadius: 40, 
+        scale: 2,
+        useCORS: true  
+    });
+    const dataUrl = canvas.toDataURL("image/png");
+    const a = document.createElement('a');
+    a.href = dataUrl;
+    a.download = 'My_K-Identity.png';
+    a.click();
+    
+    // 인스타그램 이동 (팝업 차단 방지 위해 바로 실행)
+    setTimeout(() => { window.location.href = 'https://instagram.com'; }, 1000);
+}
             // 이미지 다운로드 시도 (기본 저장)
             const link = document.createElement('a');
             link.href = dataUrl;
@@ -174,12 +193,29 @@
                 console.error("Share failed", error);
                 alert("Saved to gallery! Please upload to Instagram manually.");
             }
-        }
+        
 
-        function shareOnInsta() {
-            window.open('https://instagram.com', '_blank');
-            setTimeout(() => { if(confirm("Did you share on your story?")) { recharge(3); closeModal(); } }, 3000);
+        // 결제 버튼용: 클릭 시 바로 충전되지 않게 수정
+function buyCredits(amount) {
+    // 0.5초 뒤에 물어봄 (사용자가 새 탭으로 이동한 직후)
+    setTimeout(() => {
+        if(confirm("Did you complete the purchase on Buy Me a Coffee? ☕️")) {
+            recharge(amount);
+            closeModal();
         }
+    }, 500);
+}
+
+// 인스타 공유용: 1초 뒤에 확인창 띄움
+function shareOnInsta() {
+    window.open('https://instagram.com', '_blank');
+    setTimeout(() => { 
+        if(confirm("Shared on your Story? +3 Credits will be added!")) { 
+            recharge(3); 
+            closeModal(); 
+        } 
+    }, 1000);
+}
 
         // --- 3. UI 및 애니메이션 ---
         function showRechargeModal() { document.getElementById('rechargeModal').classList.remove('hidden'); }
@@ -212,56 +248,54 @@
 
         // --- 4. 메인 생성 함수 ---
         async function generate() {
-            if (getCredits() <= 0) return showRechargeModal();
-            const name = document.getElementById('engName').value;
-            if(!name) return alert("Please enter your name!");
+    if (getCredits() <= 0) return showRechargeModal();
+    const name = document.getElementById('engName').value;
+    if(!name) return alert("Please enter name!");
 
-            document.getElementById('loading').classList.remove('hidden');
-            document.getElementById('resultSection').classList.add('hidden');
-            startTigerMotion();
+    document.getElementById('loading').classList.remove('hidden');
+    document.getElementById('resultSection').classList.add('hidden');
+    startTigerMotion();
 
-            try {
-                const lang = document.getElementById('lang').value;
-                const params = `english_name=${encodeURIComponent(name)}&vibe=${document.getElementById('vibe').value}&gender=${document.getElementById('gender').value}&lang=${lang}&strategy=${document.getElementById('strategy').value}`;
+    try {
+        const params = `english_name=${name}&vibe=${document.getElementById('vibe').value}&gender=${document.getElementById('gender').value}&lang=${document.getElementById('lang').value}&strategy=${document.getElementById('strategy').value}`;
+        const res = await fetch(`/api/generate-k-identity?${params}`);
+        const data = await res.json();
 
-                // 통합 API 호출 (main.py의 새 주소)
-                const res = await fetch(`/api/generate-k-identity?${params}`);
-                
-                if (!res.ok) throw new Error("Server Error");
-                
-                const data = await res.json();
+        // 텍스트 데이터 먼저 삽입
+        document.getElementById('kNameResult').innerText = data.k_name;
+        document.getElementById('hanjaMeaning').innerText = data.meaning;
+        document.getElementById('explainResult').innerText = data.explain;
 
-                // UI 업데이트
-                document.getElementById('kNameResult').innerText = data.k_name;
-                document.getElementById('hanjaMeaning').innerText = data.meaning;
-                document.getElementById('explainResult').innerText = data.explain;
-                
-                const imgElement = document.getElementById('aiImage');
-                if (data.image_url) {
-                    imgElement.src = data.image_url;
-                    imgElement.onload = () => {
-                        imgElement.classList.remove('hidden');
-                        document.getElementById('imagePlaceholder').classList.add('hidden');
-                        finishLoading();
-                    };
-                } else {
-                    finishLoading();
-                }
-
-            } catch(e) {
-                console.error(e);
-                clearInterval(progressIdx);
-                document.getElementById('loading').classList.add('hidden');
-                alert("Something went wrong. Please check your API key or connection.");
-            }
-        }
-
-        function finishLoading() {
+        const img = document.getElementById('aiImage');
+        
+        // 결과창을 보여주는 공통 함수 (예외 처리용)
+        const showFinalResult = () => {
             clearInterval(progressIdx);
             document.getElementById('loading').classList.add('hidden');
             document.getElementById('resultSection').classList.remove('hidden');
-            recharge(-1); // 크레딧 차감
+            recharge(-1);
+        };
+
+        // 사진 주소가 있는 경우에만 로딩 대기
+        if (data.image_url && data.image_url !== "") {
+            img.onload = showFinalResult;
+            img.onerror = showFinalResult; // 사진 로딩 실패 시에도 텍스트는 보여줌!
+            img.src = data.image_url;
+            img.classList.remove('hidden');
+            document.getElementById('imagePlaceholder').classList.add('hidden');
+        } else {
+            // 사진이 없으면 즉시 결과 표시
+            img.classList.add('hidden');
+            document.getElementById('imagePlaceholder').classList.remove('hidden');
+            showFinalResult();
         }
+
+    } catch(e) {
+        clearInterval(progressIdx); 
+        alert("Server Busy! Please try once more."); 
+        document.getElementById('loading').classList.add('hidden');
+    }
+}
     </script>
 </body>
 </html>
