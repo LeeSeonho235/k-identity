@@ -141,11 +141,38 @@
         }
 
         // --- 2. 공유 및 캡처 로직 ---
-        async function shareResultOnInsta() {
-            const area = document.getElementById('captureArea');
-            // html2canvas로 이미지 생성
-            const canvas = await html2canvas(area, { scale: 2, backgroundColor: null });
-            const dataUrl = canvas.toDataURL("image/png");
+        // 1. html 내 <img> 태그에 속성 추가 (필수!)
+// <img id="aiImage" crossorigin="anonymous" ... >
+
+async function shareResultOnInsta() {
+    const area = document.getElementById('captureArea');
+    try {
+        // html2canvas 옵션에 useCORS 추가
+        const canvas = await html2canvas(area, { 
+            backgroundColor: null, 
+            borderRadius: 40, 
+            scale: 2,
+            useCORS: true, // 외부 이미지 캡처 허용
+            logging: true
+        });
+
+        const dataUrl = canvas.toDataURL("image/png");
+        const a = document.createElement('a');
+        a.href = dataUrl;
+        a.download = 'My_K-Identity.png';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        // 팝업 차단을 피하기 위해 알림창 없이 바로 이동하거나, 
+        // 사용자가 명확히 인지할 수 있는 버튼으로 유도해야 합니다.
+        alert("Card saved! Please upload it to your Instagram story. Opening Instagram...");
+        window.location.href = 'https://instagram.com'; // 현재 창에서 이동
+    } catch (e) {
+        console.error("Capture Error:", e);
+        alert("Failed to save image. Please take a screenshot instead!");
+    }
+}
 
             // 이미지 다운로드 시도 (기본 저장)
             const link = document.createElement('a');
@@ -174,12 +201,21 @@
                 console.error("Share failed", error);
                 alert("Saved to gallery! Please upload to Instagram manually.");
             }
-        }
+        
 
         function shareOnInsta() {
-            window.open('https://instagram.com', '_blank');
-            setTimeout(() => { if(confirm("Did you share on your story?")) { recharge(3); closeModal(); } }, 3000);
+    // 1. 먼저 인스타를 새 탭으로 엽니다.
+    window.open('https://instagram.com', '_blank');
+    
+    // 2. 약간의 딜레이 후 크레딧 지급 여부를 묻습니다.
+    setTimeout(() => {
+        if(confirm("Did you share it on your Story? 🎁\nPress OK to get +3 Credits!")) {
+            recharge(3);
+            closeModal();
+            alert("3 Credits added! 🐯");
         }
+    }, 1000);
+}
 
         // --- 3. UI 및 애니메이션 ---
         function showRechargeModal() { document.getElementById('rechargeModal').classList.remove('hidden'); }
