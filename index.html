@@ -204,86 +204,38 @@
 
         // --- 4. Main Generation ---
         async function generate() {
-            if (getCredits() <= 0) return showRechargeModal();
-            const nameInput = document.getElementById('engName').value;
-            if(!nameInput) return alert("Please enter name!");
+    if (getCredits() <= 0) return showRechargeModal();
+    const name = document.getElementById('engName').value;
+    if(!name) return alert("Please enter name!");
 
-            document.getElementById('loading').classList.remove('hidden');
-            document.getElementById('resultSection').classList.add('hidden');
-            startTigerMotion();
+    document.getElementById('loading').classList.remove('hidden');
+    document.getElementById('resultSection').classList.add('hidden');
+    startTigerMotion();
 
-            try {
-                const params = new URLSearchParams({
-                    english_name: nameInput,
-                    vibe: document.getElementById('vibe').value,
-                    gender: document.getElementById('gender').value,
-                    lang: document.getElementById('lang').value,
-                    strategy: document.getElementById('strategy').value
-                });
-                
-                // 1단계: 이름 가져오기
-                const res = await fetch(`/api/get-name?${params}`);
-                const data = await res.json();
+    try {
+        const params = `english_name=${name}&vibe=${document.getElementById('vibe').value}&gender=${document.getElementById('gender').value}&lang=${document.getElementById('lang').value}&strategy=${document.getElementById('strategy').value}`;
 
-                // 이미지 생성을 위해 현재 정보 저장
-                currentResult = { 
-                    name: data.korean_name, 
-                    gender: document.getElementById('gender').value,
-                    vibe: document.getElementById('vibe').value 
-                };
+        // 통합된 API 하나만 호출 (이름/이미지 동시 생성)
+        const res = await fetch(`/api/generate-k-identity?${params}`);
+        const data = await res.json();
 
-                // UI 업데이트 (이름 먼저 표시)
-                document.getElementById('kNameResult').innerText = data.korean_name;
-                document.getElementById('hanjaMeaning').innerText = data.hanja_meaning;
-                document.getElementById('explainResult').innerText = data.explanation;
-                
-                // 이미지 섹션 초기화 (플레이스홀더 보여주기)
-                document.getElementById('aiImage').classList.add('hidden');
-                document.getElementById('imagePlaceholder').classList.remove('hidden');
-                document.getElementById('genImgBtn').classList.remove('hidden');
-                document.getElementById('genImgBtn').innerText = "✨ Generate AI Profile Image";
-                document.getElementById('genImgBtn').disabled = false;
+        // 화면에 데이터 미리 넣어두기 (아직 숨김 상태)
+        document.getElementById('kNameResult').innerText = data.k_name;
+        document.getElementById('hanjaMeaning').innerText = data.meaning;
+        document.getElementById('explainResult').innerText = data.explain;
+        document.getElementById('aiImage').src = data.image_url;
 
-                clearInterval(progressIdx);
-                document.getElementById('loading').classList.add('hidden');
-                document.getElementById('resultSection').classList.remove('hidden');
-
-                // 크레딧 차감
-                localStorage.setItem('k_credits', (getCredits() - 1).toString());
-                updateCreditUI();
-            } catch(e) {
-                clearInterval(progressIdx); alert("Server Error!"); document.getElementById('loading').classList.add('hidden');
-            }
-        }
-
-        // 2단계: 이미지 별도 생성 함수
-        async function generateImage() {
-            const btn = document.getElementById('genImgBtn');
-            btn.innerText = "Generating... (10s) 🎨";
-            btn.disabled = true;
-
-            try {
-                const params = new URLSearchParams({
-                    k_name: currentResult.name,
-                    gender: currentResult.gender,
-                    vibe: currentResult.vibe
-                });
-
-                const res = await fetch(`/api/get-image?${params}`);
-                const data = await res.json();
-
-                if(data.image_url) {
-                    document.getElementById('aiImage').src = data.image_url;
-                    document.getElementById('aiImage').classList.remove('hidden');
-                    document.getElementById('imagePlaceholder').classList.add('hidden');
-                    btn.classList.add('hidden'); // 생성 성공 시 버튼 숨김
-                }
-            } catch(e) {
-                alert("Image generation failed. Please try again.");
-                btn.disabled = false;
-                btn.innerText = "✨ Generate AI Profile Image";
-            }
-        }
+        // 이미지가 실제로 다 그려져서 화면에 뜰 준비가 되면 그때 짠! 하고 보여줌
+        document.getElementById('aiImage').onload = () => {
+            clearInterval(progressIdx);
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('resultSection').classList.remove('hidden'); // 이름+이미지 동시 노출!
+            recharge(-1);
+        };
+    } catch(e) {
+        clearInterval(progressIdx); alert("Server Busy! Try once more."); document.getElementById('loading').classList.add('hidden');
+    }
+}
     </script>
 </body>
 </html>
