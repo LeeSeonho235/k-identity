@@ -20,20 +20,34 @@ async def read_index():
     return FileResponse('index.html')
 
 # 프론트엔드 fetch 주소와 일치하도록 /api/ 를 꼭 붙여야 합니다.
+# api/main.py 수정 부분
+
 @app.get("/api/generate-k-identity")
 async def generate_k_identity(english_name: str, vibe: str, gender: str, lang: str, strategy: str):
     
-    # --- 1. Gemini 프롬프트: "지혜" 스타일로 상세 요청 ---
+    # 1. 언어 코드 매핑 (LLM의 이해도를 높이기 위해) 
+    lang_map = {
+        "en": "English",
+        "es": "Spanish",
+        "zh": "Chinese",
+        "ja": "Japanese"
+    }
+    target_lang = lang_map.get(lang, "English")
+
+    # 2. 프롬프트 강화: "한국어 이름"만 한국어로, 나머지는 target_lang으로! 
     text_prompt = f"""
-    Suggest 1 best Korean name for a {gender} named '{english_name}' with a '{vibe}' vibe based on {strategy}.
+    Role: Professional Korean Name Consultant.
+    Task: Suggest 1 best Korean name for a {gender} named '{english_name}' with a '{vibe}' vibe based on {strategy}.
     
-    IMPORTANT: Answer strictly in {lang} language. 
-    DO NOT include labels like 'Line 1:', 'Name:', 'Meaning:', or '[...]'. Just the raw text.
+    STRICT LANGUAGE RULE: 
+    - The suggested name must be in Hangeul and Hanja.
+    - EVERY OTHER WORD (meanings, explanations, breakdowns) MUST BE WRITTEN IN {target_lang}.
+    - Do not use any Korean in the explanation or meaning sections.
     
     Format:
     Line 1: [Hangeul Name] ([Hanja Name])
-    Line 2: [Hanja Breakdown with meanings, e.g., 智 (JI): WISDOM; 慧 (HYE): BRIGHT]
-    Line 3: [A poetic 2-3 sentence explanation about why this name fits the person's vibe]
+    Line 2: [Hanja meanings explained in {target_lang}]
+    Line 3: [A poetic 2-3 sentence explanation in {target_lang} about why this name fits]
     """
     
     response = gemini_client.models.generate_content(model="gemini-2.0-flash", contents=text_prompt)
