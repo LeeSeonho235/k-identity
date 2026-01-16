@@ -85,9 +85,6 @@
 
                 <h2 id="kNameResult" class="text-3xl font-black text-slate-800 tracking-tight whitespace-nowrap overflow-hidden text-ellipsis px-4 py-2"></h2>
                 
-                <button id="genImgBtn" onclick="generateImage()" class="px-4 py-2 bg-blue-100 text-blue-600 rounded-full text-[11px] font-black uppercase tracking-wider hover:bg-blue-200 transition-all">
-                    ✨ Generate AI Profile Image
-                </button>
 
                 <div class="space-y-3 bg-white/60 p-6 rounded-3xl shadow-sm">
                     <p id="hanjaMeaning" class="text-blue-600 font-black text-xs uppercase tracking-widest"></p>
@@ -180,38 +177,42 @@
         window.open('https://instagram.com', '_blank');
     }, 2000);
 }
+// --- [추가] 상태 관리 변수 ---
+        let pendingCreditAmount = 0; // 지급 대기 중인 크레딧 양
+        let isWaitingForAction = false; // 현재 외부 사이트 방문 중인지 여부
 
         function buyCredits(amount) {
-            // 사용자가 결제창으로 이동한 후, 다시 이 탭으로 돌아왔을 때 확인창을 띄우는 것이 좋습니다.
-            // 현재는 단순히 3초 뒤에 뜨게 되어 있어 탭 전환 시 무시될 확률이 높습니다.
-            
-            // 즉시 확인창을 띄우지 않고, "결제 완료 후 확인 버튼을 눌러주세요"라는 메시지로 유도하거나
-            // 아래와 같이 '확인 후 지급' 로직을 더 명확히 합니다.
-            const check = () => {
-                if(confirm(`Did you complete the purchase? \nClick 'OK' to receive your ${amount} credits!`)) {
-                    recharge(amount);
-                    closeModal();
-                    alert(`Success! ${amount} credits added. ☕️`);
-                }
-            };
-            
-            // 클릭 후 1초 뒤에 확인창을 띄워 브라우저가 '사용자 의도'로 인식하게 합니다.
-            setTimeout(check, 1500); 
-        }
+    // Buy Me a Coffee 링크는 HTML의 href로 열리므로, 상태만 업데이트합니다.
+    pendingCreditAmount = amount;
+    isWaitingForAction = true;
+}
 
         function shareOnInsta() {
-            window.open('https://instagram.com', '_blank');
+    window.open('https://instagram.com', '_blank');
+    pendingCreditAmount = 3; // 인스타 공유는 3크레딧
+    isWaitingForAction = true; // 대기 상태 시작
+}
+        // --- 3. [핵심] 탭 복귀 감지 로직 ---
+// 사용자가 다른 탭에서 작업을 마치고 우리 사이트로 돌아오면 실행됩니다.
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && isWaitingForAction) {
+        
+        // 사용자가 화면을 완전히 인식할 수 있도록 0.5초의 여유를 주고 띄웁니다.
+        setTimeout(() => {
+            let message = pendingCreditAmount >= 20 ? "purchase" : "sharing";
             
-            // 인스타 창이 열린 후, 사용자가 다시 돌아와서 수동으로 확인할 수 있도록 시간을 충분히 줍니다.
-            setTimeout(() => { 
-                if(confirm("Did you share the card on your Story? 📸\nClick 'OK' for +3 Credits!")) { 
-                    recharge(3); 
-                    closeModal(); 
-                    alert("3 Credits added! Tiger is happy! 🐯");
-                } 
-            }, 2000);
-        }
-
+            if (confirm(`Welcome back! 🐯\nDid you complete the ${message}?\nClick 'OK' to receive your ${pendingCreditAmount} credits!`)) {
+                recharge(pendingCreditAmount);
+                alert(`Success! ${pendingCreditAmount} credits added.`);
+                closeModal();
+            }
+            
+            // 확인창을 한 번 띄웠으므로 상태를 초기화합니다.
+            isWaitingForAction = false;
+            pendingCreditAmount = 0;
+        }, 500);
+    }
+});
         function startAdTimer() {
             const btn = document.getElementById('adBtn'); let timeLeft = 30; btn.disabled = true;
             const interval = setInterval(() => {
