@@ -39,15 +39,14 @@ async def generate_k_identity(english_name: str, vibe: str, gender: str, lang: s
     Role: Professional Korean Name Consultant.
     Task: Suggest 1 best Korean name for a {gender} named '{english_name}' with a '{vibe}' vibe based on {strategy}.
     
-    STRICT LANGUAGE RULE: 
-    - The suggested name must be in Hangeul and Hanja.
-    - EVERY OTHER WORD (meanings, explanations, breakdowns) MUST BE WRITTEN IN {target_lang}.
-    - Do not use any Korean in the explanation or meaning sections.
+    STRICT FORMAT RULE:
+    Line 1: [Hangeul Name]([Hanja Name]) <- Keep this on ONE SINGLE LINE. No spaces between Hangeul and Hanja.
+    Line 2: [Hanja meanings in {target_lang}]
+    Line 3: [A poetic 2-3 sentence explanation in {target_lang}]
     
-    Format:
-    Line 1: [Hangeul Name] ([Hanja Name])
-    Line 2: [Hanja meanings explained in {target_lang}]
-    Line 3: [A poetic 2-3 sentence explanation in {target_lang} about why this name fits]
+    STRICT LANGUAGE RULE:
+    - Only Line 1 should contain Korean. 
+    - All other lines must be in {target_lang}.
     """
     
     response = gemini_client.models.generate_content(model="gemini-2.0-flash", contents=text_prompt)
