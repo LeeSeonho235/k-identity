@@ -196,21 +196,7 @@
 // 사용자가 다른 탭에서 작업을 마치고 우리 사이트로 돌아오면 실행됩니다.
 document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible' && isWaitingForAction) {
-        
-        // 사용자가 화면을 완전히 인식할 수 있도록 0.5초의 여유를 주고 띄웁니다.
-        setTimeout(() => {
-            let message = pendingCreditAmount >= 20 ? "purchase" : "sharing";
-            
-            if (confirm(`Welcome back! 🐯\nDid you complete the ${message}?\nClick 'OK' to receive your ${pendingCreditAmount} credits!`)) {
-                recharge(pendingCreditAmount);
-                alert(`Success! ${pendingCreditAmount} credits added.`);
-                closeModal();
-            }
-            
-            // 확인창을 한 번 띄웠으므로 상태를 초기화합니다.
-            isWaitingForAction = false;
-            pendingCreditAmount = 0;
-        }, 500);
+        handleReturn();  // 이 한 줄만 넣으세요!
     }
 });
         function startAdTimer() {
@@ -231,6 +217,28 @@ document.addEventListener('visibilitychange', () => {
     updateCreditUI();
     console.log(`Credit Updated: ${current} -> ${next}`);
 }
+
+// handleReturn 함수 추가 (공통)
+        function handleReturn() {
+            setTimeout(() => {
+                let message = pendingCreditAmount >= 20 ? "purchase" : "sharing";
+                if (confirm(`Welcome back! 🐯\nDid you complete the ${message}?\nClick 'OK' to receive your ${pendingCreditAmount} credits!`)) {
+                    recharge(pendingCreditAmount);
+                    alert(`Success! ${pendingCreditAmount} credits added.`);
+                    closeModal();
+                }
+                isWaitingForAction = false;
+                pendingCreditAmount = 0;
+            }, 500);
+        }
+
+        // focus 이벤트 추가 (탭 돌아올 때)
+        window.addEventListener('focus', () => {
+            if (isWaitingForAction) {
+                handleReturn();
+            }
+        });
+
 
         // --- 4. Main Generation ---
         async function generate() {
