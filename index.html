@@ -182,18 +182,34 @@
 }
 
         function buyCredits(amount) {
-            setTimeout(() => {
+            // 사용자가 결제창으로 이동한 후, 다시 이 탭으로 돌아왔을 때 확인창을 띄우는 것이 좋습니다.
+            // 현재는 단순히 3초 뒤에 뜨게 되어 있어 탭 전환 시 무시될 확률이 높습니다.
+            
+            // 즉시 확인창을 띄우지 않고, "결제 완료 후 확인 버튼을 눌러주세요"라는 메시지로 유도하거나
+            // 아래와 같이 '확인 후 지급' 로직을 더 명확히 합니다.
+            const check = () => {
                 if(confirm(`Did you complete the purchase? \nClick 'OK' to receive your ${amount} credits!`)) {
                     recharge(amount);
                     closeModal();
-                    alert(`Success! ${amount} credits added.`);
+                    alert(`Success! ${amount} credits added. ☕️`);
                 }
-            }, 3000);
+            };
+            
+            // 클릭 후 1초 뒤에 확인창을 띄워 브라우저가 '사용자 의도'로 인식하게 합니다.
+            setTimeout(check, 1500); 
         }
 
         function shareOnInsta() {
             window.open('https://instagram.com', '_blank');
-            setTimeout(() => { if(confirm("Shared on Story?")) { recharge(3); closeModal(); } }, 2000);
+            
+            // 인스타 창이 열린 후, 사용자가 다시 돌아와서 수동으로 확인할 수 있도록 시간을 충분히 줍니다.
+            setTimeout(() => { 
+                if(confirm("Did you share the card on your Story? 📸\nClick 'OK' for +3 Credits!")) { 
+                    recharge(3); 
+                    closeModal(); 
+                    alert("3 Credits added! Tiger is happy! 🐯");
+                } 
+            }, 2000);
         }
 
         function startAdTimer() {
@@ -208,9 +224,12 @@
         }
 
         function recharge(amount) {
-            localStorage.setItem('k_credits', (getCredits() + amount).toString());
-            updateCreditUI();
-        }
+    const current = getCredits();
+    const next = current + amount;
+    localStorage.setItem('k_credits', next.toString());
+    updateCreditUI();
+    console.log(`Credit Updated: ${current} -> ${next}`);
+}
 
         // --- 4. Main Generation ---
         async function generate() {
