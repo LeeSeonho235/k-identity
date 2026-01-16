@@ -160,13 +160,11 @@
         // --- 3. Feature Functions (Capture & Share) ---
         async function shareResultOnInsta() {
     const area = document.getElementById('captureArea');
-    
-    // { useCORS: true } 옵션을 추가하여 외부 이미지를 캡처할 수 있게 합니다.
     const canvas = await html2canvas(area, { 
         backgroundColor: null, 
         borderRadius: 40, 
         scale: 2,
-        useCORS: true  // [핵심] 외부 이미지 로딩 허용
+        useCORS: true  // [중요] 이게 있어야 AI 사진이 카드에 박혀서 저장됩니다!
     });
     
     const dataUrl = canvas.toDataURL("image/png");
