@@ -220,6 +220,12 @@ document.addEventListener('visibilitychange', () => {
 
 // handleReturn 함수 추가 (공통)
         function handleReturn() {
+            // 이미 처리 중이라면 중복 실행 방지
+            if (!isWaitingForAction) return; 
+            
+            // 즉시 상태를 false로 바꿔서 중복 호출을 막습니다.
+            isWaitingForAction = false; 
+
             setTimeout(() => {
                 let message = pendingCreditAmount >= 20 ? "purchase" : "sharing";
                 if (confirm(`Welcome back! 🐯\nDid you complete the ${message}?\nClick 'OK' to receive your ${pendingCreditAmount} credits!`)) {
@@ -227,7 +233,6 @@ document.addEventListener('visibilitychange', () => {
                     alert(`Success! ${pendingCreditAmount} credits added.`);
                     closeModal();
                 }
-                isWaitingForAction = false;
                 pendingCreditAmount = 0;
             }, 500);
         }
