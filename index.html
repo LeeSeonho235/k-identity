@@ -83,7 +83,10 @@
                     <div id="imagePlaceholder" class="w-40 h-40 rounded-full bg-slate-200 flex items-center justify-center text-4xl border-4 border-white shadow-inner">👤</div>
                 </div>
 
-                <h2 id="kNameResult" class="text-3xl font-black text-slate-800 tracking-tight whitespace-nowrap overflow-hidden text-ellipsis px-4 py-2"></h2>
+                <h2 id="kNameResult"
+                class="text-3xl font-black text-slate-800 tracking-tight whitespace-nowrap overflow-x-hidden text-ellipsis px-4 pt-2 pb-3 leading-[1.15]">
+              </h2>
+              
                 
 
                 <div class="space-y-3 bg-white/60 p-6 rounded-3xl shadow-sm">
@@ -158,14 +161,31 @@
         async function shareResultOnInsta() {
   const area = document.getElementById('captureArea');
 
+  // ✅ 고해상도 캡처 (레티나/줌 대응)
+  const scale = Math.max(3, Math.ceil(window.devicePixelRatio * 2));
+
+  // 1) 먼저 투명 배경으로 캡처
   const canvas = await html2canvas(area, {
-    backgroundColor: "#eff6ff", // ⭐️ bg-blue-50와 동일
-    borderRadius: 40,
-    scale: 2,
-    useCORS: true
+    backgroundColor: null,
+    scale,
+    useCORS: true,
   });
 
-  const dataUrl = canvas.toDataURL("image/png");
+  // 2) 새 캔버스에 원하는 배경색(#eff6ff = bg-blue-50) 깔고 합성
+  const outCanvas = document.createElement('canvas');
+  outCanvas.width = canvas.width;
+  outCanvas.height = canvas.height;
+
+  const ctx = outCanvas.getContext('2d');
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+
+  ctx.fillStyle = '#eff6ff'; // ✅ 결과 카드 배경색
+  ctx.fillRect(0, 0, outCanvas.width, outCanvas.height);
+  ctx.drawImage(canvas, 0, 0);
+
+  const dataUrl = outCanvas.toDataURL('image/png');
+
   const a = document.createElement('a');
   a.href = dataUrl;
   a.download = 'My_K-Identity.png';
@@ -174,10 +194,11 @@
   document.body.removeChild(a);
 
   setTimeout(() => {
-    alert("Identity card saved! 🎁");
+    alert("Identity card saved! 🎁\nUpload it to your Instagram!");
     window.open('https://instagram.com', '_blank');
   }, 2000);
 }
+
 
 // --- [추가] 상태 관리 변수 ---
         let pendingCreditAmount = 0; // 지급 대기 중인 크레딧 양
