@@ -156,27 +156,29 @@
 
         // --- 3. Feature Functions (Capture & Share) ---
         async function shareResultOnInsta() {
-    const area = document.getElementById('captureArea');
-    const canvas = await html2canvas(area, { 
-        backgroundColor: null, 
-        borderRadius: 40, 
-        scale: 2,
-        useCORS: true  // [중요] 이게 있어야 AI 사진이 카드에 박혀서 저장됩니다!
-    });
-    
-    const dataUrl = canvas.toDataURL("image/png");
-    const a = document.createElement('a');
-    a.href = dataUrl;
-    a.download = 'My_K-Identity.png';
-    document.body.appendChild(a); 
-    a.click(); 
-    document.body.removeChild(a);
+  const area = document.getElementById('captureArea');
 
-    setTimeout(() => {
-        alert("Identity card saved with AI photo! 🎁\nUpload it to your Instagram!");
-        window.open('https://instagram.com', '_blank');
-    }, 2000);
+  const canvas = await html2canvas(area, {
+    backgroundColor: "#eff6ff", // ⭐️ bg-blue-50와 동일
+    borderRadius: 40,
+    scale: 2,
+    useCORS: true
+  });
+
+  const dataUrl = canvas.toDataURL("image/png");
+  const a = document.createElement('a');
+  a.href = dataUrl;
+  a.download = 'My_K-Identity.png';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
+  setTimeout(() => {
+    alert("Identity card saved! 🎁");
+    window.open('https://instagram.com', '_blank');
+  }, 2000);
 }
+
 // --- [추가] 상태 관리 변수 ---
         let pendingCreditAmount = 0; // 지급 대기 중인 크레딧 양
         let isWaitingForAction = false; // 현재 외부 사이트 방문 중인지 여부
