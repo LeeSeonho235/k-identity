@@ -84,8 +84,8 @@
                 </div>
 
                 <h2 id="kNameResult"
-                class="text-3xl font-black text-slate-800 tracking-tight whitespace-nowrap overflow-x-hidden text-ellipsis px-4 pt-2 pb-3 leading-[1.15]">
-              </h2>
+                    class="text-3xl font-black text-slate-800 tracking-tight whitespace-nowrap overflow-x-hidden text-ellipsis px-4 pt-2 pb-3 leading-[1.15]">
+                </h2>
               
                 
 
@@ -95,9 +95,9 @@
                 </div>
             </div>
             
-            <button onclick="shareResultOnInsta()" class="w-full py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-black rounded-2xl shadow-lg hover:brightness-110 transition-all flex items-center justify-center gap-2">
-                Download Card & Share on Instagram
-            </button>
+            <button onclick="shareStory()" class="w-full py-4 ...">
+                Download Story (1080×1920) & Share on Instagram
+              </button>              
         </div>
     </div>
 
@@ -161,43 +161,215 @@
         async function shareResultOnInsta() {
   const area = document.getElementById('captureArea');
 
-  // ✅ 고해상도 캡처 (레티나/줌 대응)
-  const scale = Math.max(3, Math.ceil(window.devicePixelRatio * 2));
+  // --- 다운로드용 "임시 스타일" 강제 (저장본 배경 단색화) ---
+  const prevAreaBg = area.style.backgroundColor;
+  area.style.backgroundColor = '#eff6ff'; // bg-blue-50와 동일 톤
 
-  // 1) 먼저 투명 배경으로 캡처
-  const canvas = await html2canvas(area, {
-    backgroundColor: null,
-    scale,
-    useCORS: true,
-  });
+  // bg-white/60 박스(반투명) → 저장할 때만 완전 흰색으로
+  const meaningBox = area.querySelector('[class*="bg-white/60"]');
+  let prevMeaningBg = null;
+  let prevMeaningOpacity = null;
+  if (meaningBox) {
+    prevMeaningBg = meaningBox.style.backgroundColor;
+    prevMeaningOpacity = meaningBox.style.opacity;
+    meaningBox.style.backgroundColor = '#ffffff';
+    meaningBox.style.opacity = '1';
+  }
 
-  // 2) 새 캔버스에 원하는 배경색(#eff6ff = bg-blue-50) 깔고 합성
-  const outCanvas = document.createElement('canvas');
-  outCanvas.width = canvas.width;
-  outCanvas.height = canvas.height;
+  try {
+    // 고해상도(확대/레티나 대응)
+    const scale = Math.max(3, Math.ceil(window.devicePixelRatio * 2));
 
-  const ctx = outCanvas.getContext('2d');
-  ctx.imageSmoothingEnabled = true;
-  ctx.imageSmoothingQuality = 'high';
+    const canvas = await html2canvas(area, {
+      backgroundColor: '#eff6ff', // 캔버스 바탕도 단색 고정
+      scale,
+      useCORS: true
+    });
 
-  ctx.fillStyle = '#eff6ff'; // ✅ 결과 카드 배경색
-  ctx.fillRect(0, 0, outCanvas.width, outCanvas.height);
-  ctx.drawImage(canvas, 0, 0);
+    // canvas -> Blob (모바일 호환성 ↑)
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+    if (!blob) throw new Error('Failed to create image blob');
 
-  const dataUrl = outCanvas.toDataURL('image/png');
+    const file = new File([blob], 'My_K-Identity.png', { type: 'image/png' });
 
-  const a = document.createElement('a');
-  a.href = dataUrl;
-  a.download = 'My_K-Identity.png';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+    // ✅ 모바일(지원 브라우저) : 공유 시트로 저장/공유가 가장 잘 됨
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        files: [file],
+        title: 'My K-Identity',
+        text: 'K-Identity card'
+      });
+      return;
+    }
 
-  setTimeout(() => {
-    alert("Identity card saved! 🎁\nUpload it to your Instagram!");
-    window.open('https://instagram.com', '_blank');
-  }, 2000);
+    // ✅ 데스크탑/일부 모바일 : 다운로드 시도
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'My_K-Identity.png';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+
+    // iOS에서 다운로드가 막히는 경우가 있어 안내
+    setTimeout(() => {
+      alert("If download didn't start on mobile, the image will open in a new tab—press and hold to Save Image.");
+    }, 300);
+
+  } catch (e) {
+    console.error(e);
+
+    // fallback: 새 탭 열기(모바일 iOS 최후의 수단)
+    try {
+      const canvas = await html2canvas(area, { backgroundColor: '#eff6ff', scale: 3, useCORS: true });
+      const dataUrl = canvas.toDataURL('image/png');
+      const win = window.open();
+      if (win) win.document.write(`<img src="${dataUrl}" style="width:100%;height:auto;"/>`);
+      alert("On mobile: press and hold the image to Save.");
+    } catch (e2) {
+      console.error(e2);
+      alert("Failed to save image. Please try again.");
+    }
+
+  } finally {
+    // --- 원복 ---
+    area.style.backgroundColor = prevAreaBg;
+    if (meaningBox) {
+      meaningBox.style.backgroundColor = prevMeaningBg;
+      meaningBox.style.opacity = prevMeaningOpacity;
+    }
+  }
 }
+
+async function shareStory() {
+  const area = document.getElementById('captureArea');
+
+  // --- 저장본 "단색"을 위해 임시로 반투명 박스만 불투명 처리 ---
+  const meaningBox = area.querySelector('[class*="bg-white/60"]');
+  let prevMeaningBg = null;
+  let prevMeaningOpacity = null;
+
+  if (meaningBox) {
+    prevMeaningBg = meaningBox.style.backgroundColor;
+    prevMeaningOpacity = meaningBox.style.opacity;
+    meaningBox.style.backgroundColor = '#ffffff';
+    meaningBox.style.opacity = '1';
+  }
+
+  try {
+    // 1) 카드 자체를 고해상도로 캡처
+    const captureScale = Math.max(3, Math.ceil(window.devicePixelRatio * 2));
+    const cardCanvas = await html2canvas(area, {
+      backgroundColor: '#eff6ff', // 카드 배경 단색 고정 (bg-blue-50)
+      scale: captureScale,
+      useCORS: true
+    });
+
+    // 2) 인스타 스토리 캔버스(1080x1920) 생성
+    const W = 1080;
+    const H = 1920;
+    const storyCanvas = document.createElement('canvas');
+    storyCanvas.width = W;
+    storyCanvas.height = H;
+
+    const ctx = storyCanvas.getContext('2d');
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+
+    // 스토리 배경 단색 (원하면 색 바꾸기)
+    ctx.fillStyle = '#eff6ff';
+    ctx.fillRect(0, 0, W, H);
+
+    // 3) 카드 크기를 스토리 안에 "깔끔하게" 맞추기 (중앙 정렬)
+    const margin = 120; // 위아래 여백
+    const maxW = W - margin * 2;
+    const maxH = H - margin * 2;
+
+    const scale = Math.min(maxW / cardCanvas.width, maxH / cardCanvas.height);
+    const drawW = Math.round(cardCanvas.width * scale);
+    const drawH = Math.round(cardCanvas.height * scale);
+
+    const dx = Math.round((W - drawW) / 2);
+    const dy = Math.round((H - drawH) / 2);
+
+    ctx.drawImage(cardCanvas, dx, dy, drawW, drawH);
+
+    // (선택) 아래 워터마크/도메인 넣고 싶으면 주석 해제
+    // ctx.font = 'bold 28px Inter, sans-serif';
+    // ctx.fillStyle = 'rgba(15,23,42,0.45)';
+    // ctx.textAlign = 'center';
+    // ctx.fillText('k-identity.onrender.com', W / 2, H - 80);
+
+    // 4) 모바일 호환: Blob → Web Share(가능하면) → 아니면 다운로드
+    const blob = await new Promise((resolve) => storyCanvas.toBlob(resolve, 'image/png'));
+    if (!blob) throw new Error('Failed to create image blob');
+
+    const file = new File([blob], 'My_K-Identity_Story.png', { type: 'image/png' });
+
+    // ✅ iOS/모바일에서 제일 잘 되는 루트: 공유 시트
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        files: [file],
+        title: 'My K-Identity Story',
+        text: 'Share to Instagram Story'
+      });
+      return;
+    }
+
+    // ✅ 그 외: 다운로드 시도
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'My_K-Identity_Story.png';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+
+    // iOS Safari에서 다운로드가 막히면 새 탭 fallback 안내
+    setTimeout(() => {
+      alert("If download doesn't start on mobile: the image will open in a new tab—press and hold to Save.");
+    }, 300);
+
+  } catch (e) {
+    console.error(e);
+
+    // 최후 fallback: 새 탭으로 열어서 길게 눌러 저장
+    try {
+      const W = 1080, H = 1920;
+      const storyCanvas = document.createElement('canvas');
+      storyCanvas.width = W; storyCanvas.height = H;
+      const ctx = storyCanvas.getContext('2d');
+      ctx.fillStyle = '#eff6ff';
+      ctx.fillRect(0, 0, W, H);
+
+      const cardCanvas = await html2canvas(area, { backgroundColor: '#eff6ff', scale: 3, useCORS: true });
+      const margin = 120;
+      const scale = Math.min((W - margin * 2) / cardCanvas.width, (H - margin * 2) / cardCanvas.height);
+      const drawW = Math.round(cardCanvas.width * scale);
+      const drawH = Math.round(cardCanvas.height * scale);
+      ctx.drawImage(cardCanvas, (W - drawW) / 2, (H - drawH) / 2, drawW, drawH);
+
+      const dataUrl = storyCanvas.toDataURL('image/png');
+      const win = window.open();
+      if (win) win.document.write(`<img src="${dataUrl}" style="width:100%;height:auto;"/>`);
+      alert("On mobile: press and hold the image to Save.");
+    } catch (e2) {
+      console.error(e2);
+      alert("Failed to save image. Please try again.");
+    }
+
+  } finally {
+    // 임시 스타일 원복
+    if (meaningBox) {
+      meaningBox.style.backgroundColor = prevMeaningBg;
+      meaningBox.style.opacity = prevMeaningOpacity;
+    }
+  }
+}
+
+
 
 
 // --- [추가] 상태 관리 변수 ---
