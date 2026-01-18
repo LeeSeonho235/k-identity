@@ -86,18 +86,30 @@
                 <h2 id="kNameResult"
                 class="text-3xl font-black text-slate-800 tracking-tight whitespace-nowrap overflow-x-hidden text-ellipsis px-4 pt-2 pb-3 leading-[1.15]">
               </h2>
-              
-                
 
                 <div class="space-y-3 bg-white/60 p-6 rounded-3xl shadow-sm">
                     <p id="hanjaMeaning" class="text-blue-600 font-black text-xs uppercase tracking-widest"></p>
                     <p id="explainResult" class="text-slate-700 leading-relaxed text-sm font-medium"></p>
                 </div>
             </div>
-            
-            <button onclick="shareResultOnInsta()" class="w-full py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-black rounded-2xl shadow-lg hover:brightness-110 transition-all flex items-center justify-center gap-2">
-                Download Card & Share on Instagram
-            </button>
+
+            <!-- ✅ 버튼 2개 (요청한 UI) -->
+            <div class="space-y-2">
+              <button onclick="downloadCard()"
+                class="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-black rounded-2xl shadow-lg hover:brightness-110 transition-all text-sm">
+                Download Card
+              </button>
+
+              <button onclick="shareOnInstagram()"
+                class="w-full py-2 bg-transparent text-slate-500 font-bold rounded-xl text-[11px] hover:text-slate-700 transition-all">
+                Share on Instagram
+              </button>
+            </div>
+
+            <!-- 모바일 안내(원하면 숨겨도 됨) -->
+            <p class="text-center text-[10px] text-slate-400 font-bold tracking-widest uppercase">
+              iPhone: Tap “Download Card” → choose “Save Image” in the share sheet.
+            </p>
         </div>
     </div>
 
@@ -157,234 +169,215 @@
             }, 1000);
         }
 
-        // --- 3. Feature Functions (Capture & Share) ---
+        /* =========================================================
+           ✅ 3. Download + Share (PC는 자동 다운로드, 모바일은 ShareSheet 우선)
+           ========================================================= */
         function isMobile() {
-    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  }
+          return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        }
 
-  function canvasToBlob(canvas, type = "image/png") {
-    return new Promise((resolve) => canvas.toBlob(resolve, type));
-  }
+        function canvasToBlob(canvas, type = "image/png") {
+          return new Promise((resolve) => canvas.toBlob(resolve, type));
+        }
 
-  async function shareResultOnInsta() {
-  const area = document.getElementById("captureArea");
-  const filename = "My_K-Identity.png";
+        async function makeCardBlob() {
+          const area = document.getElementById("captureArea");
+          const scale = Math.max(3, Math.ceil(window.devicePixelRatio * 2));
 
-  // 모바일에서 팝업 차단 방지: 클릭 순간에 빈 탭을 미리 열어둠
-  // (나중에 fallback일 때 이 탭에 이미지 넣을 거임)
-  const mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  const preOpenedTab = mobile ? window.open("", "_blank") : null;
+          const canvas = await html2canvas(area, {
+            backgroundColor: null,
+            scale,
+            useCORS: true,
+          });
 
-  // ✅ 고해상도 캡처
-  const scale = Math.max(3, Math.ceil(window.devicePixelRatio * 2));
+          const outCanvas = document.createElement("canvas");
+          outCanvas.width = canvas.width;
+          outCanvas.height = canvas.height;
 
-  const canvas = await html2canvas(area, {
-    backgroundColor: null,
-    scale,
-    useCORS: true,
-  });
+          const ctx = outCanvas.getContext("2d");
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = "high";
+          ctx.fillStyle = "#eff6ff";
+          ctx.fillRect(0, 0, outCanvas.width, outCanvas.height);
+          ctx.drawImage(canvas, 0, 0);
 
-  const outCanvas = document.createElement("canvas");
-  outCanvas.width = canvas.width;
-  outCanvas.height = canvas.height;
+          const blob = await canvasToBlob(outCanvas, "image/png");
+          return { blob, outCanvas };
+        }
 
-  const ctx = outCanvas.getContext("2d");
-  ctx.imageSmoothingEnabled = true;
-  ctx.imageSmoothingQuality = "high";
-  ctx.fillStyle = "#eff6ff";
-  ctx.fillRect(0, 0, outCanvas.width, outCanvas.height);
-  ctx.drawImage(canvas, 0, 0);
+        async function downloadCard() {
+          const filename = "My_K-Identity.png";
+          const mobile = isMobile();
 
-  // ✅ PC: 기존 다운로드 방식 유지
-  if (!mobile) {
-    const dataUrl = outCanvas.toDataURL("image/png");
-    const a = document.createElement("a");
-    a.href = dataUrl;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+          // 모바일: 팝업차단 방지(클릭 순간에 탭 확보)
+          const preTab = mobile ? window.open("", "_blank") : null;
 
-    setTimeout(() => {
-      alert("Identity card saved! 🎁\nUpload it to your Instagram!");
-      window.open("https://instagram.com", "_blank");
-    }, 1000);
-    return;
-  }
+          const { blob, outCanvas } = await makeCardBlob();
+          if (!blob) {
+            if (preTab) preTab.close();
+            alert("이미지 생성에 실패했어. 다시 시도해줘!");
+            return;
+          }
 
-  // ✅ 모바일: Blob 만들기
-  const blob = await new Promise((resolve) => outCanvas.toBlob(resolve, "image/png"));
-  if (!blob) {
-    if (preOpenedTab) preOpenedTab.close();
-    alert("이미지 생성에 실패했어. 다시 시도해줘!");
-    return;
-  }
+          // PC: 기존 다운로드
+          if (!mobile) {
+            const dataUrl = outCanvas.toDataURL("image/png");
+            const a = document.createElement("a");
+            a.href = dataUrl;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            alert("Saved! 🎁");
+            return;
+          }
 
-  const file = new File([blob], filename, { type: "image/png" });
+          // 모바일: Share Sheet 우선 (여기서 사용자가 '사진에 저장' 선택해야 앨범에 저장됨)
+          const file = new File([blob], filename, { type: "image/png" });
 
-  // 1) Web Share 가능하면 공유 시트(여기서 사용자가 '사진에 저장' 또는 '파일에 저장' 직접 선택)
-  if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
-    try {
-      // 미리 열어둔 탭은 필요 없으니 닫기
-      if (preOpenedTab) preOpenedTab.close();
+          if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
+            try {
+              if (preTab) preTab.close();
+              await navigator.share({
+                files: [file],
+                title: "K-Identity",
+                text: "Save this image to Photos.",
+              });
+              return;
+            } catch (e) {
+              console.log("share canceled or failed:", e);
+            }
+          }
 
-      await navigator.share({
-        files: [file],
-        title: "K-Identity",
-        text: "My K-Identity card",
-      });
+          // fallback: 이미지 탭 -> 꾹 눌러 저장
+          const url = URL.createObjectURL(blob);
+          if (preTab) {
+            preTab.location.href = url;
+          } else {
+            const w = window.open(url, "_blank");
+            if (!w) window.location.href = url;
+          }
+          setTimeout(() => URL.revokeObjectURL(url), 30000);
 
-      // ✅ 모바일에서는 자동으로 인스타 열지 말고 선택하게
-      if (confirm("저장/공유가 완료됐어! الآن Instagram을 열까?")) {
-        window.open("https://instagram.com", "_blank");
-      }
-      return;
-    } catch (e) {
-      // 공유 취소/실패 -> fallback 진행
-      console.log("share canceled or failed:", e);
-    }
-  }
+          alert("새 탭에서 이미지를 길게 눌러 ‘사진에 추가’로 저장해줘! 📸");
+        }
 
-  // 2) fallback: 이미지 탭 열고 사용자가 꾹 눌러 저장
-  const url = URL.createObjectURL(blob);
+        function shareOnInstagram() {
+          window.open("https://instagram.com", "_blank");
+        }
 
-  if (preOpenedTab) {
-    // 미리 열어둔 탭에 이미지 페이지 주입
-    preOpenedTab.location.href = url;
-  } else {
-    // 혹시 탭이 안 열렸다면 그때라도 시도
-    const w = window.open(url, "_blank");
-    if (!w) window.location.href = url;
-  }
-
-  setTimeout(() => URL.revokeObjectURL(url), 30000);
-
-  alert("새로 열린 탭에서 이미지를 길게 눌러 '사진에 추가'로 저장해줘! 📸\n(모바일은 자동 저장이 불가능해)");
-  // ❌ 여기서는 인스타 자동 이동 절대 하지 않음
-}
-
-
-// --- [추가] 상태 관리 변수 ---
+        // --- [추가] 상태 관리 변수 ---
         let pendingCreditAmount = 0; // 지급 대기 중인 크레딧 양
         let isWaitingForAction = false; // 현재 외부 사이트 방문 중인지 여부
 
         function buyCredits(amount) {
-    // Buy Me a Coffee 링크는 HTML의 href로 열리므로, 상태만 업데이트합니다.
-    pendingCreditAmount = amount;
-    isWaitingForAction = true;
-}
+          // Buy Me a Coffee 링크는 HTML의 href로 열리므로, 상태만 업데이트합니다.
+          pendingCreditAmount = amount;
+          isWaitingForAction = true;
+        }
 
         function shareOnInsta() {
-    window.open('https://instagram.com', '_blank');
-    pendingCreditAmount = 3; // 인스타 공유는 3크레딧
-    isWaitingForAction = true; // 대기 상태 시작
-}
-        // --- 3. [핵심] 탭 복귀 감지 로직 ---
-// 사용자가 다른 탭에서 작업을 마치고 우리 사이트로 돌아오면 실행됩니다.
-document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible' && isWaitingForAction) {
-        handleReturn();  // 이 한 줄만 넣으세요!
-    }
-});
+          window.open('https://instagram.com', '_blank');
+          pendingCreditAmount = 3; // 인스타 공유는 3크레딧
+          isWaitingForAction = true; // 대기 상태 시작
+        }
+
+        // --- 탭 복귀 감지 로직 ---
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'visible' && isWaitingForAction) {
+            handleReturn();
+          }
+        });
+
         function startAdTimer() {
-            const btn = document.getElementById('adBtn'); let timeLeft = 30; btn.disabled = true;
-            const interval = setInterval(() => {
-                btn.innerText = `WAITING... ${timeLeft}s`; timeLeft--;
-                if (timeLeft < 0) {
-                    clearInterval(interval); recharge(1);
-                    btn.innerText = "OR WATCH 30S AD FOR 1 CREDIT"; btn.disabled = false; closeModal();
-                }
-            }, 1000);
+          const btn = document.getElementById('adBtn'); let timeLeft = 30; btn.disabled = true;
+          const interval = setInterval(() => {
+            btn.innerText = `WAITING... ${timeLeft}s`; timeLeft--;
+            if (timeLeft < 0) {
+              clearInterval(interval); recharge(1);
+              btn.innerText = "OR WATCH 30S AD FOR 1 CREDIT"; btn.disabled = false; closeModal();
+            }
+          }, 1000);
         }
 
         function recharge(amount) {
-    const current = getCredits();
-    const next = current + amount;
-    localStorage.setItem('k_credits', next.toString());
-    updateCreditUI();
-    console.log(`Credit Updated: ${current} -> ${next}`);
-}
-
-// handleReturn 함수 추가 (공통)
-        function handleReturn() {
-            // 이미 처리 중이라면 중복 실행 방지
-            if (!isWaitingForAction) return; 
-            
-            // 즉시 상태를 false로 바꿔서 중복 호출을 막습니다.
-            isWaitingForAction = false; 
-
-            setTimeout(() => {
-                let message = pendingCreditAmount >= 20 ? "purchase" : "sharing";
-                if (confirm(`Welcome back! 🐯\nDid you complete the ${message}?\nClick 'OK' to receive your ${pendingCreditAmount} credits!`)) {
-                    recharge(pendingCreditAmount);
-                    alert(`Success! ${pendingCreditAmount} credits added.`);
-                    closeModal();
-                }
-                pendingCreditAmount = 0;
-            }, 500);
+          const current = getCredits();
+          const next = current + amount;
+          localStorage.setItem('k_credits', next.toString());
+          updateCreditUI();
+          console.log(`Credit Updated: ${current} -> ${next}`);
         }
 
-        // focus 이벤트 추가 (탭 돌아올 때)
-        window.addEventListener('focus', () => {
-            if (isWaitingForAction) {
-                handleReturn();
-            }
-        });
+        function handleReturn() {
+          if (!isWaitingForAction) return;
+          isWaitingForAction = false;
 
+          setTimeout(() => {
+            let message = pendingCreditAmount >= 20 ? "purchase" : "sharing";
+            if (confirm(`Welcome back! 🐯\nDid you complete the ${message}?\nClick 'OK' to receive your ${pendingCreditAmount} credits!`)) {
+              recharge(pendingCreditAmount);
+              alert(`Success! ${pendingCreditAmount} credits added.`);
+              closeModal();
+            }
+            pendingCreditAmount = 0;
+          }, 500);
+        }
+
+        window.addEventListener('focus', () => {
+          if (isWaitingForAction) {
+            handleReturn();
+          }
+        });
 
         // --- 4. Main Generation ---
         async function generate() {
-    if (getCredits() <= 0) return showRechargeModal();
-    const name = document.getElementById('engName').value;
-    if(!name) return alert("Please enter name!");
+          if (getCredits() <= 0) return showRechargeModal();
+          const name = document.getElementById('engName').value;
+          if(!name) return alert("Please enter name!");
 
-    // 로딩 시작
-    document.getElementById('loading').classList.remove('hidden');
-    document.getElementById('resultSection').classList.add('hidden');
-    startTigerMotion();
+          // 로딩 시작
+          document.getElementById('loading').classList.remove('hidden');
+          document.getElementById('resultSection').classList.add('hidden');
+          startTigerMotion();
 
-    try {
-        const params = `english_name=${name}&vibe=${document.getElementById('vibe').value}&gender=${document.getElementById('gender').value}&lang=${document.getElementById('lang').value}&strategy=${document.getElementById('strategy').value}`;
+          try {
+            const params = `english_name=${name}&vibe=${document.getElementById('vibe').value}&gender=${document.getElementById('gender').value}&lang=${document.getElementById('lang').value}&strategy=${document.getElementById('strategy').value}`;
 
-        // [중요] main.py에 있는 딱 하나의 통합 주소만 부릅니다!
-        const res = await fetch(`/api/generate-k-identity?${params}`);
-        const data = await res.json();
+            const res = await fetch(`/api/generate-k-identity?${params}`);
+            const data = await res.json();
 
-        // main.py가 주는 변수명(k_name, meaning, explain, image_url)에 맞춤
-        document.getElementById('kNameResult').innerText = data.k_name;
-        document.getElementById('hanjaMeaning').innerText = data.meaning;
-        document.getElementById('explainResult').innerText = data.explain;
-        
-        const imgElement = document.getElementById('aiImage');
-        if (data.image_url) {
-            imgElement.src = data.image_url;
-            imgElement.classList.remove('hidden'); // 이미지 숨김 해제
-            document.getElementById('imagePlaceholder').classList.add('hidden'); // 기본 아이콘 숨김
+            document.getElementById('kNameResult').innerText = data.k_name;
+            document.getElementById('hanjaMeaning').innerText = data.meaning;
+            document.getElementById('explainResult').innerText = data.explain;
+            
+            const imgElement = document.getElementById('aiImage');
+            if (data.image_url) {
+              imgElement.src = data.image_url;
+              imgElement.classList.remove('hidden');
+              document.getElementById('imagePlaceholder').classList.add('hidden');
 
-            // 이미지가 실제로 다 불러와지면 화면을 보여줌
-            imgElement.onload = () => {
+              imgElement.onload = () => {
                 finishLoading();
-            };
-        } else {
-            // 이미지가 없을 때의 예외 처리
-            finishLoading();
-            alert("Name is ready, but image failed to load.");
+              };
+            } else {
+              finishLoading();
+              alert("Name is ready, but image failed to load.");
+            }
+
+          } catch(e) {
+            console.error("Fetch Error:", e);
+            clearInterval(progressIdx);
+            document.getElementById('loading').classList.add('hidden');
+            alert("Server Busy! Please try once more.");
+          }
         }
 
-    } catch(e) {
-        console.error("Fetch Error:", e);
-        clearInterval(progressIdx);
-        document.getElementById('loading').classList.add('hidden');
-        alert("Server Busy! Please try once more.");
-    }
-}
-
-function finishLoading() {
-    clearInterval(progressIdx);
-    document.getElementById('loading').classList.add('hidden');
-    document.getElementById('resultSection').classList.remove('hidden');
-    recharge(-1);
-}
+        function finishLoading() {
+          clearInterval(progressIdx);
+          document.getElementById('loading').classList.add('hidden');
+          document.getElementById('resultSection').classList.remove('hidden');
+          recharge(-1);
+        }
     </script>
 </body>
 </html>
