@@ -143,7 +143,7 @@
         let progressIdx;
         // 전역 변수로 현재 생성된 이름 정보 저장
         let currentResult = { name: '', gender: '', vibe: '' };
-
+    
         function startTigerMotion() {
             let leftPos = 0; let seconds = 30;
             const tiger = document.getElementById('tiger');
@@ -158,46 +158,101 @@
         }
 
         // --- 3. Feature Functions (Capture & Share) ---
-        async function shareResultOnInsta() {
-  const area = document.getElementById('captureArea');
+        function isMobile() {
+    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  }
 
-  // ✅ 고해상도 캡처 (레티나/줌 대응)
-  const scale = Math.max(3, Math.ceil(window.devicePixelRatio * 2));
+  function canvasToBlob(canvas, type = "image/png") {
+    return new Promise((resolve) => canvas.toBlob(resolve, type));
+  }
 
-  // 1) 먼저 투명 배경으로 캡처
-  const canvas = await html2canvas(area, {
-    backgroundColor: null,
-    scale,
-    useCORS: true,
-  });
+  async function shareResultOnInsta() {
+    const area = document.getElementById("captureArea");
 
-  // 2) 새 캔버스에 원하는 배경색(#eff6ff = bg-blue-50) 깔고 합성
-  const outCanvas = document.createElement('canvas');
-  outCanvas.width = canvas.width;
-  outCanvas.height = canvas.height;
+    // ✅ 고해상도 캡처
+    const scale = Math.max(3, Math.ceil(window.devicePixelRatio * 2));
 
-  const ctx = outCanvas.getContext('2d');
-  ctx.imageSmoothingEnabled = true;
-  ctx.imageSmoothingQuality = 'high';
+    // 1) 투명 배경 캡처
+    const canvas = await html2canvas(area, {
+      backgroundColor: null,
+      scale,
+      useCORS: true,
+    });
 
-  ctx.fillStyle = '#eff6ff'; // ✅ 결과 카드 배경색
-  ctx.fillRect(0, 0, outCanvas.width, outCanvas.height);
-  ctx.drawImage(canvas, 0, 0);
+    // 2) 배경색 합성
+    const outCanvas = document.createElement("canvas");
+    outCanvas.width = canvas.width;
+    outCanvas.height = canvas.height;
 
-  const dataUrl = outCanvas.toDataURL('image/png');
+    const ctx = outCanvas.getContext("2d");
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
 
-  const a = document.createElement('a');
-  a.href = dataUrl;
-  a.download = 'My_K-Identity.png';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+    ctx.fillStyle = "#eff6ff"; // bg-blue-50
+    ctx.fillRect(0, 0, outCanvas.width, outCanvas.height);
+    ctx.drawImage(canvas, 0, 0);
 
-  setTimeout(() => {
-    alert("Identity card saved! 🎁\nUpload it to your Instagram!");
-    window.open('https://instagram.com', '_blank');
-  }, 2000);
-}
+    const filename = "My_K-Identity.png";
+
+    /* ===============================
+       ✅ PC: 기존 방식 그대로 (자동 다운로드)
+       =============================== */
+    if (!isMobile()) {
+      const dataUrl = outCanvas.toDataURL("image/png");
+      const a = document.createElement("a");
+      a.href = dataUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      setTimeout(() => {
+        alert("Identity card saved! 🎁\nUpload it to your Instagram!");
+        window.open("https://instagram.com", "_blank");
+      }, 1000);
+      return;
+    }
+
+    /* ===============================
+       ✅ 모바일: 공유 → 실패 시 꾹 눌러 저장
+       =============================== */
+    const blob = await canvasToBlob(outCanvas, "image/png");
+    if (!blob) {
+      alert("이미지 생성에 실패했어. 다시 시도해줘!");
+      return;
+    }
+
+    const file = new File([blob], filename, { type: "image/png" });
+
+    // 1️⃣ 모바일 지원 시: 공유 시트
+    if (
+      navigator.canShare &&
+      navigator.canShare({ files: [file] }) &&
+      navigator.share
+    ) {
+      try {
+        await navigator.share({
+          files: [file],
+          title: "K-Identity",
+          text: "My K-Identity card",
+        });
+        window.open("https://instagram.com", "_blank");
+        return;
+      } catch (e) {
+        console.log("share canceled or failed:", e);
+      }
+    }
+
+    // 2️⃣ fallback: 새 탭 열기 → 꾹 눌러 저장
+    const url = URL.createObjectURL(blob);
+    const w = window.open(url, "_blank");
+    if (!w) window.location.href = url;
+
+    setTimeout(() => URL.revokeObjectURL(url), 30000);
+
+    alert("새로 열린 화면에서 이미지를 길게 눌러 '사진에 추가'로 저장해줘! 📸");
+    setTimeout(() => window.open("https://instagram.com", "_blank"), 800);
+  }
 
 
 // --- [추가] 상태 관리 변수 ---
