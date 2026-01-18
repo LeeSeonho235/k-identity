@@ -167,92 +167,101 @@
   }
 
   async function shareResultOnInsta() {
-    const area = document.getElementById("captureArea");
+  const area = document.getElementById("captureArea");
+  const filename = "My_K-Identity.png";
 
-    // ✅ 고해상도 캡처
-    const scale = Math.max(3, Math.ceil(window.devicePixelRatio * 2));
+  // 모바일에서 팝업 차단 방지: 클릭 순간에 빈 탭을 미리 열어둠
+  // (나중에 fallback일 때 이 탭에 이미지 넣을 거임)
+  const mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const preOpenedTab = mobile ? window.open("", "_blank") : null;
 
-    // 1) 투명 배경 캡처
-    const canvas = await html2canvas(area, {
-      backgroundColor: null,
-      scale,
-      useCORS: true,
-    });
+  // ✅ 고해상도 캡처
+  const scale = Math.max(3, Math.ceil(window.devicePixelRatio * 2));
 
-    // 2) 배경색 합성
-    const outCanvas = document.createElement("canvas");
-    outCanvas.width = canvas.width;
-    outCanvas.height = canvas.height;
+  const canvas = await html2canvas(area, {
+    backgroundColor: null,
+    scale,
+    useCORS: true,
+  });
 
-    const ctx = outCanvas.getContext("2d");
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = "high";
+  const outCanvas = document.createElement("canvas");
+  outCanvas.width = canvas.width;
+  outCanvas.height = canvas.height;
 
-    ctx.fillStyle = "#eff6ff"; // bg-blue-50
-    ctx.fillRect(0, 0, outCanvas.width, outCanvas.height);
-    ctx.drawImage(canvas, 0, 0);
+  const ctx = outCanvas.getContext("2d");
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
+  ctx.fillStyle = "#eff6ff";
+  ctx.fillRect(0, 0, outCanvas.width, outCanvas.height);
+  ctx.drawImage(canvas, 0, 0);
 
-    const filename = "My_K-Identity.png";
+  // ✅ PC: 기존 다운로드 방식 유지
+  if (!mobile) {
+    const dataUrl = outCanvas.toDataURL("image/png");
+    const a = document.createElement("a");
+    a.href = dataUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
 
-    /* ===============================
-       ✅ PC: 기존 방식 그대로 (자동 다운로드)
-       =============================== */
-    if (!isMobile()) {
-      const dataUrl = outCanvas.toDataURL("image/png");
-      const a = document.createElement("a");
-      a.href = dataUrl;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
+    setTimeout(() => {
+      alert("Identity card saved! 🎁\nUpload it to your Instagram!");
+      window.open("https://instagram.com", "_blank");
+    }, 1000);
+    return;
+  }
 
-      setTimeout(() => {
-        alert("Identity card saved! 🎁\nUpload it to your Instagram!");
+  // ✅ 모바일: Blob 만들기
+  const blob = await new Promise((resolve) => outCanvas.toBlob(resolve, "image/png"));
+  if (!blob) {
+    if (preOpenedTab) preOpenedTab.close();
+    alert("이미지 생성에 실패했어. 다시 시도해줘!");
+    return;
+  }
+
+  const file = new File([blob], filename, { type: "image/png" });
+
+  // 1) Web Share 가능하면 공유 시트(여기서 사용자가 '사진에 저장' 또는 '파일에 저장' 직접 선택)
+  if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
+    try {
+      // 미리 열어둔 탭은 필요 없으니 닫기
+      if (preOpenedTab) preOpenedTab.close();
+
+      await navigator.share({
+        files: [file],
+        title: "K-Identity",
+        text: "My K-Identity card",
+      });
+
+      // ✅ 모바일에서는 자동으로 인스타 열지 말고 선택하게
+      if (confirm("저장/공유가 완료됐어! الآن Instagram을 열까?")) {
         window.open("https://instagram.com", "_blank");
-      }, 1000);
-      return;
-    }
-
-    /* ===============================
-       ✅ 모바일: 공유 → 실패 시 꾹 눌러 저장
-       =============================== */
-    const blob = await canvasToBlob(outCanvas, "image/png");
-    if (!blob) {
-      alert("이미지 생성에 실패했어. 다시 시도해줘!");
-      return;
-    }
-
-    const file = new File([blob], filename, { type: "image/png" });
-
-    // 1️⃣ 모바일 지원 시: 공유 시트
-    if (
-      navigator.canShare &&
-      navigator.canShare({ files: [file] }) &&
-      navigator.share
-    ) {
-      try {
-        await navigator.share({
-          files: [file],
-          title: "K-Identity",
-          text: "My K-Identity card",
-        });
-        window.open("https://instagram.com", "_blank");
-        return;
-      } catch (e) {
-        console.log("share canceled or failed:", e);
       }
+      return;
+    } catch (e) {
+      // 공유 취소/실패 -> fallback 진행
+      console.log("share canceled or failed:", e);
     }
+  }
 
-    // 2️⃣ fallback: 새 탭 열기 → 꾹 눌러 저장
-    const url = URL.createObjectURL(blob);
+  // 2) fallback: 이미지 탭 열고 사용자가 꾹 눌러 저장
+  const url = URL.createObjectURL(blob);
+
+  if (preOpenedTab) {
+    // 미리 열어둔 탭에 이미지 페이지 주입
+    preOpenedTab.location.href = url;
+  } else {
+    // 혹시 탭이 안 열렸다면 그때라도 시도
     const w = window.open(url, "_blank");
     if (!w) window.location.href = url;
-
-    setTimeout(() => URL.revokeObjectURL(url), 30000);
-
-    alert("새로 열린 화면에서 이미지를 길게 눌러 '사진에 추가'로 저장해줘! 📸");
-    setTimeout(() => window.open("https://instagram.com", "_blank"), 800);
   }
+
+  setTimeout(() => URL.revokeObjectURL(url), 30000);
+
+  alert("새로 열린 탭에서 이미지를 길게 눌러 '사진에 추가'로 저장해줘! 📸\n(모바일은 자동 저장이 불가능해)");
+  // ❌ 여기서는 인스타 자동 이동 절대 하지 않음
+}
 
 
 // --- [추가] 상태 관리 변수 ---
