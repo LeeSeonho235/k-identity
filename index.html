@@ -93,7 +93,7 @@
                 </div>
             </div>
 
-            <!-- ✅ 버튼 2개 (요청한 UI) -->
+            <!-- ✅ 버튼 2개 -->
             <div class="space-y-2">
               <button onclick="downloadCard()"
                 class="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-black rounded-2xl shadow-lg hover:brightness-110 transition-all text-sm">
@@ -105,11 +105,6 @@
                 Share on Instagram
               </button>
             </div>
-
-            <!-- 모바일 안내(원하면 숨겨도 됨) -->
-            <p class="text-center text-[10px] text-slate-400 font-bold tracking-widest uppercase">
-              iPhone: Tap “Download Card” → choose “Save Image” in the share sheet.
-            </p>
         </div>
     </div>
 
@@ -170,18 +165,17 @@
         }
 
         /* =========================================================
-           ✅ 3. Download + Share (PC는 자동 다운로드, 모바일은 ShareSheet 우선)
+           ✅ 3. Download (PC는 자동 다운로드, 모바일은 인생네컷 방식: 저장 전용 페이지)
            ========================================================= */
         function isMobile() {
           return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
         }
 
-        function canvasToBlob(canvas, type = "image/png") {
-          return new Promise((resolve) => canvas.toBlob(resolve, type));
-        }
-
-        async function makeCardBlob() {
+        async function downloadCard() {
           const area = document.getElementById("captureArea");
+          const mobile = isMobile();
+
+          // 고해상도 캡처
           const scale = Math.max(3, Math.ceil(window.devicePixelRatio * 2));
 
           const canvas = await html2canvas(area, {
@@ -190,6 +184,7 @@
             useCORS: true,
           });
 
+          // 배경색 합성
           const outCanvas = document.createElement("canvas");
           outCanvas.width = canvas.width;
           outCanvas.height = canvas.height;
@@ -201,25 +196,9 @@
           ctx.fillRect(0, 0, outCanvas.width, outCanvas.height);
           ctx.drawImage(canvas, 0, 0);
 
-          const blob = await canvasToBlob(outCanvas, "image/png");
-          return { blob, outCanvas };
-        }
-
-        async function downloadCard() {
           const filename = "My_K-Identity.png";
-          const mobile = isMobile();
 
-          // 모바일: 팝업차단 방지(클릭 순간에 탭 확보)
-          const preTab = mobile ? window.open("", "_blank") : null;
-
-          const { blob, outCanvas } = await makeCardBlob();
-          if (!blob) {
-            if (preTab) preTab.close();
-            alert("이미지 생성에 실패했어. 다시 시도해줘!");
-            return;
-          }
-
-          // PC: 기존 다운로드
+          // ✅ PC: 기존 자동 다운로드 유지
           if (!mobile) {
             const dataUrl = outCanvas.toDataURL("image/png");
             const a = document.createElement("a");
@@ -228,42 +207,61 @@
             document.body.appendChild(a);
             a.click();
             a.remove();
-            alert("Saved! 🎁");
             return;
           }
 
-          // 모바일: Share Sheet 우선 (여기서 사용자가 '사진에 저장' 선택해야 앨범에 저장됨)
-          const file = new File([blob], filename, { type: "image/png" });
+          // ✅ 모바일: 인생네컷 방식 (현재 탭을 저장 전용 페이지로 교체)
+          const dataUrl = outCanvas.toDataURL("image/png");
 
-          if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
-            try {
-              if (preTab) preTab.close();
-              await navigator.share({
-                files: [file],
-                title: "K-Identity",
-                text: "Save this image to Photos.",
-              });
-              return;
-            } catch (e) {
-              console.log("share canceled or failed:", e);
-            }
-          }
+          const page = `
+<!doctype html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Save your card</title>
+  <style>
+    body { margin:0; font-family: -apple-system, system-ui, sans-serif; background:#0b1220; color:#fff; }
+    .wrap { max-width: 520px; margin: 0 auto; padding: 16px; }
+    .card { background: #111827; border-radius: 18px; padding: 14px; }
+    img { width: 100%; height: auto; border-radius: 14px; display:block; background:#eff6ff; }
+    .btnrow { display:flex; gap:10px; margin-top:12px; }
+    a.btn {
+      flex:1; text-align:center; text-decoration:none;
+      padding: 12px 10px; border-radius: 14px;
+      font-weight: 800; font-size: 14px;
+      background: #ec4899; color:#fff;
+    }
+    a.btn.secondary { background:#334155; }
+    .hint { margin-top: 12px; font-size: 12px; opacity: .9; line-height: 1.45; }
+    .hint strong { color:#fff; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <img src="${dataUrl}" alt="K-Identity Card">
+      <div class="btnrow">
+        <a class="btn" href="${dataUrl}" download="${filename}">Try Download</a>
+        <a class="btn secondary" href="javascript:history.back()">Back</a>
+      </div>
+      <div class="hint">
+        <div><strong>iPhone:</strong> 이미지 위에서 <strong>길게 누르기</strong> → <strong>사진에 추가</strong></div>
+        <div style="margin-top:6px;"><strong>Android:</strong> 길게 누르기 → 이미지 다운로드</div>
+        <div style="margin-top:10px; opacity:.85;">※ 브라우저에 따라 “Try Download”가 안 될 수 있어요. 그럴 땐 길게 눌러 저장하세요.</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>`;
 
-          // fallback: 이미지 탭 -> 꾹 눌러 저장
-          const url = URL.createObjectURL(blob);
-          if (preTab) {
-            preTab.location.href = url;
-          } else {
-            const w = window.open(url, "_blank");
-            if (!w) window.location.href = url;
-          }
-          setTimeout(() => URL.revokeObjectURL(url), 30000);
-
-          alert("새 탭에서 이미지를 길게 눌러 ‘사진에 추가’로 저장해줘! 📸");
+          document.open();
+          document.write(page);
+          document.close();
         }
 
         function shareOnInstagram() {
-          window.open("https://instagram.com", "_blank");
+          // 모바일/PC 모두 그냥 인스타로 이동(원하면 새 탭으로 바꿔도 됨)
+          window.location.href = "https://instagram.com";
         }
 
         // --- [추가] 상태 관리 변수 ---
@@ -271,18 +269,16 @@
         let isWaitingForAction = false; // 현재 외부 사이트 방문 중인지 여부
 
         function buyCredits(amount) {
-          // Buy Me a Coffee 링크는 HTML의 href로 열리므로, 상태만 업데이트합니다.
           pendingCreditAmount = amount;
           isWaitingForAction = true;
         }
 
         function shareOnInsta() {
           window.open('https://instagram.com', '_blank');
-          pendingCreditAmount = 3; // 인스타 공유는 3크레딧
-          isWaitingForAction = true; // 대기 상태 시작
+          pendingCreditAmount = 3;
+          isWaitingForAction = true;
         }
 
-        // --- 탭 복귀 감지 로직 ---
         document.addEventListener('visibilitychange', () => {
           if (document.visibilityState === 'visible' && isWaitingForAction) {
             handleReturn();
@@ -335,7 +331,6 @@
           const name = document.getElementById('engName').value;
           if(!name) return alert("Please enter name!");
 
-          // 로딩 시작
           document.getElementById('loading').classList.remove('hidden');
           document.getElementById('resultSection').classList.add('hidden');
           startTigerMotion();
