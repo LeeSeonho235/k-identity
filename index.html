@@ -142,6 +142,14 @@
         function getCredits() { return parseInt(localStorage.getItem('k_credits')); }
         function updateCreditUI() { document.getElementById('creditDisplay').innerText = localStorage.getItem('k_credits'); }
 
+        // ✅ credits 변경 함수(원래 코드에 없어서 추가. 이게 없으면 크레딧 자체가 안 바뀜)
+        function recharge(amount) {
+          const cur = getCredits();
+          const next = Math.max(0, cur + amount);
+          localStorage.setItem('k_credits', String(next));
+          updateCreditUI();
+        }
+
         // --- 2. UI Controls ---
         function showRechargeModal() { document.getElementById('rechargeModal').classList.remove('hidden'); }
         function closeModal() { document.getElementById('rechargeModal').classList.add('hidden'); }
@@ -260,95 +268,84 @@
           document.close();
         }
 
+        /* =========================================================
+           ✅ 3.5 Credits: 외부 액션(결제/공유) 갔다가 돌아오면 지급
+           ========================================================= */
+        const PENDING_KEY = "k_pending_credit_v2";
+        let redeemLock = false;
+
+        function setPending(amount, reason) {
+          sessionStorage.setItem(PENDING_KEY, JSON.stringify({
+            amount,
+            reason, // "purchase" | "share"
+            ts: Date.now()
+          }));
+        }
+        function getPending() {
+          const raw = sessionStorage.getItem(PENDING_KEY);
+          if (!raw) return null;
+          try { return JSON.parse(raw); } catch { return null; }
+        }
+        function clearPending() { sessionStorage.removeItem(PENDING_KEY); }
+
+        function maybeRedeem() {
+          if (redeemLock) return;
+
+          const pending = getPending();
+          if (!pending) return;
+
+          // 30분 지나면 폐기
+          if (Date.now() - pending.ts > 30 * 60 * 1000) {
+            clearPending();
+            return;
+          }
+
+          redeemLock = true;
+          const msg = pending.reason === "purchase" ? "purchase" : "sharing";
+
+          setTimeout(() => {
+            if (confirm(`Welcome back! 🐯\nDid you complete the ${msg}?\nClick 'OK' to receive your ${pending.amount} credits!`)) {
+              recharge(pending.amount);
+              alert(`Success! ${pending.amount} credits added.`);
+              closeModal();
+            }
+            clearPending();
+            redeemLock = false;
+          }, 250);
+        }
+
+        // ✅ 결제 버튼 클릭: pending 저장
+        function buyCredits(amount) {
+          setPending(amount, "purchase");
+          // 링크는 a 태그가 이동(새탭)하므로 여기서 이동할 필요 없음
+          // 새탭이라 이벤트 안 잡히는 경우 대비해서 폴링이 처리함
+        }
+
+        // ✅ 모달 공유: pending 저장 + 새탭
+        function shareOnInsta() {
+          setPending(3, "share");
+          window.open("https://instagram.com", "_blank");
+          // 모바일에서 이벤트가 씹힐 수 있어 안전장치
+          setTimeout(maybeRedeem, 1500);
+        }
+
+        // ✅ 결과 섹션 공유: pending 저장 + 이동(같은 탭)
         function shareOnInstagram() {
-          // 모바일/PC 모두 그냥 인스타로 이동(원하면 새 탭으로 바꿔도 됨)
+          setPending(3, "share");
           window.location.href = "https://instagram.com";
         }
 
-        // --- [추가] 상태 관리 변수 ---
-        // --- [추가/교체] 외부 액션(결제/공유) 후 크레딧 지급을 '저장'해서 유지하기 ---
+        // 복귀 감지 (최대한 많이)
+        document.addEventListener("visibilitychange", () => {
+          if (document.visibilityState === "visible") maybeRedeem();
+        });
+        window.addEventListener("focus", maybeRedeem);
+        window.addEventListener("pageshow", maybeRedeem);
 
-  const PENDING_KEY = "k_pending_credit";
-
-function setPending(amount, reason) {
-  // reason: "purchase" | "share"
-  const payload = {
-    amount,
-    reason,
-    ts: Date.now(),
-    redeemed: false
-  };
-  sessionStorage.setItem(PENDING_KEY, JSON.stringify(payload));
-}
-
-function getPending() {
-  const raw = sessionStorage.getItem(PENDING_KEY);
-  if (!raw) return null;
-  try { return JSON.parse(raw); } catch { return null; }
-}
-
-function clearPending() {
-  sessionStorage.removeItem(PENDING_KEY);
-}
-
-function maybeHandleReturn() {
-  const pending = getPending();
-  if (!pending || pending.redeemed) return;
-
-  // 너무 오래된 건 무시(예: 30분 지나면 폐기) - 원하면 시간 늘려도 됨
-  const THIRTY_MIN = 30 * 60 * 1000;
-  if (Date.now() - pending.ts > THIRTY_MIN) {
-    clearPending();
-    return;
-  }
-
-  const msg = pending.reason === "purchase" ? "purchase" : "sharing";
-
-  // 한 번만 뜨게: confirm 뜨는 동안 focus/visibility가 여러 번 호출되는 것 방지
-  pending.redeemed = true;
-  sessionStorage.setItem(PENDING_KEY, JSON.stringify(pending));
-
-  setTimeout(() => {
-    if (confirm(`Welcome back! 🐯\nDid you complete the ${msg}?\nClick 'OK' to receive your ${pending.amount} credits!`)) {
-      recharge(pending.amount);
-      alert(`Success! ${pending.amount} credits added.`);
-      closeModal();
-    }
-    clearPending();
-  }, 300);
-}
-
-// ✅ 결제 버튼 클릭 시: 같은 탭/새 탭/뒤로가기/새로고침 상관없이 유지됨
-function buyCredits(amount) {
-  setPending(amount, "purchase");
-  // a 태그는 href로 이동하니까 따로 navigate 안 해도 됨
-}
-
-// ✅ 모달 안 "Share for +3 Credits" 버튼 (새 탭)
-function shareOnInsta() {
-  setPending(3, "share");
-  window.open("https://instagram.com", "_blank");
-}
-
-// ✅ 결과 섹션의 Share on Instagram (기존은 같은 탭 이동이라 상태 날아갈 확률 큼)
-//    -> 새 탭으로 열어서 현재 페이지 상태 유지 추천
-function shareOnInstagram() {
-  setPending(3, "share");
-  window.open("https://instagram.com", "_blank");
-}
-
-// 돌아오면 지급 시도 (모바일/데스크탑 모두 대응)
-document.addEventListener("visibilitychange", () => {
-  if (document.visibilityState === "visible") maybeHandleReturn();
-});
-window.addEventListener("focus", () => {
-  maybeHandleReturn();
-});
-
-// 혹시 "뒤로가기"로 복귀하면서 바로 로드되는 경우도 처리
-window.addEventListener("pageshow", () => {
-  maybeHandleReturn();
-});
+        // ✅ iOS/모바일/새탭에서 focus/visibility가 씹히는 케이스 대비
+        setInterval(() => {
+          if (document.visibilityState === "visible") maybeRedeem();
+        }, 600);
 
         // --- 4. Main Generation ---
         async function generate() {
@@ -398,6 +395,8 @@ window.addEventListener("pageshow", () => {
           document.getElementById('resultSection').classList.remove('hidden');
           recharge(-1);
         }
+
+        // (참고) startAdTimer가 다른 파일/구현에 있을 수 있으니 여기선 건드리지 않음
     </script>
 </body>
 </html>
