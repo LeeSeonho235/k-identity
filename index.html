@@ -93,23 +93,24 @@
                 </div>
             </div>
 
-            <!-- ✅ 버튼 2개 -->
+            <!-- ✅ Download 버튼만 남김 (Share 버튼 제거) -->
             <div class="space-y-2">
               <button onclick="downloadCard()"
                 class="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-black rounded-2xl shadow-lg hover:brightness-110 transition-all text-sm">
                 Download Card
-              </button>
-
-              <button onclick="shareOnInstagram()"
-                class="w-full py-2 bg-transparent text-slate-500 font-bold rounded-xl text-[11px] hover:text-slate-700 transition-all">
-                Share on Instagram
               </button>
             </div>
         </div>
     </div>
 
     <div id="rechargeModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-6 z-50">
-        <div class="bg-white w-full max-w-sm rounded-[2.5rem] p-10 text-center space-y-6 shadow-2xl scale-in">
+        <div class="bg-white w-full max-w-sm rounded-[2.5rem] p-10 text-center space-y-6 shadow-2xl scale-in relative">
+            <!-- ✅ X 닫기 버튼 추가 -->
+            <button onclick="closeModal()" aria-label="Close"
+              class="absolute top-4 right-4 w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-black flex items-center justify-center transition-all">
+                ✕
+            </button>
+
             <h3 class="text-2xl font-black text-slate-800 tracking-tighter uppercase">Energy Depleted! 🔋</h3>
             <p class="text-slate-500 text-sm italic">Get more credits to find more names:</p>
             
@@ -131,7 +132,11 @@
                     <button onclick="startAdTimer()" id="adBtn" class="w-full py-2 text-slate-400 text-[10px] font-bold underline italic uppercase tracking-widest">Or watch 30s ad for 1 credit</button>
                 </div>
             </div>
-            <button onclick="closeModal()" class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Maybe Later</button>
+
+            <!-- ✅ 결과창으로 돌아가기 버튼 (문구 개선) -->
+            <button onclick="closeModal()" class="text-slate-500 text-[11px] font-bold uppercase tracking-widest hover:text-slate-700 transition-all">
+              Back to Results
+            </button>
         </div>
     </div>
 
@@ -141,14 +146,6 @@
         updateCreditUI();
         function getCredits() { return parseInt(localStorage.getItem('k_credits')); }
         function updateCreditUI() { document.getElementById('creditDisplay').innerText = localStorage.getItem('k_credits'); }
-
-        // ✅ credits 변경 함수(원래 코드에 없어서 추가. 이게 없으면 크레딧 자체가 안 바뀜)
-        function recharge(amount) {
-          const cur = getCredits();
-          const next = Math.max(0, cur + amount);
-          localStorage.setItem('k_credits', String(next));
-          updateCreditUI();
-        }
 
         // --- 2. UI Controls ---
         function showRechargeModal() { document.getElementById('rechargeModal').classList.remove('hidden'); }
@@ -268,84 +265,71 @@
           document.close();
         }
 
-        /* =========================================================
-           ✅ 3.5 Credits: 외부 액션(결제/공유) 갔다가 돌아오면 지급
-           ========================================================= */
-        const PENDING_KEY = "k_pending_credit_v2";
-        let redeemLock = false;
-
-        function setPending(amount, reason) {
-          sessionStorage.setItem(PENDING_KEY, JSON.stringify({
-            amount,
-            reason, // "purchase" | "share"
-            ts: Date.now()
-          }));
-        }
-        function getPending() {
-          const raw = sessionStorage.getItem(PENDING_KEY);
-          if (!raw) return null;
-          try { return JSON.parse(raw); } catch { return null; }
-        }
-        function clearPending() { sessionStorage.removeItem(PENDING_KEY); }
-
-        function maybeRedeem() {
-          if (redeemLock) return;
-
-          const pending = getPending();
-          if (!pending) return;
-
-          // 30분 지나면 폐기
-          if (Date.now() - pending.ts > 30 * 60 * 1000) {
-            clearPending();
-            return;
-          }
-
-          redeemLock = true;
-          const msg = pending.reason === "purchase" ? "purchase" : "sharing";
-
-          setTimeout(() => {
-            if (confirm(`Welcome back! 🐯\nDid you complete the ${msg}?\nClick 'OK' to receive your ${pending.amount} credits!`)) {
-              recharge(pending.amount);
-              alert(`Success! ${pending.amount} credits added.`);
-              closeModal();
-            }
-            clearPending();
-            redeemLock = false;
-          }, 250);
-        }
-
-        // ✅ 결제 버튼 클릭: pending 저장
-        function buyCredits(amount) {
-          setPending(amount, "purchase");
-          // 링크는 a 태그가 이동(새탭)하므로 여기서 이동할 필요 없음
-          // 새탭이라 이벤트 안 잡히는 경우 대비해서 폴링이 처리함
-        }
-
-        // ✅ 모달 공유: pending 저장 + 새탭
-        function shareOnInsta() {
-          setPending(3, "share");
-          window.open("https://instagram.com", "_blank");
-          // 모바일에서 이벤트가 씹힐 수 있어 안전장치
-          setTimeout(maybeRedeem, 1500);
-        }
-
-        // ✅ 결과 섹션 공유: pending 저장 + 이동(같은 탭)
         function shareOnInstagram() {
-          setPending(3, "share");
+          // 모바일/PC 모두 그냥 인스타로 이동(원하면 새 탭으로 바꿔도 됨)
           window.location.href = "https://instagram.com";
         }
 
-        // 복귀 감지 (최대한 많이)
-        document.addEventListener("visibilitychange", () => {
-          if (document.visibilityState === "visible") maybeRedeem();
-        });
-        window.addEventListener("focus", maybeRedeem);
-        window.addEventListener("pageshow", maybeRedeem);
+        // --- [추가] 상태 관리 변수 ---
+        let pendingCreditAmount = 0; // 지급 대기 중인 크레딧 양
+        let isWaitingForAction = false; // 현재 외부 사이트 방문 중인지 여부
 
-        // ✅ iOS/모바일/새탭에서 focus/visibility가 씹히는 케이스 대비
-        setInterval(() => {
-          if (document.visibilityState === "visible") maybeRedeem();
-        }, 600);
+        function buyCredits(amount) {
+          pendingCreditAmount = amount;
+          isWaitingForAction = true;
+        }
+
+        function shareOnInsta() {
+          window.open('https://instagram.com', '_blank');
+          pendingCreditAmount = 3;
+          isWaitingForAction = true;
+        }
+
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'visible' && isWaitingForAction) {
+            handleReturn();
+          }
+        });
+
+        function startAdTimer() {
+          const btn = document.getElementById('adBtn'); let timeLeft = 30; btn.disabled = true;
+          const interval = setInterval(() => {
+            btn.innerText = `WAITING... ${timeLeft}s`; timeLeft--;
+            if (timeLeft < 0) {
+              clearInterval(interval); recharge(1);
+              btn.innerText = "OR WATCH 30S AD FOR 1 CREDIT"; btn.disabled = false; closeModal();
+            }
+          }, 1000);
+        }
+
+        function recharge(amount) {
+          const current = getCredits();
+          const next = current + amount;
+          localStorage.setItem('k_credits', next.toString());
+          updateCreditUI();
+          console.log(`Credit Updated: ${current} -> ${next}`);
+        }
+
+        function handleReturn() {
+          if (!isWaitingForAction) return;
+          isWaitingForAction = false;
+
+          setTimeout(() => {
+            let message = pendingCreditAmount >= 20 ? "purchase" : "sharing";
+            if (confirm(`Welcome back! 🐯\nDid you complete the ${message}?\nClick 'OK' to receive your ${pendingCreditAmount} credits!`)) {
+              recharge(pendingCreditAmount);
+              alert(`Success! ${pendingCreditAmount} credits added.`);
+              closeModal();
+            }
+            pendingCreditAmount = 0;
+          }, 500);
+        }
+
+        window.addEventListener('focus', () => {
+          if (isWaitingForAction) {
+            handleReturn();
+          }
+        });
 
         // --- 4. Main Generation ---
         async function generate() {
@@ -395,8 +379,6 @@
           document.getElementById('resultSection').classList.remove('hidden');
           recharge(-1);
         }
-
-        // (참고) startAdTimer가 다른 파일/구현에 있을 수 있으니 여기선 건드리지 않음
     </script>
 </body>
 </html>
