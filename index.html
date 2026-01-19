@@ -266,65 +266,89 @@
         }
 
         // --- [추가] 상태 관리 변수 ---
-        let pendingCreditAmount = 0; // 지급 대기 중인 크레딧 양
-        let isWaitingForAction = false; // 현재 외부 사이트 방문 중인지 여부
+        // --- [추가/교체] 외부 액션(결제/공유) 후 크레딧 지급을 '저장'해서 유지하기 ---
 
-        function buyCredits(amount) {
-          pendingCreditAmount = amount;
-          isWaitingForAction = true;
-        }
+  const PENDING_KEY = "k_pending_credit";
 
-        function shareOnInsta() {
-          window.open('https://instagram.com', '_blank');
-          pendingCreditAmount = 3;
-          isWaitingForAction = true;
-        }
+function setPending(amount, reason) {
+  // reason: "purchase" | "share"
+  const payload = {
+    amount,
+    reason,
+    ts: Date.now(),
+    redeemed: false
+  };
+  sessionStorage.setItem(PENDING_KEY, JSON.stringify(payload));
+}
 
-        document.addEventListener('visibilitychange', () => {
-          if (document.visibilityState === 'visible' && isWaitingForAction) {
-            handleReturn();
-          }
-        });
+function getPending() {
+  const raw = sessionStorage.getItem(PENDING_KEY);
+  if (!raw) return null;
+  try { return JSON.parse(raw); } catch { return null; }
+}
 
-        function startAdTimer() {
-          const btn = document.getElementById('adBtn'); let timeLeft = 30; btn.disabled = true;
-          const interval = setInterval(() => {
-            btn.innerText = `WAITING... ${timeLeft}s`; timeLeft--;
-            if (timeLeft < 0) {
-              clearInterval(interval); recharge(1);
-              btn.innerText = "OR WATCH 30S AD FOR 1 CREDIT"; btn.disabled = false; closeModal();
-            }
-          }, 1000);
-        }
+function clearPending() {
+  sessionStorage.removeItem(PENDING_KEY);
+}
 
-        function recharge(amount) {
-          const current = getCredits();
-          const next = current + amount;
-          localStorage.setItem('k_credits', next.toString());
-          updateCreditUI();
-          console.log(`Credit Updated: ${current} -> ${next}`);
-        }
+function maybeHandleReturn() {
+  const pending = getPending();
+  if (!pending || pending.redeemed) return;
 
-        function handleReturn() {
-          if (!isWaitingForAction) return;
-          isWaitingForAction = false;
+  // 너무 오래된 건 무시(예: 30분 지나면 폐기) - 원하면 시간 늘려도 됨
+  const THIRTY_MIN = 30 * 60 * 1000;
+  if (Date.now() - pending.ts > THIRTY_MIN) {
+    clearPending();
+    return;
+  }
 
-          setTimeout(() => {
-            let message = pendingCreditAmount >= 20 ? "purchase" : "sharing";
-            if (confirm(`Welcome back! 🐯\nDid you complete the ${message}?\nClick 'OK' to receive your ${pendingCreditAmount} credits!`)) {
-              recharge(pendingCreditAmount);
-              alert(`Success! ${pendingCreditAmount} credits added.`);
-              closeModal();
-            }
-            pendingCreditAmount = 0;
-          }, 500);
-        }
+  const msg = pending.reason === "purchase" ? "purchase" : "sharing";
 
-        window.addEventListener('focus', () => {
-          if (isWaitingForAction) {
-            handleReturn();
-          }
-        });
+  // 한 번만 뜨게: confirm 뜨는 동안 focus/visibility가 여러 번 호출되는 것 방지
+  pending.redeemed = true;
+  sessionStorage.setItem(PENDING_KEY, JSON.stringify(pending));
+
+  setTimeout(() => {
+    if (confirm(`Welcome back! 🐯\nDid you complete the ${msg}?\nClick 'OK' to receive your ${pending.amount} credits!`)) {
+      recharge(pending.amount);
+      alert(`Success! ${pending.amount} credits added.`);
+      closeModal();
+    }
+    clearPending();
+  }, 300);
+}
+
+// ✅ 결제 버튼 클릭 시: 같은 탭/새 탭/뒤로가기/새로고침 상관없이 유지됨
+function buyCredits(amount) {
+  setPending(amount, "purchase");
+  // a 태그는 href로 이동하니까 따로 navigate 안 해도 됨
+}
+
+// ✅ 모달 안 "Share for +3 Credits" 버튼 (새 탭)
+function shareOnInsta() {
+  setPending(3, "share");
+  window.open("https://instagram.com", "_blank");
+}
+
+// ✅ 결과 섹션의 Share on Instagram (기존은 같은 탭 이동이라 상태 날아갈 확률 큼)
+//    -> 새 탭으로 열어서 현재 페이지 상태 유지 추천
+function shareOnInstagram() {
+  setPending(3, "share");
+  window.open("https://instagram.com", "_blank");
+}
+
+// 돌아오면 지급 시도 (모바일/데스크탑 모두 대응)
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") maybeHandleReturn();
+});
+window.addEventListener("focus", () => {
+  maybeHandleReturn();
+});
+
+// 혹시 "뒤로가기"로 복귀하면서 바로 로드되는 경우도 처리
+window.addEventListener("pageshow", () => {
+  maybeHandleReturn();
+});
 
         // --- 4. Main Generation ---
         async function generate() {
