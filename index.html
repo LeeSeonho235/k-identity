@@ -9,9 +9,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 
+  <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4002075177790525"
      crossorigin="anonymous"></script>
-     
+
   <style>
     body { font-family: 'Inter', sans-serif; }
     .track {
@@ -33,7 +34,8 @@
 <body class="bg-slate-50 min-h-screen p-6">
 
   <!-- ✅ 메인 카드만 가운데 정렬 -->
-  <div class="flex items-center justify-center min-h-screen">
+  <!-- (중요) min-h-screen 제거해서 아래 콘텐츠/푸터가 자연스럽게 붙게 함 -->
+  <div class="flex items-center justify-center">
     <div class="bg-white max-w-md w-full rounded-[2.5rem] shadow-2xl p-10 space-y-8 relative overflow-hidden">
 
       <div class="absolute top-6 right-8">
@@ -128,6 +130,45 @@
 
     </div>
   </div>
+
+  <!-- ✅ AdSense용 게시자 콘텐츠 섹션 (항상 보이도록: 카드 밖 & footer 위) -->
+  <section class="max-w-3xl mx-auto mt-12 mb-10 px-4 text-slate-700 leading-relaxed">
+    <h2 class="text-2xl font-black text-slate-800 mb-4">
+      What is K-Identity?
+    </h2>
+    <p class="mb-4">
+      K-Identity is a Korean name generator designed for people who are interested in Korean culture,
+      language, and personal identity. By analyzing pronunciation, meaning, and cultural context,
+      this tool suggests Korean names that feel natural and meaningful.
+    </p>
+
+    <h3 class="text-xl font-bold text-slate-800 mt-8 mb-3">
+      How does this Korean name generator work?
+    </h3>
+    <p class="mb-4">
+      Users enter a name or keyword in any language and choose preferences such as gender and style.
+      The generator then creates a Korean name suggestion along with its meaning and explanation.
+      This process is intended for cultural exploration and entertainment purposes.
+    </p>
+
+    <h3 class="text-xl font-bold text-slate-800 mt-8 mb-3">
+      Who is this tool for?
+    </h3>
+    <ul class="list-disc pl-6 mb-4">
+      <li>People learning Korean or interested in Korean names</li>
+      <li>Fans of Korean culture, K-dramas, and K-pop</li>
+      <li>Writers and creators looking for authentic Korean character names</li>
+      <li>Anyone who wants a fun and meaningful Korean name</li>
+    </ul>
+
+    <h3 class="text-xl font-bold text-slate-800 mt-8 mb-3">
+      Disclaimer
+    </h3>
+    <p class="text-sm text-slate-500">
+      This service provides name suggestions for entertainment and cultural interest purposes only.
+      The generated names are not legally binding or officially registered names.
+    </p>
+  </section>
 
   <!-- ✅ Footer: 클릭하면 모달로 정책 표시 -->
   <footer class="mt-10 mb-6 text-center text-sm text-slate-500 font-semibold">
