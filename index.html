@@ -35,127 +35,130 @@
 </head>
 
 <body class="bg-slate-50 min-h-screen p-6">
+  <!-- ✅ 화면: 중앙(카드) / 하단(about+footer) 분리 -->
+  <div class="min-h-screen flex flex-col">
 
-  <!-- ✅ 전체 레이아웃: 카드가 화면 정중앙 + 아래에 버튼/푸터 -->
-  <div class="min-h-screen flex flex-col items-center justify-center gap-6">
+    <!-- ✅ 중앙 고정 영역 -->
+    <main class="flex-1 flex items-center justify-center">
+      <div class="bg-white max-w-md w-full rounded-[2.5rem] shadow-2xl p-10 space-y-8 relative overflow-hidden">
 
-    <!-- ✅ 메인 카드 (가운데 고정) -->
-    <div class="bg-white max-w-md w-full rounded-[2.5rem] shadow-2xl p-10 space-y-8 relative overflow-hidden">
-
-      <div class="absolute top-6 right-8">
-        <select id="lang" class="text-xs bg-slate-50 border-none rounded-lg px-2 py-1 outline-none text-slate-500 cursor-pointer font-bold hover:bg-slate-100 transition-all">
-          <option value="en">🇺🇸 English</option>
-          <option value="es">🇪🇸 Español</option>
-          <option value="zh">🇨🇳 中文</option>
-          <option value="ja">🇯🇵 日本語</option>
-        </select>
-      </div>
-
-      <div class="text-center">
-        <h1 class="text-3xl font-black text-slate-800 tracking-tighter">🇰🇷 K-Identity</h1>
-        <p class="text-slate-500 mt-2 text-sm italic">Get a meaningful name for your soul.</p>
-      </div>
-
-      <div class="space-y-4">
-        <div class="flex gap-2">
-          <select id="strategy" class="flex-1 px-4 py-3 rounded-xl border-2 border-slate-50 text-xs font-bold text-slate-400 outline-none bg-slate-50/50">
-            <option value="meaning">Focus: Meaning (Origin)</option>
-            <option value="phonetic">Focus: Sound (Similar)</option>
+        <div class="absolute top-6 right-8">
+          <select id="lang" class="text-xs bg-slate-50 border-none rounded-lg px-2 py-1 outline-none text-slate-500 cursor-pointer font-bold hover:bg-slate-100 transition-all">
+            <option value="en">🇺🇸 English</option>
+            <option value="es">🇪🇸 Español</option>
+            <option value="zh">🇨🇳 中文</option>
+            <option value="ja">🇯🇵 日本語</option>
           </select>
         </div>
 
-        <input type="text" id="engName" placeholder="Enter name (Any language)"
-               class="w-full px-6 py-4 rounded-2xl border-2 border-slate-100 focus:border-blue-500 outline-none transition-all text-center font-bold" />
-
-        <div class="flex gap-3">
-          <select id="gender" class="flex-1 px-4 py-4 rounded-2xl border-2 border-slate-100 outline-none bg-white font-medium">
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="unisex">Unisex</option>
-          </select>
-          <select id="vibe" class="flex-1 px-4 py-4 rounded-2xl border-2 border-slate-100 outline-none bg-white font-medium">
-            <option value="Cool & Charismatic">Cool</option>
-            <option value="Lovely & Sweet">Lovely</option>
-            <option value="Elegant & Calm">Elegant</option>
-          </select>
+        <div class="text-center">
+          <h1 class="text-3xl font-black text-slate-800 tracking-tighter">🇰🇷 K-Identity</h1>
+          <p class="text-slate-500 mt-2 text-sm italic">Get a meaningful name for your soul.</p>
         </div>
 
-        <button onclick="generate()"
-                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-2xl shadow-lg transform active:scale-[0.98] text-lg transition-all">
-          Find My Name ✨
-        </button>
+        <div class="space-y-4">
+          <div class="flex gap-2">
+            <select id="strategy" class="flex-1 px-4 py-3 rounded-xl border-2 border-slate-50 text-xs font-bold text-slate-400 outline-none bg-slate-50/50">
+              <option value="meaning">Focus: Meaning (Origin)</option>
+              <option value="phonetic">Focus: Sound (Similar)</option>
+            </select>
+          </div>
 
-        <p class="text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-          Credits: <span id="creditDisplay" class="text-blue-500">0</span> Left
-        </p>
-      </div>
+          <input type="text" id="engName" placeholder="Enter name (Any language)"
+                 class="w-full px-6 py-4 rounded-2xl border-2 border-slate-100 focus:border-blue-500 outline-none transition-all text-center font-bold" />
 
-      <div id="loading" class="hidden text-center space-y-6 py-6">
-        <div class="track">
-          <div id="tiger">🐯</div>
-          <div class="rabbit">🐇</div>
+          <div class="flex gap-3">
+            <select id="gender" class="flex-1 px-4 py-4 rounded-2xl border-2 border-slate-100 outline-none bg-white font-medium">
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="unisex">Unisex</option>
+            </select>
+            <select id="vibe" class="flex-1 px-4 py-4 rounded-2xl border-2 border-slate-100 outline-none bg-white font-medium">
+              <option value="Cool & Charismatic">Cool</option>
+              <option value="Lovely & Sweet">Lovely</option>
+              <option value="Elegant & Calm">Elegant</option>
+            </select>
+          </div>
+
+          <button type="button" onclick="generate()"
+                  class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-2xl shadow-lg transform active:scale-[0.98] text-lg transition-all">
+            Find My Name ✨
+          </button>
+
+          <p class="text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+            Credits: <span id="creditDisplay" class="text-blue-500">0</span> Left
+          </p>
         </div>
-        <div class="space-y-2">
-          <h3 class="text-lg font-black text-slate-800 tracking-tight uppercase">Tiger is chasing your name... 🐯💨</h3>
-          <p class="text-blue-500 font-bold text-xs uppercase animate-pulse">Estimated time: 0.5 mins</p>
-          <p class="text-slate-400 text-[10px] font-bold tracking-widest uppercase">Please Wait <span id="countdown">30</span>s</p>
-        </div>
-      </div>
 
-      <div id="resultSection" class="hidden space-y-6 pt-4 border-t-2 border-slate-50 scale-in">
-        <div id="captureArea" class="bg-blue-50 p-8 rounded-[2.5rem] text-center space-y-6 shadow-inner">
-          <div id="imageContainer" class="relative w-40 h-40 mx-auto">
-            <img id="aiImage" crossorigin="anonymous"
-                 class="w-40 h-40 rounded-full shadow-2xl border-4 border-white object-cover hidden" src="" />
-            <div id="imagePlaceholder"
-                 class="w-40 h-40 rounded-full bg-slate-200 flex items-center justify-center text-4xl border-4 border-white shadow-inner">
-              👤
+        <div id="loading" class="hidden text-center space-y-6 py-6">
+          <div class="track">
+            <div id="tiger">🐯</div>
+            <div class="rabbit">🐇</div>
+          </div>
+          <div class="space-y-2">
+            <h3 class="text-lg font-black text-slate-800 tracking-tight uppercase">Tiger is chasing your name... 🐯💨</h3>
+            <p class="text-blue-500 font-bold text-xs uppercase animate-pulse">Estimated time: 0.5 mins</p>
+            <p class="text-slate-400 text-[10px] font-bold tracking-widest uppercase">Please Wait <span id="countdown">30</span>s</p>
+          </div>
+        </div>
+
+        <div id="resultSection" class="hidden space-y-6 pt-4 border-t-2 border-slate-50 scale-in">
+          <div id="captureArea" class="bg-blue-50 p-8 rounded-[2.5rem] text-center space-y-6 shadow-inner">
+            <div id="imageContainer" class="relative w-40 h-40 mx-auto">
+              <img id="aiImage" crossorigin="anonymous"
+                   class="w-40 h-40 rounded-full shadow-2xl border-4 border-white object-cover hidden" src="" alt="K-Identity portrait" />
+              <div id="imagePlaceholder"
+                   class="w-40 h-40 rounded-full bg-slate-200 flex items-center justify-center text-4xl border-4 border-white shadow-inner">
+                👤
+              </div>
+            </div>
+
+            <h2 id="kNameResult"
+                class="text-3xl font-black text-slate-800 tracking-tight whitespace-nowrap overflow-x-hidden text-ellipsis px-4 pt-2 pb-3 leading-[1.15]">
+            </h2>
+
+            <div class="space-y-3 bg-white/60 p-6 rounded-3xl shadow-sm">
+              <p id="hanjaMeaning" class="text-blue-600 font-black text-xs uppercase tracking-widest"></p>
+              <p id="explainResult" class="text-slate-700 leading-relaxed text-sm font-medium"></p>
             </div>
           </div>
 
-          <h2 id="kNameResult"
-              class="text-3xl font-black text-slate-800 tracking-tight whitespace-nowrap overflow-x-hidden text-ellipsis px-4 pt-2 pb-3 leading-[1.15]">
-          </h2>
-
-          <div class="space-y-3 bg-white/60 p-6 rounded-3xl shadow-sm">
-            <p id="hanjaMeaning" class="text-blue-600 font-black text-xs uppercase tracking-widest"></p>
-            <p id="explainResult" class="text-slate-700 leading-relaxed text-sm font-medium"></p>
+          <div class="space-y-2">
+            <button type="button" onclick="downloadCard()"
+                    class="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-black rounded-2xl shadow-lg hover:brightness-110 transition-all text-sm">
+              Download Card
+            </button>
           </div>
         </div>
 
-        <div class="space-y-2">
-          <button onclick="downloadCard()"
-                  class="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-black rounded-2xl shadow-lg hover:brightness-110 transition-all text-sm">
-            Download Card
-          </button>
-        </div>
       </div>
+    </main>
 
+    <!-- ✅ 하단 고정 영역 -->
+    <div class="flex flex-col items-center gap-4 pb-2">
+      <button type="button"
+              onclick="openModal('about')"
+              class="text-slate-700 font-black underline underline-offset-4 hover:text-slate-900 transition">
+        What is K-Identity?
+      </button>
+
+      <footer class="text-center text-sm text-slate-500 font-semibold">
+        <button type="button" onclick="openModal('privacy')" class="underline hover:text-slate-700 mr-4">
+          Privacy Policy
+        </button>
+        <button type="button" onclick="openModal('terms')" class="underline hover:text-slate-700">
+          Terms of Service
+        </button>
+      </footer>
     </div>
 
-    <!-- ✅ What is K-Identity? 버튼 (Privacy Policy처럼 “모달”로 뜨게) -->
-    <button type="button"
-            onclick="openModal('about')"
-            class="text-slate-700 font-black underline underline-offset-4 hover:text-slate-900 transition">
-      What is K-Identity?
-    </button>
-
-    <!-- ✅ Footer -->
-    <footer class="text-center text-sm text-slate-500 font-semibold">
-      <button type="button" onclick="openModal('privacy')" class="underline hover:text-slate-700 mr-4">
-        Privacy Policy
-      </button>
-      <button type="button" onclick="openModal('terms')" class="underline hover:text-slate-700">
-        Terms of Service
-      </button>
-    </footer>
   </div>
 
-  <!-- ✅ Universal Modal (about / privacy / terms 다 여기로) -->
+  <!-- ✅ Universal Modal (about / privacy / terms) -->
   <div id="modal" class="hidden fixed inset-0 z-[9999]">
     <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModalUniversal()"></div>
 
-    <div class="relative mx-auto mt-10 mb-10 w-[min(900px,92vw)] bg-white rounded-3xl shadow-2xl overflow-hidden">
+    <div class="relative mx-auto my-10 w-[min(900px,92vw)] bg-white rounded-3xl shadow-2xl overflow-hidden">
       <div class="flex items-center justify-between px-6 py-4 border-b">
         <h2 id="modalTitle" class="text-lg font-black text-slate-800">Modal</h2>
         <button type="button" onclick="closeModalUniversal()"
@@ -170,8 +173,6 @@
 
   <!-- ✅ Modal Contents (hidden) -->
   <div class="hidden">
-
-    <!-- About -->
     <div id="aboutContent">
       <h2 class="text-2xl font-black text-slate-800 mb-4">What is K-Identity?</h2>
       <p class="mb-4">
@@ -202,7 +203,6 @@
       </p>
     </div>
 
-    <!-- Privacy -->
     <div id="privacyContent">
       <p class="text-sm text-slate-500"><strong>Last updated:</strong> 2026-01-22</p>
       <p class="mt-4">
@@ -236,7 +236,6 @@
       </p>
     </div>
 
-    <!-- Terms -->
     <div id="termsContent">
       <p class="text-sm text-slate-500"><strong>Last updated:</strong> 2026-01-22</p>
 
@@ -257,11 +256,11 @@
     </div>
   </div>
 
-  <!-- Recharge Modal (너 코드 유지) -->
+  <!-- Recharge Modal -->
   <div id="rechargeModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-6 z-50">
     <div class="bg-white w-full max-w-sm rounded-[2.5rem] p-10 text-center space-y-6 shadow-2xl scale-in relative">
 
-      <button onclick="closeRechargeModal()" aria-label="Close"
+      <button type="button" onclick="closeRechargeModal()" aria-label="Close"
               class="absolute top-4 right-4 w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-black flex items-center justify-center transition-all">
         ✕
       </button>
@@ -270,33 +269,33 @@
       <p class="text-slate-500 text-sm italic">Get more credits to find more names:</p>
 
       <div class="space-y-3">
-        <a href="https://www.buymeacoffee.com/seonho" target="_blank" onclick="buyCredits(3)"
+        <a href="https://www.buymeacoffee.com/seonho" target="_blank" rel="noopener" onclick="buyCredits(3)"
            class="block w-full py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl transition-all text-sm text-center">
           💸 Try 3 more names ($1)
         </a>
 
-        <a href="https://www.buymeacoffee.com/seonho" target="_blank" onclick="buyCredits(20)"
+        <a href="https://www.buymeacoffee.com/seonho" target="_blank" rel="noopener" onclick="buyCredits(20)"
            class="block w-full py-4 bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-black rounded-2xl transition-all shadow-md text-center">
           ☕️ Full Pack - 20 names ($3)
         </a>
 
-        <a href="https://www.buymeacoffee.com/seonho" target="_blank" onclick="buyCredits(50)"
+        <a href="https://www.buymeacoffee.com/seonho" target="_blank" rel="noopener" onclick="buyCredits(50)"
            class="block w-full py-4 bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold rounded-2xl transition-all text-sm text-center">
           🎁 Family Pack - 50 names ($5)
         </a>
 
         <div class="pt-2 flex flex-col gap-2">
-          <button onclick="shareOnInsta()" class="w-full py-3 bg-pink-50 text-pink-600 font-bold rounded-xl text-xs">
+          <button type="button" onclick="shareOnInsta()" class="w-full py-3 bg-pink-50 text-pink-600 font-bold rounded-xl text-xs">
             📸 Share for +3 Credits
           </button>
-          <button onclick="startAdTimer()" id="adBtn"
+          <button type="button" onclick="startAdTimer()" id="adBtn"
                   class="w-full py-2 text-slate-400 text-[10px] font-bold underline italic uppercase tracking-widest">
             Or watch 30s ad for 1 credit
           </button>
         </div>
       </div>
 
-      <button onclick="closeRechargeModal()"
+      <button type="button" onclick="closeRechargeModal()"
               class="text-slate-500 text-[11px] font-bold uppercase tracking-widest hover:text-slate-700 transition-all">
         Back to Results
       </button>
@@ -354,18 +353,24 @@
     });
 
     /* =========================================================
-       ✅ 1. Credit Logic
+       ✅ 1. Credit Logic (0 미만 방지)
        ========================================================= */
     if (!localStorage.getItem('k_credits')) localStorage.setItem('k_credits', '1');
     updateCreditUI();
 
-    function getCredits() { return parseInt(localStorage.getItem('k_credits') || '0', 10); }
-    function updateCreditUI() { document.getElementById('creditDisplay').innerText = localStorage.getItem('k_credits') || '0'; }
+    function getCredits() {
+      return parseInt(localStorage.getItem('k_credits') || '0', 10);
+    }
 
+    function updateCreditUI() {
+      document.getElementById('creditDisplay').innerText = localStorage.getItem('k_credits') || '0';
+    }
+
+    // 기존 이름 유지(네 코드 흐름) + 0미만 clamp
     function recharge(amount) {
       const current = getCredits();
-      const next = current + amount;
-      localStorage.setItem('k_credits', next.toString());
+      const next = Math.max(0, current + amount);
+      localStorage.setItem('k_credits', String(next));
       updateCreditUI();
       console.log(`Credit Updated: ${current} -> ${next}`);
     }
@@ -377,20 +382,33 @@
     function closeRechargeModal() { document.getElementById('rechargeModal').classList.add('hidden'); }
 
     /* =========================================================
-       ✅ 3. Tiger loading animation
+       ✅ 3. Tiger loading animation (중복 실행 방지)
        ========================================================= */
-    let progressIdx;
+    let progressIdx = null;
 
     function startTigerMotion() {
-      let leftPos = 0; let seconds = 30;
+      if (progressIdx) clearInterval(progressIdx);
+
+      let leftPos = 0;
+      let seconds = 30;
+
       const tiger = document.getElementById('tiger');
       const countdown = document.getElementById('countdown');
+
       tiger.style.left = "0%";
+      countdown.innerText = seconds;
+
       progressIdx = setInterval(() => {
-        leftPos += 3; seconds--;
+        leftPos += 3;
+        seconds--;
+
         tiger.style.left = leftPos + "%";
         countdown.innerText = Math.max(0, seconds);
-        if (leftPos >= 85) clearInterval(progressIdx);
+
+        if (leftPos >= 85 || seconds <= 0) {
+          clearInterval(progressIdx);
+          progressIdx = null;
+        }
       }, 1000);
     }
 
@@ -486,7 +504,7 @@
     }
 
     /* =========================================================
-       ✅ 5. Buy/Share credit flow (문법/빨간줄 정리)
+       ✅ 5. Buy/Share credit flow
        ========================================================= */
     let pendingCreditAmount = 0;
     let isWaitingForAction = false;
@@ -497,7 +515,7 @@
     }
 
     function shareOnInsta() {
-      window.open('https://instagram.com', '_blank');
+      window.open('https://instagram.com', '_blank', 'noopener');
       pendingCreditAmount = 3;
       isWaitingForAction = true;
     }
@@ -534,6 +552,7 @@
     function startAdTimer() {
       const btn = document.getElementById('adBtn');
       let timeLeft = 30;
+
       btn.disabled = true;
 
       const interval = setInterval(() => {
@@ -551,62 +570,87 @@
     }
 
     /* =========================================================
-       ✅ 6. Main Generation (URLSearchParams로 빨간줄 방지)
+       ✅ 6. Main Generation (URLSearchParams fallback + 상태 리셋)
        ========================================================= */
+    function buildQuery(paramsObj) {
+      // URLSearchParams 빨간줄/호환성 이슈 방지용 fallback
+      if (typeof URLSearchParams !== 'undefined') {
+        return new URLSearchParams(paramsObj).toString();
+      }
+      return Object.keys(paramsObj)
+        .map((k) => `${encodeURIComponent(k)}=${encodeURIComponent(paramsObj[k])}`)
+        .join('&');
+    }
+
     async function generate() {
       if (getCredits() <= 0) return showRechargeModal();
+
       const name = document.getElementById('engName').value.trim();
       if (!name) return alert("Please enter name!");
 
+      // ✅ 결과/이미지 상태 리셋
+      const imgElement = document.getElementById('aiImage');
+      imgElement.src = "";
+      imgElement.classList.add('hidden');
+      document.getElementById('imagePlaceholder').classList.remove('hidden');
+
+      document.getElementById('kNameResult').innerText = "";
+      document.getElementById('hanjaMeaning').innerText = "";
+      document.getElementById('explainResult').innerText = "";
+
+      // ✅ 로딩 시작
       document.getElementById('loading').classList.remove('hidden');
       document.getElementById('resultSection').classList.add('hidden');
       startTigerMotion();
 
       try {
-        const params = new URLSearchParams({
+        const query = buildQuery({
           english_name: name,
           vibe: document.getElementById('vibe').value,
           gender: document.getElementById('gender').value,
           lang: document.getElementById('lang').value,
           strategy: document.getElementById('strategy').value,
-        }).toString();
+        });
 
-        const res = await fetch(`/api/generate-k-identity?${params}`);
+        const res = await fetch(`/api/generate-k-identity?${query}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
         const data = await res.json();
 
         document.getElementById('kNameResult').innerText = data.k_name || "";
         document.getElementById('hanjaMeaning').innerText = data.meaning || "";
         document.getElementById('explainResult').innerText = data.explain || "";
 
-        const imgElement = document.getElementById('aiImage');
         if (data.image_url) {
+          imgElement.onload = () => finishLoading(true);
+          imgElement.onerror = () => {
+            finishLoading(true);
+            alert("Name is ready, but image failed to load.");
+          };
+
           imgElement.src = data.image_url;
           imgElement.classList.remove('hidden');
           document.getElementById('imagePlaceholder').classList.add('hidden');
-
-          imgElement.onload = () => finishLoading();
-          imgElement.onerror = () => {
-            finishLoading();
-            alert("Name is ready, but image failed to load.");
-          };
         } else {
-          finishLoading();
+          finishLoading(true);
           alert("Name is ready, but image failed to load.");
         }
 
       } catch (e) {
         console.error("Fetch Error:", e);
-        clearInterval(progressIdx);
+        if (progressIdx) { clearInterval(progressIdx); progressIdx = null; }
         document.getElementById('loading').classList.add('hidden');
         alert("Server Busy! Please try once more.");
       }
     }
 
-    function finishLoading() {
-      clearInterval(progressIdx);
+    function finishLoading(deductCredit) {
+      if (progressIdx) { clearInterval(progressIdx); progressIdx = null; }
       document.getElementById('loading').classList.add('hidden');
       document.getElementById('resultSection').classList.remove('hidden');
-      recharge(-1);
+
+      // ✅ 성공적으로 결과를 받았을 때만 차감(원하는 흐름이면 true로)
+      if (deductCredit) recharge(-1);
     }
   </script>
 </body>
