@@ -148,9 +148,25 @@
     id="contentBody"
     class="hidden mt-6 bg-white rounded-2xl shadow-inner px-6 py-6 text-slate-700 leading-relaxed"
   >
-    <h2 class="text-xl font-black text-slate-800 mb-3">
+    <!-- ✅ What is K-Identity? (Click to expand) -->
+<section class="max-w-3xl mx-auto mt-12 mb-12 px-4">
+  <button
+    onclick="toggleAbout()"
+    class="w-full flex items-center justify-between text-left"
+  >
+    <h2 class="text-2xl font-black text-slate-800">
       What is K-Identity?
     </h2>
+    <span
+      id="aboutArrow"
+      class="text-xl transition-transform"
+    >⌄</span>
+  </button>
+
+  <div
+    id="aboutContent"
+    class="hidden mt-6 text-slate-700 leading-relaxed"
+  >
     <p class="mb-4">
       K-Identity is a Korean name generator designed for people who are interested in Korean culture,
       language, and personal identity. By analyzing pronunciation, meaning, and cultural context,
@@ -175,16 +191,9 @@
       <li>Writers and creators looking for authentic Korean character names</li>
       <li>Anyone who wants a fun and meaningful Korean name</li>
     </ul>
-
-    <h3 class="text-lg font-bold text-slate-800 mt-6 mb-2">
-      Disclaimer
-    </h3>
-    <p class="text-sm text-slate-500">
-      This service provides name suggestions for entertainment and cultural interest purposes only.
-      The generated names are not legally binding or officially registered names.
-    </p>
   </div>
 </section>
+
 
 
   <!-- ✅ Footer: 클릭하면 모달로 정책 표시 -->
@@ -650,14 +659,13 @@
         if (!modal.classList.contains('hidden')) closePolicy();
       }
     });
-    function toggleContent() {
-  const body = document.getElementById("contentBody");
-  const arrow = document.getElementById("contentArrow");
+    function toggleAbout() {
+  const content = document.getElementById("aboutContent");
+  const arrow = document.getElementById("aboutArrow");
 
-  body.classList.toggle("hidden");
+  content.classList.toggle("hidden");
   arrow.classList.toggle("rotate-180");
 }
-
   </script>
 </body>
 </html>
