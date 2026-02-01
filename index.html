@@ -13,7 +13,6 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4002075177790525"
      crossorigin="anonymous"></script>
 
-    
   <style>
     body { font-family: 'Inter', sans-serif; }
     .track {
@@ -28,15 +27,19 @@
       position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 28px;
     }
     .scale-in { animation: scaleIn 0.3s ease-out; }
-    @keyframes scaleIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    @keyframes scaleIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
   </style>
 </head>
 
 <body class="bg-slate-50 min-h-screen p-6">
 
-  <!-- ✅ 메인 카드만 가운데 정렬 -->
-  <!-- (중요) min-h-screen 제거해서 아래 콘텐츠/푸터가 자연스럽게 붙게 함 -->
-  <div class="min-h-[70vh] flex items-center justify-center">
+  <!-- ✅ 전체 레이아웃: 카드가 화면 정중앙 + 아래에 버튼/푸터 -->
+  <div class="min-h-screen flex flex-col items-center justify-center gap-6">
+
+    <!-- ✅ 메인 카드 (가운데 고정) -->
     <div class="bg-white max-w-md w-full rounded-[2.5rem] shadow-2xl p-10 space-y-8 relative overflow-hidden">
 
       <div class="absolute top-6 right-8">
@@ -120,7 +123,6 @@
           </div>
         </div>
 
-        <!-- ✅ Download 버튼만 -->
         <div class="space-y-2">
           <button onclick="downloadCard()"
                   class="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-black rounded-2xl shadow-lg hover:brightness-110 transition-all text-sm">
@@ -130,104 +132,79 @@
       </div>
 
     </div>
-  </div>
 
-  <!-- ✅ Collapsible Content Section (AdSense OK) -->
-<section class="max-w-3xl mx-auto mt-10 mb-12 px-4">
-  <button
-    onclick="toggleContent()"
-    class="w-full flex items-center justify-between bg-white rounded-2xl shadow-md px-6 py-5 text-left"
-  >
-    <span class="text-lg font-black text-slate-800">
-      About K-Identity (Click to expand)
-    </span>
-    <span id="contentArrow" class="text-xl transition-transform">⌄</span>
-  </button>
-
-  <div
-    id="contentBody"
-    class="hidden mt-6 bg-white rounded-2xl shadow-inner px-6 py-6 text-slate-700 leading-relaxed"
-  >
-    <!-- ✅ What is K-Identity? (Click to expand) -->
-<section class="max-w-3xl mx-auto mt-12 mb-12 px-4">
-  <button
-    onclick="toggleAbout()"
-    class="w-full flex items-center justify-between text-left"
-  >
-    <h2 class="text-2xl font-black text-slate-800">
+    <!-- ✅ What is K-Identity? 버튼 (Privacy Policy처럼 “모달”로 뜨게) -->
+    <button type="button"
+            onclick="openModal('about')"
+            class="text-slate-700 font-black underline underline-offset-4 hover:text-slate-900 transition">
       What is K-Identity?
-    </h2>
-    <span
-      id="aboutArrow"
-      class="text-xl transition-transform"
-    >⌄</span>
-  </button>
+    </button>
 
-  <div
-    id="aboutContent"
-    class="hidden mt-6 text-slate-700 leading-relaxed"
-  >
-    <p class="mb-4">
-      K-Identity is a Korean name generator designed for people who are interested in Korean culture,
-      language, and personal identity. By analyzing pronunciation, meaning, and cultural context,
-      this tool suggests Korean names that feel natural and meaningful.
-    </p>
-
-    <h3 class="text-lg font-bold text-slate-800 mt-6 mb-2">
-      How does this Korean name generator work?
-    </h3>
-    <p class="mb-4">
-      Users enter a name or keyword in any language and choose preferences such as gender and style.
-      The generator then creates a Korean name suggestion along with its meaning and explanation.
-      This process is intended for cultural exploration and entertainment purposes.
-    </p>
-
-    <h3 class="text-lg font-bold text-slate-800 mt-6 mb-2">
-      Who is this tool for?
-    </h3>
-    <ul class="list-disc pl-6 mb-4">
-      <li>People learning Korean or interested in Korean names</li>
-      <li>Fans of Korean culture, K-dramas, and K-pop</li>
-      <li>Writers and creators looking for authentic Korean character names</li>
-      <li>Anyone who wants a fun and meaningful Korean name</li>
-    </ul>
+    <!-- ✅ Footer -->
+    <footer class="text-center text-sm text-slate-500 font-semibold">
+      <button type="button" onclick="openModal('privacy')" class="underline hover:text-slate-700 mr-4">
+        Privacy Policy
+      </button>
+      <button type="button" onclick="openModal('terms')" class="underline hover:text-slate-700">
+        Terms of Service
+      </button>
+    </footer>
   </div>
-</section>
 
-
-
-  <!-- ✅ Footer: 클릭하면 모달로 정책 표시 -->
-  <footer class="mt-10 mb-6 text-center text-sm text-slate-500 font-semibold">
-    <button type="button" onclick="openPolicy('privacy')" class="underline hover:text-slate-700 mr-4">
-      Privacy Policy
-    </button>
-    <button type="button" onclick="openPolicy('terms')" class="underline hover:text-slate-700">
-      Terms of Service
-    </button>
-  </footer>
-
-  <!-- ✅ Policy Modal -->
-  <div id="policyModal" class="hidden fixed inset-0 z-[9999]">
-    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closePolicy()"></div>
+  <!-- ✅ Universal Modal (about / privacy / terms 다 여기로) -->
+  <div id="modal" class="hidden fixed inset-0 z-[9999]">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModalUniversal()"></div>
 
     <div class="relative mx-auto mt-10 mb-10 w-[min(900px,92vw)] bg-white rounded-3xl shadow-2xl overflow-hidden">
       <div class="flex items-center justify-between px-6 py-4 border-b">
-        <h2 id="policyTitle" class="text-lg font-black text-slate-800">Policy</h2>
-        <button type="button" onclick="closePolicy()"
+        <h2 id="modalTitle" class="text-lg font-black text-slate-800">Modal</h2>
+        <button type="button" onclick="closeModalUniversal()"
                 class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-black">
           ✕
         </button>
       </div>
 
-      <div id="policyBody" class="px-6 py-6 max-h-[75vh] overflow-auto text-slate-700 leading-relaxed"></div>
+      <div id="modalBody" class="px-6 py-6 max-h-[75vh] overflow-auto text-slate-700 leading-relaxed"></div>
     </div>
   </div>
 
-  <!-- ✅ Policy Contents (hidden, used by modal) -->
+  <!-- ✅ Modal Contents (hidden) -->
   <div class="hidden">
+
+    <!-- About -->
+    <div id="aboutContent">
+      <h2 class="text-2xl font-black text-slate-800 mb-4">What is K-Identity?</h2>
+      <p class="mb-4">
+        K-Identity is a Korean name generator designed for people who are interested in Korean culture,
+        language, and personal identity. By analyzing pronunciation, meaning, and cultural context,
+        this tool suggests Korean names that feel natural and meaningful.
+      </p>
+
+      <h3 class="text-xl font-bold text-slate-800 mt-8 mb-3">How does this Korean name generator work?</h3>
+      <p class="mb-4">
+        Users enter a name or keyword in any language and choose preferences such as gender and style.
+        The generator then creates a Korean name suggestion along with its meaning and explanation.
+        This process is intended for cultural exploration and entertainment purposes.
+      </p>
+
+      <h3 class="text-xl font-bold text-slate-800 mt-8 mb-3">Who is this tool for?</h3>
+      <ul class="list-disc pl-6 mb-4">
+        <li>People learning Korean or interested in Korean names</li>
+        <li>Fans of Korean culture, K-dramas, and K-pop</li>
+        <li>Writers and creators looking for authentic Korean character names</li>
+        <li>Anyone who wants a fun and meaningful Korean name</li>
+      </ul>
+
+      <h3 class="text-xl font-bold text-slate-800 mt-8 mb-3">Disclaimer</h3>
+      <p class="text-sm text-slate-500">
+        This service provides name suggestions for entertainment and cultural interest purposes only.
+        The generated names are not legally binding or officially registered names.
+      </p>
+    </div>
+
+    <!-- Privacy -->
     <div id="privacyContent">
       <p class="text-sm text-slate-500"><strong>Last updated:</strong> 2026-01-22</p>
-
       <p class="mt-4">
         This Privacy Policy explains how this website (“we”, “our”, “the Service”) collects, uses, and shares information
         when you use our Korean name generator.
@@ -250,25 +227,8 @@
       <h3 class="mt-6 text-base font-extrabold text-slate-800">Advertising (Google AdSense)</h3>
       <p class="mt-2">
         We may use Google AdSense to show ads. Google and its partners may use cookies to serve ads based on your visits to this
-        and/or other sites. You can manage personalized ads through Google’s ad settings and learn more in Google’s advertising policies.
+        and/or other sites.
       </p>
-
-      <h3 class="mt-6 text-base font-extrabold text-slate-800">Sharing of Information</h3>
-      <p class="mt-2">
-        We do not sell your personal information. We may share information with service providers (e.g., hosting, analytics, advertising)
-        strictly to operate the Service, comply with legal obligations, or protect rights and safety.
-      </p>
-
-      <h3 class="mt-6 text-base font-extrabold text-slate-800">Data Retention</h3>
-      <p class="mt-2">
-        We retain information only as long as necessary for the purposes described above, unless a longer retention period is required by law.
-      </p>
-
-      <h3 class="mt-6 text-base font-extrabold text-slate-800">Your Choices</h3>
-      <ul class="mt-2 list-disc pl-5 space-y-1">
-        <li>You can disable cookies in your browser settings (some features may not work properly).</li>
-        <li>You can use Google tools to manage ad personalization preferences.</li>
-      </ul>
 
       <h3 class="mt-6 text-base font-extrabold text-slate-800">Contact</h3>
       <p class="mt-2">
@@ -276,6 +236,7 @@
       </p>
     </div>
 
+    <!-- Terms -->
     <div id="termsContent">
       <p class="text-sm text-slate-500"><strong>Last updated:</strong> 2026-01-22</p>
 
@@ -287,38 +248,6 @@
       <h3 class="mt-6 text-base font-extrabold text-slate-800">Service Description</h3>
       <p class="mt-2">
         The Service provides Korean name suggestions for entertainment and cultural interest purposes.
-        Generated results may not be accurate, appropriate, or unique.
-      </p>
-
-      <h3 class="mt-6 text-base font-extrabold text-slate-800">No Professional Advice</h3>
-      <p class="mt-2">
-        The Service does not provide legal, professional, or official naming advice. You are responsible for how you use the results.
-      </p>
-
-      <h3 class="mt-6 text-base font-extrabold text-slate-800">User Content</h3>
-      <p class="mt-2">
-        You are responsible for the content you input. Do not input sensitive personal information.
-      </p>
-
-      <h3 class="mt-6 text-base font-extrabold text-slate-800">Acceptable Use</h3>
-      <ul class="mt-2 list-disc pl-5 space-y-1">
-        <li>Do not misuse the Service, attempt to disrupt it, or access it using automated scraping without permission.</li>
-        <li>Do not use the Service for unlawful, harmful, or abusive purposes.</li>
-      </ul>
-
-      <h3 class="mt-6 text-base font-extrabold text-slate-800">Disclaimer of Warranties</h3>
-      <p class="mt-2">
-        The Service is provided “as is” without warranties of any kind. We do not guarantee uninterrupted or error-free operation.
-      </p>
-
-      <h3 class="mt-6 text-base font-extrabold text-slate-800">Limitation of Liability</h3>
-      <p class="mt-2">
-        To the maximum extent permitted by law, we are not liable for any indirect, incidental, or consequential damages arising from use of the Service.
-      </p>
-
-      <h3 class="mt-6 text-base font-extrabold text-slate-800">Changes to These Terms</h3>
-      <p class="mt-2">
-        We may update these Terms from time to time. Continued use of the Service after changes means you accept the updated Terms.
       </p>
 
       <h3 class="mt-6 text-base font-extrabold text-slate-800">Contact</h3>
@@ -328,11 +257,11 @@
     </div>
   </div>
 
+  <!-- Recharge Modal (너 코드 유지) -->
   <div id="rechargeModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-6 z-50">
     <div class="bg-white w-full max-w-sm rounded-[2.5rem] p-10 text-center space-y-6 shadow-2xl scale-in relative">
 
-      <!-- ✅ X 닫기 버튼 -->
-      <button onclick="closeModal()" aria-label="Close"
+      <button onclick="closeRechargeModal()" aria-label="Close"
               class="absolute top-4 right-4 w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-black flex items-center justify-center transition-all">
         ✕
       </button>
@@ -367,7 +296,7 @@
         </div>
       </div>
 
-      <button onclick="closeModal()"
+      <button onclick="closeRechargeModal()"
               class="text-slate-500 text-[11px] font-bold uppercase tracking-widest hover:text-slate-700 transition-all">
         Back to Results
       </button>
@@ -375,16 +304,81 @@
   </div>
 
   <script>
-    // --- 1. Credit Logic ---
+    /* =========================================================
+       ✅ 0. Universal Modal (about/privacy/terms)
+       ========================================================= */
+    function openModal(type) {
+      const modal = document.getElementById('modal');
+      const title = document.getElementById('modalTitle');
+      const body = document.getElementById('modalBody');
+
+      if (type === 'about') {
+        title.textContent = 'What is K-Identity?';
+        body.innerHTML = document.getElementById('aboutContent').innerHTML;
+        location.hash = 'about';
+      } else if (type === 'privacy') {
+        title.textContent = 'Privacy Policy';
+        body.innerHTML = document.getElementById('privacyContent').innerHTML;
+        location.hash = 'privacy';
+      } else {
+        title.textContent = 'Terms of Service';
+        body.innerHTML = document.getElementById('termsContent').innerHTML;
+        location.hash = 'terms';
+      }
+
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModalUniversal() {
+      const modal = document.getElementById('modal');
+      modal.classList.add('hidden');
+      document.body.style.overflow = '';
+
+      if (location.hash === '#about' || location.hash === '#privacy' || location.hash === '#terms') {
+        history.replaceState(null, '', location.pathname + location.search);
+      }
+    }
+
+    window.addEventListener('load', () => {
+      if (location.hash === '#about') openModal('about');
+      if (location.hash === '#privacy') openModal('privacy');
+      if (location.hash === '#terms') openModal('terms');
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const modal = document.getElementById('modal');
+        if (!modal.classList.contains('hidden')) closeModalUniversal();
+      }
+    });
+
+    /* =========================================================
+       ✅ 1. Credit Logic
+       ========================================================= */
     if (!localStorage.getItem('k_credits')) localStorage.setItem('k_credits', '1');
     updateCreditUI();
-    function getCredits() { return parseInt(localStorage.getItem('k_credits')); }
-    function updateCreditUI() { document.getElementById('creditDisplay').innerText = localStorage.getItem('k_credits'); }
 
-    // --- 2. UI Controls ---
+    function getCredits() { return parseInt(localStorage.getItem('k_credits') || '0', 10); }
+    function updateCreditUI() { document.getElementById('creditDisplay').innerText = localStorage.getItem('k_credits') || '0'; }
+
+    function recharge(amount) {
+      const current = getCredits();
+      const next = current + amount;
+      localStorage.setItem('k_credits', next.toString());
+      updateCreditUI();
+      console.log(`Credit Updated: ${current} -> ${next}`);
+    }
+
+    /* =========================================================
+       ✅ 2. Recharge modal controls
+       ========================================================= */
     function showRechargeModal() { document.getElementById('rechargeModal').classList.remove('hidden'); }
-    function closeModal() { document.getElementById('rechargeModal').classList.add('hidden'); }
+    function closeRechargeModal() { document.getElementById('rechargeModal').classList.add('hidden'); }
 
+    /* =========================================================
+       ✅ 3. Tiger loading animation
+       ========================================================= */
     let progressIdx;
 
     function startTigerMotion() {
@@ -401,7 +395,7 @@
     }
 
     /* =========================================================
-       ✅ 3. Download (PC는 자동 다운로드, 모바일은 저장 전용 페이지)
+       ✅ 4. Download (PC 다운로드, 모바일 저장 페이지)
        ========================================================= */
     function isMobile() {
       return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -430,9 +424,9 @@
       ctx.drawImage(canvas, 0, 0);
 
       const filename = "My_K-Identity.png";
+      const dataUrl = outCanvas.toDataURL("image/png");
 
       if (!mobile) {
-        const dataUrl = outCanvas.toDataURL("image/png");
         const a = document.createElement("a");
         a.href = dataUrl;
         a.download = filename;
@@ -442,7 +436,6 @@
         return;
       }
 
-      const dataUrl = outCanvas.toDataURL("image/png");
       const page = `
 <!doctype html>
 <html>
@@ -492,7 +485,9 @@
       document.close();
     }
 
-    // --- [추가] 상태 관리 변수 ---
+    /* =========================================================
+       ✅ 5. Buy/Share credit flow (문법/빨간줄 정리)
+       ========================================================= */
     let pendingCreditAmount = 0;
     let isWaitingForAction = false;
 
@@ -507,62 +502,60 @@
       isWaitingForAction = true;
     }
 
+    function handleReturn() {
+      if (!isWaitingForAction) return;
+      isWaitingForAction = false;
+
+      setTimeout(() => {
+        const message = pendingCreditAmount >= 20 ? "purchase" : "sharing";
+        const ok = confirm(
+          "Welcome back! 🐯\n" +
+          `Did you complete the ${message}?\n` +
+          `Click 'OK' to receive your ${pendingCreditAmount} credits!`
+        );
+
+        if (ok) {
+          recharge(pendingCreditAmount);
+          alert(`Success! ${pendingCreditAmount} credits added.`);
+          closeRechargeModal();
+        }
+        pendingCreditAmount = 0;
+      }, 500);
+    }
+
     document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible' && isWaitingForAction) {
-        handleReturn();
-      }
+      if (document.visibilityState === 'visible' && isWaitingForAction) handleReturn();
+    });
+
+    window.addEventListener('focus', () => {
+      if (isWaitingForAction) handleReturn();
     });
 
     function startAdTimer() {
       const btn = document.getElementById('adBtn');
       let timeLeft = 30;
       btn.disabled = true;
+
       const interval = setInterval(() => {
         btn.innerText = `WAITING... ${timeLeft}s`;
         timeLeft--;
+
         if (timeLeft < 0) {
           clearInterval(interval);
           recharge(1);
           btn.innerText = "OR WATCH 30S AD FOR 1 CREDIT";
           btn.disabled = false;
-          closeModal();
+          closeRechargeModal();
         }
       }, 1000);
     }
 
-    function recharge(amount) {
-      const current = getCredits();
-      const next = current + amount;
-      localStorage.setItem('k_credits', next.toString());
-      updateCreditUI();
-      console.log(`Credit Updated: ${current} -> ${next}`);
-    }
-
-    function handleReturn() {
-      if (!isWaitingForAction) return;
-      isWaitingForAction = false;
-
-      setTimeout(() => {
-        let message = pendingCreditAmount >= 20 ? "purchase" : "sharing";
-        if (confirm(`Welcome back! 🐯\nDid you complete the ${message}?\nClick 'OK' to receive your ${pendingCreditAmount} credits!`)) {
-          recharge(pendingCreditAmount);
-          alert(`Success! ${pendingCreditAmount} credits added.`);
-          closeModal();
-        }
-        pendingCreditAmount = 0;
-      }, 500);
-    }
-
-    window.addEventListener('focus', () => {
-      if (isWaitingForAction) {
-        handleReturn();
-      }
-    });
-
-    // --- 4. Main Generation ---
+    /* =========================================================
+       ✅ 6. Main Generation (URLSearchParams로 빨간줄 방지)
+       ========================================================= */
     async function generate() {
       if (getCredits() <= 0) return showRechargeModal();
-      const name = document.getElementById('engName').value;
+      const name = document.getElementById('engName').value.trim();
       if (!name) return alert("Please enter name!");
 
       document.getElementById('loading').classList.remove('hidden');
@@ -570,12 +563,13 @@
       startTigerMotion();
 
       try {
-        const params =
-          `english_name=${encodeURIComponent(name)}` +
-          `&vibe=${encodeURIComponent(document.getElementById('vibe').value)}` +
-          `&gender=${encodeURIComponent(document.getElementById('gender').value)}` +
-          `&lang=${encodeURIComponent(document.getElementById('lang').value)}` +
-          `&strategy=${encodeURIComponent(document.getElementById('strategy').value)}`;
+        const params = new URLSearchParams({
+          english_name: name,
+          vibe: document.getElementById('vibe').value,
+          gender: document.getElementById('gender').value,
+          lang: document.getElementById('lang').value,
+          strategy: document.getElementById('strategy').value,
+        }).toString();
 
         const res = await fetch(`/api/generate-k-identity?${params}`);
         const data = await res.json();
@@ -614,58 +608,6 @@
       document.getElementById('resultSection').classList.remove('hidden');
       recharge(-1);
     }
-
-    /* =========================================================
-       ✅ Policy Modal Functions
-       ========================================================= */
-    function openPolicy(type) {
-      const modal = document.getElementById('policyModal');
-      const title = document.getElementById('policyTitle');
-      const body = document.getElementById('policyBody');
-
-      if (type === 'privacy') {
-        title.textContent = 'Privacy Policy';
-        body.innerHTML = document.getElementById('privacyContent').innerHTML;
-        location.hash = 'privacy';
-      } else {
-        title.textContent = 'Terms of Service';
-        body.innerHTML = document.getElementById('termsContent').innerHTML;
-        location.hash = 'terms';
-      }
-
-      modal.classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closePolicy() {
-      const modal = document.getElementById('policyModal');
-      modal.classList.add('hidden');
-      document.body.style.overflow = '';
-
-      if (location.hash === '#privacy' || location.hash === '#terms') {
-        history.replaceState(null, '', location.pathname + location.search);
-      }
-    }
-
-    window.addEventListener('load', () => {
-      if (location.hash === '#privacy') openPolicy('privacy');
-      if (location.hash === '#terms') openPolicy('terms');
-    });
-
-    // ESC로 닫기 (편의)
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        const modal = document.getElementById('policyModal');
-        if (!modal.classList.contains('hidden')) closePolicy();
-      }
-    });
-    function toggleAbout() {
-  const content = document.getElementById("aboutContent");
-  const arrow = document.getElementById("aboutArrow");
-
-  content.classList.toggle("hidden");
-  arrow.classList.toggle("rotate-180");
-}
   </script>
 </body>
 </html>
