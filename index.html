@@ -13,6 +13,7 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4002075177790525"
      crossorigin="anonymous"></script>
 
+    
   <style>
     body { font-family: 'Inter', sans-serif; }
     .track {
@@ -35,7 +36,7 @@
 
   <!-- ✅ 메인 카드만 가운데 정렬 -->
   <!-- (중요) min-h-screen 제거해서 아래 콘텐츠/푸터가 자연스럽게 붙게 함 -->
-  <div class="flex items-center justify-center">
+  <div class="min-h-[70vh] flex items-center justify-center">
     <div class="bg-white max-w-md w-full rounded-[2.5rem] shadow-2xl p-10 space-y-8 relative overflow-hidden">
 
       <div class="absolute top-6 right-8">
@@ -131,9 +132,23 @@
     </div>
   </div>
 
-  <!-- ✅ AdSense용 게시자 콘텐츠 섹션 (항상 보이도록: 카드 밖 & footer 위) -->
-  <section class="max-w-3xl mx-auto mt-12 mb-10 px-4 text-slate-700 leading-relaxed">
-    <h2 class="text-2xl font-black text-slate-800 mb-4">
+  <!-- ✅ Collapsible Content Section (AdSense OK) -->
+<section class="max-w-3xl mx-auto mt-10 mb-12 px-4">
+  <button
+    onclick="toggleContent()"
+    class="w-full flex items-center justify-between bg-white rounded-2xl shadow-md px-6 py-5 text-left"
+  >
+    <span class="text-lg font-black text-slate-800">
+      About K-Identity (Click to expand)
+    </span>
+    <span id="contentArrow" class="text-xl transition-transform">⌄</span>
+  </button>
+
+  <div
+    id="contentBody"
+    class="hidden mt-6 bg-white rounded-2xl shadow-inner px-6 py-6 text-slate-700 leading-relaxed"
+  >
+    <h2 class="text-xl font-black text-slate-800 mb-3">
       What is K-Identity?
     </h2>
     <p class="mb-4">
@@ -142,7 +157,7 @@
       this tool suggests Korean names that feel natural and meaningful.
     </p>
 
-    <h3 class="text-xl font-bold text-slate-800 mt-8 mb-3">
+    <h3 class="text-lg font-bold text-slate-800 mt-6 mb-2">
       How does this Korean name generator work?
     </h3>
     <p class="mb-4">
@@ -151,7 +166,7 @@
       This process is intended for cultural exploration and entertainment purposes.
     </p>
 
-    <h3 class="text-xl font-bold text-slate-800 mt-8 mb-3">
+    <h3 class="text-lg font-bold text-slate-800 mt-6 mb-2">
       Who is this tool for?
     </h3>
     <ul class="list-disc pl-6 mb-4">
@@ -161,14 +176,16 @@
       <li>Anyone who wants a fun and meaningful Korean name</li>
     </ul>
 
-    <h3 class="text-xl font-bold text-slate-800 mt-8 mb-3">
+    <h3 class="text-lg font-bold text-slate-800 mt-6 mb-2">
       Disclaimer
     </h3>
     <p class="text-sm text-slate-500">
       This service provides name suggestions for entertainment and cultural interest purposes only.
       The generated names are not legally binding or officially registered names.
     </p>
-  </section>
+  </div>
+</section>
+
 
   <!-- ✅ Footer: 클릭하면 모달로 정책 표시 -->
   <footer class="mt-10 mb-6 text-center text-sm text-slate-500 font-semibold">
@@ -633,6 +650,14 @@
         if (!modal.classList.contains('hidden')) closePolicy();
       }
     });
+    function toggleContent() {
+  const body = document.getElementById("contentBody");
+  const arrow = document.getElementById("contentArrow");
+
+  body.classList.toggle("hidden");
+  arrow.classList.toggle("rotate-180");
+}
+
   </script>
 </body>
 </html>
