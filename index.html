@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-M1MNE7NDNR"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-M1MNE7NDNR');
-</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-M1MNE7NDNR"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-M1MNE7NDNR');
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>K-Identity: Find Your Name</title>
@@ -18,7 +16,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 
-  <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4002075177790525"
      crossorigin="anonymous"></script>
 
@@ -44,10 +41,8 @@
 </head>
 
 <body class="bg-slate-50 min-h-screen p-6">
-  <!-- ✅ 화면: 중앙(카드) / 하단(about+footer) 분리 -->
   <div class="min-h-screen flex flex-col">
 
-    <!-- ✅ 중앙 고정 영역 -->
     <main class="flex-1 flex items-center justify-center">
       <div class="bg-white max-w-md w-full rounded-[2.5rem] shadow-2xl p-10 space-y-8 relative overflow-hidden">
 
@@ -143,7 +138,6 @@
       </div>
     </main>
 
-    <!-- ✅ 하단 고정 영역 -->
     <div class="flex flex-col items-center gap-4 pb-2">
       <button type="button"
               onclick="openModal('about')"
@@ -160,13 +154,10 @@
         </button>
       </footer>
     </div>
-
   </div>
 
-  <!-- ✅ Universal Modal (about / privacy / terms) -->
   <div id="modal" class="hidden fixed inset-0 z-[9999]">
     <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModalUniversal()"></div>
-
     <div class="relative mx-auto my-10 w-[min(900px,92vw)] bg-white rounded-3xl shadow-2xl overflow-hidden">
       <div class="flex items-center justify-between px-6 py-4 border-b">
         <h2 id="modalTitle" class="text-lg font-black text-slate-800">Modal</h2>
@@ -175,439 +166,165 @@
           ✕
         </button>
       </div>
-
       <div id="modalBody" class="px-6 py-6 max-h-[75vh] overflow-auto text-slate-700 leading-relaxed"></div>
     </div>
   </div>
 
-  <!-- ✅ Modal Contents (hidden) -->
   <div class="hidden">
     <div id="aboutContent">
       <h2 class="text-2xl font-black text-slate-800 mb-4">What is K-Identity?</h2>
-      <p class="mb-4">
-        K-Identity is a Korean name generator designed for people who are interested in Korean culture,
-        language, and personal identity. By analyzing pronunciation, meaning, and cultural context,
-        this tool suggests Korean names that feel natural and meaningful.
-      </p>
-
+      <p class="mb-4">K-Identity is a Korean name generator designed for people who are interested in Korean culture, language, and personal identity.</p>
       <h3 class="text-xl font-bold text-slate-800 mt-8 mb-3">How does this Korean name generator work?</h3>
-      <p class="mb-4">
-        Users enter a name or keyword in any language and choose preferences such as gender and style.
-        The generator then creates a Korean name suggestion along with its meaning and explanation.
-        This process is intended for cultural exploration and entertainment purposes.
-      </p>
-
-      <h3 class="text-xl font-bold text-slate-800 mt-8 mb-3">Who is this tool for?</h3>
-      <ul class="list-disc pl-6 mb-4">
-        <li>People learning Korean or interested in Korean names</li>
-        <li>Fans of Korean culture, K-dramas, and K-pop</li>
-        <li>Writers and creators looking for authentic Korean character names</li>
-        <li>Anyone who wants a fun and meaningful Korean name</li>
-      </ul>
-
-      <h3 class="text-xl font-bold text-slate-800 mt-8 mb-3">Disclaimer</h3>
-      <p class="text-sm text-slate-500">
-        This service provides name suggestions for entertainment and cultural interest purposes only.
-        The generated names are not legally binding or officially registered names.
-      </p>
+      <p class="mb-4">Users enter a name or keyword in any language and choose preferences. The generator then creates a Korean name suggestion along with its meaning.</p>
     </div>
-
     <div id="privacyContent">
       <p class="text-sm text-slate-500"><strong>Last updated:</strong> 2026-01-22</p>
-      <p class="mt-4">
-        This Privacy Policy explains how this website (“we”, “our”, “the Service”) collects, uses, and shares information
-        when you use our Korean name generator.
-      </p>
-
-      <h3 class="mt-6 text-base font-extrabold text-slate-800">Information We Collect</h3>
-      <ul class="mt-2 list-disc pl-5 space-y-1">
-        <li><strong>Information you provide:</strong> Text you enter to generate name suggestions (e.g., preferred name, keywords).</li>
-        <li><strong>Log data:</strong> Basic technical data such as browser type, device information, and approximate location derived from IP address (standard server logs).</li>
-        <li><strong>Cookies / similar technologies:</strong> We may use cookies for site functionality, analytics, and advertising.</li>
-      </ul>
-
-      <h3 class="mt-6 text-base font-extrabold text-slate-800">How We Use Information</h3>
-      <ul class="mt-2 list-disc pl-5 space-y-1">
-        <li>To provide and improve the Service (e.g., generating name suggestions, fixing bugs, improving performance).</li>
-        <li>To understand usage and improve user experience (analytics).</li>
-        <li>To display advertising, including Google ads, if enabled.</li>
-      </ul>
-
-      <h3 class="mt-6 text-base font-extrabold text-slate-800">Advertising (Google AdSense)</h3>
-      <p class="mt-2">
-        We may use Google AdSense to show ads. Google and its partners may use cookies to serve ads based on your visits to this
-        and/or other sites.
-      </p>
-
-      <h3 class="mt-6 text-base font-extrabold text-slate-800">Contact</h3>
-      <p class="mt-2">
-        If you have questions about this Privacy Policy, contact us at: <strong>dltjsgh0246@naver.com</strong>
-      </p>
+      <p class="mt-4">This Privacy Policy explains how we collect and use information.</p>
     </div>
-
     <div id="termsContent">
       <p class="text-sm text-slate-500"><strong>Last updated:</strong> 2026-01-22</p>
-
-      <p class="mt-4">
-        By accessing or using this website (the “Service”), you agree to these Terms of Service.
-        If you do not agree, please do not use the Service.
-      </p>
-
-      <h3 class="mt-6 text-base font-extrabold text-slate-800">Service Description</h3>
-      <p class="mt-2">
-        The Service provides Korean name suggestions for entertainment and cultural interest purposes.
-      </p>
-
-      <h3 class="mt-6 text-base font-extrabold text-slate-800">Contact</h3>
-      <p class="mt-2">
-        Questions about these Terms: <strong>dltjsgh0246@naver.com</strong>
-      </p>
+      <p class="mt-4">By using this Service, you agree to these Terms.</p>
     </div>
   </div>
 
-  <!-- Recharge Modal -->
   <div id="rechargeModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-6 z-50">
     <div class="bg-white w-full max-w-sm rounded-[2.5rem] p-10 text-center space-y-6 shadow-2xl scale-in relative">
-
-      <button type="button" onclick="closeRechargeModal()" aria-label="Close"
+      <button type="button" onclick="closeRechargeModal()"
               class="absolute top-4 right-4 w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-black flex items-center justify-center transition-all">
         ✕
       </button>
-
       <h3 class="text-2xl font-black text-slate-800 tracking-tighter uppercase">Energy Depleted! 🔋</h3>
-      <p class="text-slate-500 text-sm italic">Get more credits to find more names:</p>
-
       <div class="space-y-3">
-        <a href="https://www.buymeacoffee.com/seonho" target="_blank" rel="noopener" onclick="buyCredits(3)"
-           class="block w-full py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl transition-all text-sm text-center">
-          💸 Try 3 more names ($1)
-        </a>
-
-        <a href="https://www.buymeacoffee.com/seonho" target="_blank" rel="noopener" onclick="buyCredits(20)"
-           class="block w-full py-4 bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-black rounded-2xl transition-all shadow-md text-center">
-          ☕️ Full Pack - 20 names ($3)
-        </a>
-
-        <a href="https://www.buymeacoffee.com/seonho" target="_blank" rel="noopener" onclick="buyCredits(50)"
-           class="block w-full py-4 bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold rounded-2xl transition-all text-sm text-center">
-          🎁 Family Pack - 50 names ($5)
-        </a>
-
-        <div class="pt-2 flex flex-col gap-2">
-          <button type="button" onclick="shareOnInsta()" class="w-full py-3 bg-pink-50 text-pink-600 font-bold rounded-xl text-xs">
-            📸 Share for +3 Credits
-          </button>
-          <button type="button" onclick="startAdTimer()" id="adBtn"
-                  class="w-full py-2 text-slate-400 text-[10px] font-bold underline italic uppercase tracking-widest">
-            Or watch 30s ad for 1 credit
-          </button>
-        </div>
+        <a href="https://www.buymeacoffee.com/seonho" target="_blank" onclick="buyCredits(3)"
+           class="block w-full py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl transition-all text-sm text-center">💸 Try 3 more names ($1)</a>
+        <a href="https://www.buymeacoffee.com/seonho" target="_blank" onclick="buyCredits(20)"
+           class="block w-full py-4 bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-black rounded-2xl transition-all shadow-md text-center">☕️ Full Pack - 20 names ($3)</a>
+        <button type="button" onclick="shareOnInsta()" class="w-full py-3 bg-pink-50 text-pink-600 font-bold rounded-xl text-xs">📸 Share for +3 Credits</button>
+        <button type="button" onclick="startAdTimer()" id="adBtn"
+                class="w-full py-2 text-slate-400 text-[10px] font-bold underline italic uppercase tracking-widest">Or watch 30s ad for 1 credit</button>
       </div>
-
-      <button type="button" onclick="closeRechargeModal()"
-              class="text-slate-500 text-[11px] font-bold uppercase tracking-widest hover:text-slate-700 transition-all">
-        Back to Results
-      </button>
     </div>
   </div>
 
   <script>
-    /* =========================================================
-       ✅ 0. Universal Modal (about/privacy/terms)
-       ========================================================= */
     function openModal(type) {
       const modal = document.getElementById('modal');
       const title = document.getElementById('modalTitle');
       const body = document.getElementById('modalBody');
-
-      if (type === 'about') {
-        title.textContent = 'What is K-Identity?';
-        body.innerHTML = document.getElementById('aboutContent').innerHTML;
-        location.hash = 'about';
-      } else if (type === 'privacy') {
-        title.textContent = 'Privacy Policy';
-        body.innerHTML = document.getElementById('privacyContent').innerHTML;
-        location.hash = 'privacy';
-      } else {
-        title.textContent = 'Terms of Service';
-        body.innerHTML = document.getElementById('termsContent').innerHTML;
-        location.hash = 'terms';
-      }
-
+      if (type === 'about') { title.textContent = 'What is K-Identity?'; body.innerHTML = document.getElementById('aboutContent').innerHTML; }
+      else if (type === 'privacy') { title.textContent = 'Privacy Policy'; body.innerHTML = document.getElementById('privacyContent').innerHTML; }
+      else { title.textContent = 'Terms of Service'; body.innerHTML = document.getElementById('termsContent').innerHTML; }
       modal.classList.remove('hidden');
       document.body.style.overflow = 'hidden';
     }
 
     function closeModalUniversal() {
-      const modal = document.getElementById('modal');
-      modal.classList.add('hidden');
+      document.getElementById('modal').classList.add('hidden');
       document.body.style.overflow = '';
-
-      if (location.hash === '#about' || location.hash === '#privacy' || location.hash === '#terms') {
-        history.replaceState(null, '', location.pathname + location.search);
-      }
     }
 
-    window.addEventListener('load', () => {
-      if (location.hash === '#about') openModal('about');
-      if (location.hash === '#privacy') openModal('privacy');
-      if (location.hash === '#terms') openModal('terms');
-    });
-
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        const modal = document.getElementById('modal');
-        if (!modal.classList.contains('hidden')) closeModalUniversal();
-      }
-    });
-
-    /* =========================================================
-       ✅ 1. Credit Logic (0 미만 방지)
-       ========================================================= */
     if (!localStorage.getItem('k_credits')) localStorage.setItem('k_credits', '1');
     updateCreditUI();
 
-    function getCredits() {
-      return parseInt(localStorage.getItem('k_credits') || '0', 10);
-    }
+    function getCredits() { return parseInt(localStorage.getItem('k_credits') || '0', 10); }
 
     function updateCreditUI() {
       document.getElementById('creditDisplay').innerText = localStorage.getItem('k_credits') || '0';
     }
 
-    // 기존 이름 유지(네 코드 흐름) + 0미만 clamp
     function recharge(amount) {
       const current = getCredits();
       const next = Math.max(0, current + amount);
       localStorage.setItem('k_credits', String(next));
       updateCreditUI();
-      console.log(`Credit Updated: ${current} -> ${next}`);
     }
 
-    /* =========================================================
-       ✅ 2. Recharge modal controls
-       ========================================================= */
     function showRechargeModal() { document.getElementById('rechargeModal').classList.remove('hidden'); }
     function closeRechargeModal() { document.getElementById('rechargeModal').classList.add('hidden'); }
 
-    /* =========================================================
-       ✅ 3. Tiger loading animation (중복 실행 방지)
-       ========================================================= */
     let progressIdx = null;
 
     function startTigerMotion() {
       if (progressIdx) clearInterval(progressIdx);
-
-      let leftPos = 0;
-      let seconds = 30;
-
+      let leftPos = 0; let seconds = 30;
       const tiger = document.getElementById('tiger');
       const countdown = document.getElementById('countdown');
-
-      tiger.style.left = "0%";
-      countdown.innerText = seconds;
-
+      tiger.style.left = "0%"; countdown.innerText = seconds;
       progressIdx = setInterval(() => {
-        leftPos += 3;
-        seconds--;
-
-        tiger.style.left = leftPos + "%";
-        countdown.innerText = Math.max(0, seconds);
-
-        if (leftPos >= 85 || seconds <= 0) {
-          clearInterval(progressIdx);
-          progressIdx = null;
-        }
+        leftPos += 3; seconds--;
+        tiger.style.left = leftPos + "%"; countdown.innerText = Math.max(0, seconds);
+        if (leftPos >= 85 || seconds <= 0) { clearInterval(progressIdx); progressIdx = null; }
       }, 1000);
-    }
-
-    /* =========================================================
-       ✅ 4. Download (PC 다운로드, 모바일 저장 페이지)
-       ========================================================= */
-    function isMobile() {
-      return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     }
 
     async function downloadCard() {
       const area = document.getElementById("captureArea");
-      const mobile = isMobile();
-
-      const scale = Math.max(3, Math.ceil(window.devicePixelRatio * 2));
-      const canvas = await html2canvas(area, {
-        backgroundColor: null,
-        scale,
-        useCORS: true,
-      });
-
+      const canvas = await html2canvas(area, { backgroundColor: null, scale: 3, useCORS: true });
       const outCanvas = document.createElement("canvas");
-      outCanvas.width = canvas.width;
-      outCanvas.height = canvas.height;
-
+      outCanvas.width = canvas.width; outCanvas.height = canvas.height;
       const ctx = outCanvas.getContext("2d");
-      ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = "high";
-      ctx.fillStyle = "#eff6ff";
-      ctx.fillRect(0, 0, outCanvas.width, outCanvas.height);
+      ctx.fillStyle = "#eff6ff"; ctx.fillRect(0, 0, outCanvas.width, outCanvas.height);
       ctx.drawImage(canvas, 0, 0);
-
-      const filename = "My_K-Identity.png";
       const dataUrl = outCanvas.toDataURL("image/png");
-
-      if (!mobile) {
-        const a = document.createElement("a");
-        a.href = dataUrl;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        return;
-      }
-
-      const page = `
-<!doctype html>
-<html>
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Save your card</title>
-  <style>
-    body { margin:0; font-family: -apple-system, system-ui, sans-serif; background:#0b1220; color:#fff; }
-    .wrap { max-width: 520px; margin: 0 auto; padding: 16px; }
-    .card { background: #111827; border-radius: 18px; padding: 14px; }
-    img { width: 100%; height: auto; border-radius: 14px; display:block; background:#eff6ff; }
-    .btnrow { display:flex; gap:10px; margin-top:12px; }
-    a.btn {
-      flex:1; text-align:center; text-decoration:none;
-      padding: 12px 10px; border-radius: 14px;
-      font-weight: 800; font-size: 14px;
-      background: #ec4899; color:#fff;
-    }
-    a.btn.secondary { background:#334155; }
-    .hint { margin-top: 12px; font-size: 12px; opacity: .9; line-height: 1.45; }
-    .hint strong { color:#fff; }
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <div class="card">
-      <img src="${dataUrl}" alt="K-Identity Card">
-      <div class="btnrow">
-        <a class="btn" href="${dataUrl}" download="${filename}">Try Download</a>
-        <a class="btn secondary" href="javascript:history.back()">Back</a>
-      </div>
-      <div class="hint">
-        <div><strong>iPhone:</strong> Long-press the image above → Save to Photos</div>
-        <div style="margin-top:6px;"><strong>Android:</strong> Long-press the image → Download image</div>
-        <div style="margin-top:10px; opacity:.85;">
-            ※ Depending on your browser, “Try Download” may not work.<br>
-            If so, please long-press the image to save it.
-        </div>
-      </div>
-    </div>
-  </div>
-</body>
-</html>`;
-
-      document.open();
-      document.write(page);
-      document.close();
+      const a = document.createElement("a");
+      a.href = dataUrl; a.download = "My_K-Identity.png"; a.click();
     }
 
-    /* =========================================================
-       ✅ 5. Buy/Share credit flow
-       ========================================================= */
     let pendingCreditAmount = 0;
     let isWaitingForAction = false;
 
-    function buyCredits(amount) {
-      pendingCreditAmount = amount;
-      isWaitingForAction = true;
-    }
-
-    function shareOnInsta() {
-      window.open('https://instagram.com', '_blank', 'noopener');
-      pendingCreditAmount = 3;
-      isWaitingForAction = true;
-    }
+    function buyCredits(amount) { pendingCreditAmount = amount; isWaitingForAction = true; }
+    function shareOnInsta() { window.open('https://instagram.com', '_blank'); pendingCreditAmount = 3; isWaitingForAction = true; }
 
     function handleReturn() {
       if (!isWaitingForAction) return;
       isWaitingForAction = false;
-
       setTimeout(() => {
-        const message = pendingCreditAmount >= 20 ? "purchase" : "sharing";
-        const ok = confirm(
-          "Welcome back! 🐯\n" +
-          `Did you complete the ${message}?\n` +
-          `Click 'OK' to receive your ${pendingCreditAmount} credits!`
-        );
-
-        if (ok) {
+        if (confirm("Did you complete the action? Click OK to get credits!")) {
           recharge(pendingCreditAmount);
-          alert(`Success! ${pendingCreditAmount} credits added.`);
           closeRechargeModal();
         }
         pendingCreditAmount = 0;
       }, 500);
     }
 
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible' && isWaitingForAction) handleReturn();
-    });
-
-    window.addEventListener('focus', () => {
-      if (isWaitingForAction) handleReturn();
-    });
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && isWaitingForAction) handleReturn(); });
 
     function startAdTimer() {
       const btn = document.getElementById('adBtn');
-      let timeLeft = 30;
-
-      btn.disabled = true;
-
+      let timeLeft = 30; btn.disabled = true;
       const interval = setInterval(() => {
-        btn.innerText = `WAITING... ${timeLeft}s`;
-        timeLeft--;
-
+        btn.innerText = `WAITING... ${timeLeft}s`; timeLeft--;
         if (timeLeft < 0) {
-          clearInterval(interval);
-          recharge(1);
-          btn.innerText = "OR WATCH 30S AD FOR 1 CREDIT";
-          btn.disabled = false;
+          clearInterval(interval); recharge(1);
+          btn.innerText = "OR WATCH 30S AD FOR 1 CREDIT"; btn.disabled = false;
           closeRechargeModal();
         }
       }, 1000);
     }
 
-    /* =========================================================
-       ✅ 6. Main Generation (URLSearchParams fallback + 상태 리셋)
-       ========================================================= */
     function buildQuery(paramsObj) {
-      // URLSearchParams 빨간줄/호환성 이슈 방지용 fallback
-      if (typeof URLSearchParams !== 'undefined') {
-        return new URLSearchParams(paramsObj).toString();
-      }
-      return Object.keys(paramsObj)
-        .map((k) => `${encodeURIComponent(k)}=${encodeURIComponent(paramsObj[k])}`)
-        .join('&');
+      return Object.keys(paramsObj).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(paramsObj[k])}`).join('&');
     }
 
     async function generate() {
+      // ✅ [중복 실행 방지] 이전 로딩 확실히 종료
+      if (progressIdx) { clearInterval(progressIdx); progressIdx = null; }
+
       if (getCredits() <= 0) return showRechargeModal();
 
       const name = document.getElementById('engName').value.trim();
       if (!name) return alert("Please enter name!");
 
-      // ✅ 결과/이미지 상태 리셋
+      // ✅ [상태 리셋] 이전 결과 UI 초기화
       const imgElement = document.getElementById('aiImage');
       imgElement.src = "";
       imgElement.classList.add('hidden');
       document.getElementById('imagePlaceholder').classList.remove('hidden');
-
       document.getElementById('kNameResult').innerText = "";
       document.getElementById('hanjaMeaning').innerText = "";
       document.getElementById('explainResult').innerText = "";
 
-      // ✅ 로딩 시작
       document.getElementById('loading').classList.remove('hidden');
       document.getElementById('resultSection').classList.add('hidden');
       startTigerMotion();
@@ -626,25 +343,23 @@
 
         const data = await res.json();
 
+        // ✅ [핵심] 성공했을 때만 즉시 차감
+        recharge(-1);
+
         document.getElementById('kNameResult').innerText = data.k_name || "";
         document.getElementById('hanjaMeaning').innerText = data.meaning || "";
         document.getElementById('explainResult').innerText = data.explain || "";
 
         if (data.image_url) {
-          imgElement.onload = () => finishLoading(true);
-          imgElement.onerror = () => {
-            finishLoading(true);
-            alert("Name is ready, but image failed to load.");
-          };
-
+          imgElement.onload = () => finishLoading(); 
+          imgElement.onerror = () => { finishLoading(); alert("Image failed to load."); };
           imgElement.src = data.image_url;
           imgElement.classList.remove('hidden');
           document.getElementById('imagePlaceholder').classList.add('hidden');
         } else {
-          finishLoading(true);
-          alert("Name is ready, but image failed to load.");
+          finishLoading();
+          alert("Image failed to load.");
         }
-
       } catch (e) {
         console.error("Fetch Error:", e);
         if (progressIdx) { clearInterval(progressIdx); progressIdx = null; }
@@ -653,13 +368,10 @@
       }
     }
 
-    function finishLoading(deductCredit) {
+    function finishLoading() {
       if (progressIdx) { clearInterval(progressIdx); progressIdx = null; }
       document.getElementById('loading').classList.add('hidden');
       document.getElementById('resultSection').classList.remove('hidden');
-
-      // ✅ 성공적으로 결과를 받았을 때만 차감(원하는 흐름이면 true로)
-      if (deductCredit) recharge(-1);
     }
   </script>
 </body>
