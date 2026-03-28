@@ -25,6 +25,10 @@ app.add_middleware(
 gemini_client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 openai_client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
+@app.route('/', methods=['GET', 'HEAD'])  # HEAD 요청도 허용함!
+def index():
+    return render_template('index.html')
+
 @app.get("/")
 async def read_index():
     return FileResponse("index.html")
