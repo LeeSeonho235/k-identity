@@ -1,378 +1,418 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-M1MNE7NDNR"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-M1MNE7NDNR');
-  </script>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>K-Identity: Find Your Name</title>
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4002075177790525"
-     crossorigin="anonymous"></script>
-
-  <style>
-    body { font-family: 'Inter', sans-serif; }
-    .track {
-      width: 100%; height: 50px; position: relative;
-      background: #f1f5f9; border-radius: 25px; overflow: hidden; border: 2px solid #e2e8f0;
-    }
-    #tiger {
-      position: absolute; left: 0; top: 50%; transform: translateY(-50%);
-      font-size: 28px; transition: left 0.5s linear; z-index: 10;
-    }
-    .rabbit {
-      position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 28px;
-    }
-    .scale-in { animation: scaleIn 0.3s ease-out; }
-    @keyframes scaleIn {
-      from { transform: scale(0.95); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Korean Name Generator - Find Your K-Name ✨</title>
+    <meta name="description" content="Get your perfect Korean name with AI. Includes K-drama portrait and Hanja meaning.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Serif+KR:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .k-font { font-family: 'Noto Serif KR', serif; }
+        .shimmer {
+            background: linear-gradient(90deg, #e2e8f0 25%, #cbd5e1 50%, #e2e8f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+        select { -webkit-appearance: none; appearance: none; }
+    </style>
 </head>
+<body class="bg-slate-100 min-h-screen flex flex-col items-center justify-center p-4">
 
-<body class="bg-slate-50 min-h-screen p-6">
-  <div class="min-h-screen flex flex-col">
-
-    <main class="flex-1 flex items-center justify-center">
-      <div class="bg-white max-w-md w-full rounded-[2.5rem] shadow-2xl p-10 space-y-8 relative overflow-hidden">
-
-        <div class="absolute top-6 right-8">
-          <select id="lang" class="text-xs bg-slate-50 border-none rounded-lg px-2 py-1 outline-none text-slate-500 cursor-pointer font-bold hover:bg-slate-100 transition-all">
-            <option value="en">🇺🇸 English</option>
-            <option value="es">🇪🇸 Español</option>
-            <option value="zh">🇨🇳 中文</option>
-            <option value="ja">🇯🇵 日本語</option>
-          </select>
-        </div>
-
-        <div class="text-center">
-          <h1 class="text-3xl font-black text-slate-800 tracking-tighter">🇰🇷 K-Identity</h1>
-          <p class="text-slate-500 mt-2 text-sm italic">Get a meaningful name for your soul.</p>
-        </div>
-
-        <div class="space-y-4">
-          <div class="flex gap-2">
-            <select id="strategy" class="flex-1 px-4 py-3 rounded-xl border-2 border-slate-50 text-xs font-bold text-slate-400 outline-none bg-slate-50/50">
-              <option value="meaning">Focus: Meaning (Origin)</option>
-              <option value="phonetic">Focus: Sound (Similar)</option>
-            </select>
-          </div>
-
-          <input type="text" id="engName" placeholder="Enter name (Any language)"
-                 class="w-full px-6 py-4 rounded-2xl border-2 border-slate-100 focus:border-blue-500 outline-none transition-all text-center font-bold" />
-
-          <div class="flex gap-3">
-            <select id="gender" class="flex-1 px-4 py-4 rounded-2xl border-2 border-slate-100 outline-none bg-white font-medium">
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="unisex">Unisex</option>
-            </select>
-            <select id="vibe" class="flex-1 px-4 py-4 rounded-2xl border-2 border-slate-100 outline-none bg-white font-medium">
-              <option value="Cool & Charismatic">Cool</option>
-              <option value="Lovely & Sweet">Lovely</option>
-              <option value="Elegant & Calm">Elegant</option>
-            </select>
-          </div>
-
-          <button type="button" onclick="generate()"
-                  class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-2xl shadow-lg transform active:scale-[0.98] text-lg transition-all">
-            Find My Name ✨
-          </button>
-
-          <p class="text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-            Credits: <span id="creditDisplay" class="text-blue-500">0</span> Left
-          </p>
-        </div>
-
-        <div id="loading" class="hidden text-center space-y-6 py-6">
-          <div class="track">
-            <div id="tiger">🐯</div>
-            <div class="rabbit">🐇</div>
-          </div>
-          <div class="space-y-2">
-            <h3 class="text-lg font-black text-slate-800 tracking-tight uppercase">Tiger is chasing your name... 🐯💨</h3>
-            <p class="text-blue-500 font-bold text-xs uppercase animate-pulse">Estimated time: 0.5 mins</p>
-            <p class="text-slate-400 text-[10px] font-bold tracking-widest uppercase">Please Wait <span id="countdown">30</span>s</p>
-          </div>
-        </div>
-
-        <div id="resultSection" class="hidden space-y-6 pt-4 border-t-2 border-slate-50 scale-in">
-          <div id="captureArea" class="bg-blue-50 p-8 rounded-[2.5rem] text-center space-y-6 shadow-inner">
-            <div id="imageContainer" class="relative w-40 h-40 mx-auto">
-              <img id="aiImage" crossorigin="anonymous"
-                   class="w-40 h-40 rounded-full shadow-2xl border-4 border-white object-cover hidden" src="" alt="K-Identity portrait" />
-              <div id="imagePlaceholder"
-                   class="w-40 h-40 rounded-full bg-slate-200 flex items-center justify-center text-4xl border-4 border-white shadow-inner">
-                👤
-              </div>
-            </div>
-
-            <h2 id="kNameResult"
-                class="text-3xl font-black text-slate-800 tracking-tight whitespace-nowrap overflow-x-hidden text-ellipsis px-4 pt-2 pb-3 leading-[1.15]">
-            </h2>
-
-            <div class="space-y-3 bg-white/60 p-6 rounded-3xl shadow-sm">
-              <p id="hanjaMeaning" class="text-blue-600 font-black text-xs uppercase tracking-widest"></p>
-              <p id="explainResult" class="text-slate-700 leading-relaxed text-sm font-medium"></p>
-            </div>
-          </div>
-
-          <div class="space-y-2">
-            <button type="button" onclick="downloadCard()"
-                    class="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-black rounded-2xl shadow-lg hover:brightness-110 transition-all text-sm">
-              Download Card
+    <!-- ===== TOP RIGHT ===== -->
+    <div class="fixed top-5 right-5 flex flex-col items-end gap-2 z-50">
+        <!-- Language toggle -->
+        <div class="relative">
+            <button id="lang-toggle" class="flex items-center gap-1.5 bg-white border border-slate-200 px-3 py-1.5 rounded-full text-[11px] font-bold text-slate-600 shadow-sm hover:bg-slate-50 transition-all">
+                <span id="lang-flag">🇺🇸</span>
+                <span id="lang-label">English</span>
+                <svg class="w-3 h-3 text-slate-400" viewBox="0 0 20 20" fill="none" stroke="currentColor"><path d="M5 7l5 6 5-6" stroke-width="2" stroke-linecap="round"/></svg>
             </button>
-          </div>
+            <div id="lang-menu" class="hidden absolute right-0 mt-1 w-40 bg-white rounded-xl shadow-lg border border-slate-100 overflow-hidden z-20"></div>
+        </div>
+        <!-- Auth -->
+        <div id="auth-section" class="flex flex-col items-end gap-2">
+            <button id="google-login-btn" onclick="openLoginModal()" class="flex items-center gap-1.5 bg-white border border-slate-200 px-3 py-1.5 rounded-full text-[11px] font-bold text-slate-600 shadow-sm hover:bg-slate-50 transition-all">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-3.5 h-3.5"> Google Login
+            </button>
+            <button id="buy-pass-guest-btn" onclick="openLoginModal()" style="display:none;" class="flex items-center gap-1.5 bg-indigo-600 text-white px-3 py-1.5 rounded-full text-[11px] font-bold shadow-sm hover:bg-indigo-700 transition-all">✨ Buy Pass</button>
+            <div id="user-profile" style="display:none;" class="flex items-center gap-2 bg-white border border-slate-200 px-3 py-1.5 rounded-full shadow-sm">
+                <span id="user-email" class="text-[11px] font-bold text-slate-600 max-w-[120px] truncate"></span>
+                <button onclick="signOut()" class="text-[11px] text-red-500 font-bold hover:underline">Logout</button>
+            </div>
+            <button id="buy-pass-user-btn" onclick="location.href='/pricing'" style="display:none;" class="flex items-center gap-1.5 bg-indigo-600 text-white px-3 py-1.5 rounded-full text-[11px] font-bold shadow-sm hover:bg-indigo-700 transition-all">✨ Buy Pass</button>
+            <span id="plan-badge" style="display:none;" class="text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full"></span>
+        </div>
+    </div>
+
+    <!-- ===== SUCCESS BANNER ===== -->
+    <div id="success-banner" style="display:none;" class="fixed top-4 left-1/2 -translate-x-1/2 bg-emerald-500 text-white px-6 py-3 rounded-full text-sm font-bold shadow-lg z-50">
+        🎉 Payment successful! Unlimited access unlocked.
+    </div>
+
+    <!-- ===== MAIN CARD ===== -->
+    <div class="bg-white rounded-3xl shadow-xl w-full max-w-sm p-8 my-20">
+        <div class="text-center mb-7">
+            <div class="text-4xl mb-2">🇰🇷</div>
+            <h1 id="txt-title" class="text-2xl font-extrabold text-slate-900 tracking-tight">Korean Name Generator</h1>
+            <p id="txt-subtitle" class="text-slate-400 text-xs mt-1 font-medium">Discover your perfect Korean identity</p>
         </div>
 
-      </div>
-    </main>
+        <!-- Form -->
+        <div class="space-y-3">
+            <input id="name-input" type="text" placeholder="Your English name..."
+                class="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none placeholder-slate-300 transition-all">
 
-    <div class="flex flex-col items-center gap-4 pb-2">
-      <button type="button"
-              onclick="openModal('about')"
-              class="text-slate-700 font-black underline underline-offset-4 hover:text-slate-900 transition">
-        What is K-Identity?
-      </button>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="relative">
+                    <select id="gender-select" class="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none cursor-pointer transition-all pr-8">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="neutral">Neutral</option>
+                    </select>
+                    <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" viewBox="0 0 20 20" fill="none" stroke="currentColor"><path d="M5 7l5 6 5-6" stroke-width="2" stroke-linecap="round"/></svg>
+                </div>
+                <div class="relative">
+                    <select id="vibe-select" class="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none cursor-pointer transition-all pr-8">
+                        <option value="Cool">Cool</option>
+                        <option value="Cute">Cute</option>
+                        <option value="Elegant">Elegant</option>
+                        <option value="Strong">Strong</option>
+                        <option value="Mysterious">Mysterious</option>
+                        <option value="Bright">Bright</option>
+                        <option value="Warm">Warm</option>
+                        <option value="Chic">Chic</option>
+                    </select>
+                    <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" viewBox="0 0 20 20" fill="none" stroke="currentColor"><path d="M5 7l5 6 5-6" stroke-width="2" stroke-linecap="round"/></svg>
+                </div>
+            </div>
 
-      <footer class="text-center text-sm text-slate-500 font-semibold">
-        <button type="button" onclick="openModal('privacy')" class="underline hover:text-slate-700 mr-4">
-          Privacy Policy
-        </button>
-        <button type="button" onclick="openModal('terms')" class="underline hover:text-slate-700">
-          Terms of Service
-        </button>
-      </footer>
+            <!-- Strategy toggle -->
+            <div class="flex gap-1 bg-slate-100 p-1 rounded-2xl">
+                <button id="strat-sound" onclick="setStrategy('sound')" class="flex-1 text-[10px] font-bold py-2 rounded-xl bg-white shadow text-indigo-600 transition-all">🔤 Sound</button>
+                <button id="strat-meaning" onclick="setStrategy('meaning')" class="flex-1 text-[10px] font-bold py-2 rounded-xl text-slate-500 hover:text-slate-700 transition-all">💎 Meaning</button>
+                <button id="strat-kdrama" onclick="setStrategy('kdrama')" class="flex-1 text-[10px] font-bold py-2 rounded-xl text-slate-500 hover:text-slate-700 transition-all">🎬 K-Drama</button>
+            </div>
+
+            <button id="generate-btn" onclick="generateName()"
+                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-4 rounded-2xl shadow-lg shadow-indigo-100 transition-all text-base">
+                Find My Name ✨
+            </button>
+            <p id="credits-display" class="text-center text-[11px] font-bold text-slate-400 tracking-widest uppercase"></p>
+        </div>
+
+        <!-- Loading -->
+        <div id="loading" style="display:none;" class="mt-6 text-center">
+            <div class="w-20 h-20 rounded-full shimmer mx-auto mb-4"></div>
+            <p id="txt-loading" class="text-xs text-slate-400 font-medium animate-pulse">Consulting the ancients...</p>
+        </div>
+
+        <!-- Result card -->
+        <div id="result-card" style="display:none;" class="mt-6 fade-in">
+            <div id="card-inner" class="bg-gradient-to-br from-slate-50 to-indigo-50 rounded-2xl p-6 text-center border border-slate-100">
+                <div class="relative w-24 h-24 mx-auto mb-4">
+                    <div id="portrait-placeholder" class="w-24 h-24 rounded-full bg-slate-200 flex items-center justify-center text-3xl border-4 border-white shadow-lg">🧑‍🎤</div>
+                    <img id="portrait-img" style="display:none;" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg" alt="K-portrait" crossorigin="anonymous">
+                </div>
+                <h2 id="k-name" class="text-3xl font-bold text-slate-900 mt-1 k-font"></h2>
+                <p id="k-meaning" class="text-[11px] font-bold text-indigo-600 tracking-widest uppercase mt-3 px-2"></p>
+                <p id="k-explain" class="text-xs text-slate-500 mt-3 leading-relaxed px-1"></p>
+            </div>
+            <button id="download-btn" onclick="downloadCard()"
+                class="w-full mt-3 bg-gradient-to-r from-pink-500 to-violet-600 text-white font-bold py-3 rounded-2xl shadow-lg hover:opacity-90 transition-all text-sm">
+                Download Card
+            </button>
+        </div>
     </div>
-  </div>
 
-  <div id="modal" class="hidden fixed inset-0 z-[9999]">
-    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModalUniversal()"></div>
-    <div class="relative mx-auto my-10 w-[min(900px,92vw)] bg-white rounded-3xl shadow-2xl overflow-hidden">
-      <div class="flex items-center justify-between px-6 py-4 border-b">
-        <h2 id="modalTitle" class="text-lg font-black text-slate-800">Modal</h2>
-        <button type="button" onclick="closeModalUniversal()"
-                class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-black">
-          ✕
-        </button>
-      </div>
-      <div id="modalBody" class="px-6 py-6 max-h-[75vh] overflow-auto text-slate-700 leading-relaxed"></div>
+    <!-- ===== LOGIN MODAL ===== -->
+    <div id="login-modal" style="display:none;pointer-events:none;" class="fixed inset-0 bg-black/40 backdrop-blur-sm items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-3xl p-8 w-80 shadow-2xl text-center">
+            <div class="text-4xl mb-3">🇰🇷</div>
+            <h3 id="txt-modal-title" class="text-lg font-extrabold text-slate-900 mb-1">Sign in to continue</h3>
+            <p id="txt-modal-sub" class="text-xs text-slate-400 mb-6">Get 3 free credits · Upgrade for unlimited names</p>
+            <button onclick="signInWithGoogle()" class="w-full flex items-center justify-center gap-3 bg-white border-2 border-slate-200 px-4 py-3 rounded-2xl font-bold text-slate-700 hover:bg-slate-50 transition-all text-sm shadow-sm">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5">
+                Continue with Google
+            </button>
+            <button onclick="closeLoginModal()" class="mt-3 text-xs text-slate-400 hover:underline w-full">Cancel</button>
+        </div>
     </div>
-  </div>
 
-  <div class="hidden">
-    <div id="aboutContent">
-      <h2 class="text-2xl font-black text-slate-800 mb-4">What is K-Identity?</h2>
-      <p class="mb-4">K-Identity is a Korean name generator designed for people who are interested in Korean culture, language, and personal identity.</p>
-      <h3 class="text-xl font-bold text-slate-800 mt-8 mb-3">How does this Korean name generator work?</h3>
-      <p class="mb-4">Users enter a name or keyword in any language and choose preferences. The generator then creates a Korean name suggestion along with its meaning.</p>
-    </div>
-    <div id="privacyContent">
-      <p class="text-sm text-slate-500"><strong>Last updated:</strong> 2026-01-22</p>
-      <p class="mt-4">This Privacy Policy explains how we collect and use information.</p>
-    </div>
-    <div id="termsContent">
-      <p class="text-sm text-slate-500"><strong>Last updated:</strong> 2026-01-22</p>
-      <p class="mt-4">By using this Service, you agree to these Terms.</p>
-    </div>
-  </div>
+<script>
+// ======= CONFIG (injected by FastAPI) =======
+const SUPABASE_URL = "{{ SUPABASE_URL }}";
+const SUPABASE_ANON_KEY = "{{ SUPABASE_ANON_KEY }}";
+const _sp = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  <div id="rechargeModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-6 z-50">
-    <div class="bg-white w-full max-w-sm rounded-[2.5rem] p-10 text-center space-y-6 shadow-2xl scale-in relative">
-      <button type="button" onclick="closeRechargeModal()"
-              class="absolute top-4 right-4 w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-black flex items-center justify-center transition-all">
-        ✕
-      </button>
-      <h3 class="text-2xl font-black text-slate-800 tracking-tighter uppercase">Energy Depleted! 🔋</h3>
-      <div class="space-y-3">
-        <a href="https://www.buymeacoffee.com/seonho" target="_blank" onclick="buyCredits(3)"
-           class="block w-full py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl transition-all text-sm text-center">💸 Try 3 more names ($1)</a>
-        <a href="https://www.buymeacoffee.com/seonho" target="_blank" onclick="buyCredits(20)"
-           class="block w-full py-4 bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-black rounded-2xl transition-all shadow-md text-center">☕️ Full Pack - 20 names ($3)</a>
-        <button type="button" onclick="shareOnInsta()" class="w-full py-3 bg-pink-50 text-pink-600 font-bold rounded-xl text-xs">📸 Share for +3 Credits</button>
-        <button type="button" onclick="startAdTimer()" id="adBtn"
-                class="w-full py-2 text-slate-400 text-[10px] font-bold underline italic uppercase tracking-widest">Or watch 30s ad for 1 credit</button>
-      </div>
-    </div>
-  </div>
+// ======= STATE =======
+let currentStrategy = 'sound';
+let currentUser = null;
+let userPlan = null;
+const FREE_LIMIT = 3;
 
-  <script>
-    function openModal(type) {
-      const modal = document.getElementById('modal');
-      const title = document.getElementById('modalTitle');
-      const body = document.getElementById('modalBody');
-      if (type === 'about') { title.textContent = 'What is K-Identity?'; body.innerHTML = document.getElementById('aboutContent').innerHTML; }
-      else if (type === 'privacy') { title.textContent = 'Privacy Policy'; body.innerHTML = document.getElementById('privacyContent').innerHTML; }
-      else { title.textContent = 'Terms of Service'; body.innerHTML = document.getElementById('termsContent').innerHTML; }
-      modal.classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
+// ======= AUTH =======
+async function signInWithGoogle() {
+    await _sp.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.origin }
+    });
+}
+async function signOut() {
+    await _sp.auth.signOut();
+    currentUser = null; userPlan = null;
+    updateAuthUI(); updateCreditsDisplay();
+}
+function openLoginModal() {
+    const m = document.getElementById('login-modal');
+    m.style.display = 'flex'; m.style.pointerEvents = 'auto';
+}
+function closeLoginModal() {
+    const m = document.getElementById('login-modal');
+    m.style.display = 'none'; m.style.pointerEvents = 'none';
+}
+document.getElementById('login-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeLoginModal();
+});
+
+// ======= PLAN =======
+async function fetchUserPlan(email) {
+    try {
+        const res = await fetch(`/api/my-plan?email=${encodeURIComponent(email)}`);
+        const data = await res.json();
+        return data.plan || null;
+    } catch { return null; }
+}
+function getGuestCredits() {
+    return Math.max(0, FREE_LIMIT - parseInt(localStorage.getItem('k_used') || '0'));
+}
+function updateCreditsDisplay() {
+    const el = document.getElementById('credits-display');
+    if (userPlan === 'annual' || userPlan === 'month') {
+        el.textContent = 'UNLIMITED ACCESS';
+        el.style.color = '#10b981';
+    } else if (userPlan === 'week') {
+        el.textContent = 'WEEK PASS ACTIVE';
+        el.style.color = '#6366f1';
+    } else {
+        const c = getGuestCredits();
+        el.textContent = `CREDITS: ${c} LEFT`;
+        el.style.color = c === 0 ? '#f87171' : '#94a3b8';
     }
-
-    function closeModalUniversal() {
-      document.getElementById('modal').classList.add('hidden');
-      document.body.style.overflow = '';
-    }
-
-    if (!localStorage.getItem('k_credits')) localStorage.setItem('k_credits', '1');
-    updateCreditUI();
-
-    function getCredits() { return parseInt(localStorage.getItem('k_credits') || '0', 10); }
-
-    function updateCreditUI() {
-      document.getElementById('creditDisplay').innerText = localStorage.getItem('k_credits') || '0';
-    }
-
-    function recharge(amount) {
-      const current = getCredits();
-      const next = Math.max(0, current + amount);
-      localStorage.setItem('k_credits', String(next));
-      updateCreditUI();
-    }
-
-    function showRechargeModal() { document.getElementById('rechargeModal').classList.remove('hidden'); }
-    function closeRechargeModal() { document.getElementById('rechargeModal').classList.add('hidden'); }
-
-    let progressIdx = null;
-
-    function startTigerMotion() {
-      if (progressIdx) clearInterval(progressIdx);
-      let leftPos = 0; let seconds = 30;
-      const tiger = document.getElementById('tiger');
-      const countdown = document.getElementById('countdown');
-      tiger.style.left = "0%"; countdown.innerText = seconds;
-      progressIdx = setInterval(() => {
-        leftPos += 3; seconds--;
-        tiger.style.left = leftPos + "%"; countdown.innerText = Math.max(0, seconds);
-        if (leftPos >= 85 || seconds <= 0) { clearInterval(progressIdx); progressIdx = null; }
-      }, 1000);
-    }
-
-    async function downloadCard() {
-      const area = document.getElementById("captureArea");
-      const canvas = await html2canvas(area, { backgroundColor: null, scale: 3, useCORS: true });
-      const outCanvas = document.createElement("canvas");
-      outCanvas.width = canvas.width; outCanvas.height = canvas.height;
-      const ctx = outCanvas.getContext("2d");
-      ctx.fillStyle = "#eff6ff"; ctx.fillRect(0, 0, outCanvas.width, outCanvas.height);
-      ctx.drawImage(canvas, 0, 0);
-      const dataUrl = outCanvas.toDataURL("image/png");
-      const a = document.createElement("a");
-      a.href = dataUrl; a.download = "My_K-Identity.png"; a.click();
-    }
-
-    let pendingCreditAmount = 0;
-    let isWaitingForAction = false;
-
-    function buyCredits(amount) { pendingCreditAmount = amount; isWaitingForAction = true; }
-    function shareOnInsta() { window.open('https://instagram.com', '_blank'); pendingCreditAmount = 3; isWaitingForAction = true; }
-
-    function handleReturn() {
-      if (!isWaitingForAction) return;
-      isWaitingForAction = false;
-      setTimeout(() => {
-        if (confirm("Did you complete the action? Click OK to get credits!")) {
-          recharge(pendingCreditAmount);
-          closeRechargeModal();
+}
+function updateAuthUI() {
+    const show = (id) => { const el = document.getElementById(id); if(el) { el.style.display='flex'; } };
+    const hide = (id) => { const el = document.getElementById(id); if(el) { el.style.display='none'; } };
+    if (currentUser) {
+        hide('google-login-btn');
+        hide('buy-pass-guest-btn');
+        show('user-profile');
+        document.getElementById('user-email').textContent = currentUser.email;
+        if (userPlan) {
+            hide('buy-pass-user-btn');
+            const badge = document.getElementById('plan-badge');
+            badge.textContent = `✓ ${userPlan.toUpperCase()}`;
+            badge.style.display = 'inline-flex';
+        } else {
+            show('buy-pass-user-btn');
+            hide('plan-badge');
         }
-        pendingCreditAmount = 0;
-      }, 500);
+    } else {
+        show('google-login-btn');
+        hide('user-profile');
+        hide('buy-pass-user-btn');
+        hide('plan-badge');
+        if (getGuestCredits() === 0) show('buy-pass-guest-btn');
+        else hide('buy-pass-guest-btn');
     }
+}
 
-    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && isWaitingForAction) handleReturn(); });
-
-    function startAdTimer() {
-      const btn = document.getElementById('adBtn');
-      let timeLeft = 30; btn.disabled = true;
-      const interval = setInterval(() => {
-        btn.innerText = `WAITING... ${timeLeft}s`; timeLeft--;
-        if (timeLeft < 0) {
-          clearInterval(interval); recharge(1);
-          btn.innerText = "OR WATCH 30S AD FOR 1 CREDIT"; btn.disabled = false;
-          closeRechargeModal();
+// ======= STRATEGY =======
+function setStrategy(s) {
+    currentStrategy = s;
+    ['sound','meaning','kdrama'].forEach(id => {
+        const btn = document.getElementById(`strat-${id}`);
+        if (id === s) {
+            btn.className = 'flex-1 text-[10px] font-bold py-2 rounded-xl bg-white shadow text-indigo-600 transition-all';
+        } else {
+            btn.className = 'flex-1 text-[10px] font-bold py-2 rounded-xl text-slate-500 hover:text-slate-700 transition-all';
         }
-      }, 1000);
+    });
+}
+
+// ======= GENERATE =======
+async function generateName() {
+    const name = document.getElementById('name-input').value.trim();
+    if (!name) {
+        const inp = document.getElementById('name-input');
+        inp.classList.add('border-red-400');
+        inp.focus();
+        setTimeout(() => inp.classList.remove('border-red-400'), 1500);
+        return;
     }
 
-    function buildQuery(paramsObj) {
-      return Object.keys(paramsObj).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(paramsObj[k])}`).join('&');
+    // Credit gate
+    if (!userPlan) {
+        const credits = getGuestCredits();
+        if (credits <= 0) {
+            if (currentUser) { location.href = '/pricing'; }
+            else { openLoginModal(); }
+            return;
+        }
+        // consume credit
+        localStorage.setItem('k_used', parseInt(localStorage.getItem('k_used') || '0') + 1);
+        updateCreditsDisplay();
+        updateAuthUI();
     }
 
-    async function generate() {
-      // ✅ [중복 실행 방지] 이전 로딩 확실히 종료
-      if (progressIdx) { clearInterval(progressIdx); progressIdx = null; }
+    const gender = document.getElementById('gender-select').value;
+    const vibe = document.getElementById('vibe-select').value;
+    const lang = localStorage.getItem('web_lang') || 'en';
+    const stratMap = {
+        sound: 'sound similarity to the English name',
+        meaning: 'meaningful Hanja characters that reflect the personality and vibe',
+        kdrama: 'trendy K-drama style naming conventions used for main characters',
+    };
 
-      if (getCredits() <= 0) return showRechargeModal();
+    // UI: loading
+    document.getElementById('result-card').style.display = 'none';
+    document.getElementById('loading').style.display = 'block';
+    const btn = document.getElementById('generate-btn');
+    btn.disabled = true; btn.style.opacity = '0.6';
 
-      const name = document.getElementById('engName').value.trim();
-      if (!name) return alert("Please enter name!");
-
-      // ✅ [상태 리셋] 이전 결과 UI 초기화
-      const imgElement = document.getElementById('aiImage');
-      imgElement.src = "";
-      imgElement.classList.add('hidden');
-      document.getElementById('imagePlaceholder').classList.remove('hidden');
-      document.getElementById('kNameResult').innerText = "";
-      document.getElementById('hanjaMeaning').innerText = "";
-      document.getElementById('explainResult').innerText = "";
-
-      document.getElementById('loading').classList.remove('hidden');
-      document.getElementById('resultSection').classList.add('hidden');
-      startTigerMotion();
-
-      try {
-        const query = buildQuery({
-          english_name: name,
-          vibe: document.getElementById('vibe').value,
-          gender: document.getElementById('gender').value,
-          lang: document.getElementById('lang').value,
-          strategy: document.getElementById('strategy').value,
+    try {
+        const params = new URLSearchParams({
+            english_name: name, vibe, gender, lang,
+            strategy: stratMap[currentStrategy],
         });
-
-        const res = await fetch(`/api/generate-k-identity?${query}`);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
+        const res = await fetch(`/api/generate-k-identity?${params}`);
         const data = await res.json();
 
-        // ✅ [핵심] 성공했을 때만 즉시 차감
-        recharge(-1);
+        document.getElementById('k-name').textContent = data.k_name || '';
+        document.getElementById('k-meaning').textContent = data.meaning || '';
+        document.getElementById('k-explain').textContent = data.explain || '';
 
-        document.getElementById('kNameResult').innerText = data.k_name || "";
-        document.getElementById('hanjaMeaning').innerText = data.meaning || "";
-        document.getElementById('explainResult').innerText = data.explain || "";
-
+        // Portrait
+        const img = document.getElementById('portrait-img');
+        const ph = document.getElementById('portrait-placeholder');
         if (data.image_url) {
-          imgElement.onload = () => finishLoading(); 
-          imgElement.onerror = () => { finishLoading(); alert("Image failed to load."); };
-          imgElement.src = data.image_url;
-          imgElement.classList.remove('hidden');
-          document.getElementById('imagePlaceholder').classList.add('hidden');
+            img.src = data.image_url;
+            img.onload = () => { img.style.display = 'block'; ph.style.display = 'none'; };
+            img.onerror = () => { img.style.display = 'none'; ph.style.display = 'flex'; };
         } else {
-          finishLoading();
-          alert("Image failed to load.");
+            img.style.display = 'none'; ph.style.display = 'flex';
         }
-      } catch (e) {
-        console.error("Fetch Error:", e);
-        if (progressIdx) { clearInterval(progressIdx); progressIdx = null; }
-        document.getElementById('loading').classList.add('hidden');
-        alert("Server Busy! Please try once more.");
-      }
+
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('result-card').style.display = 'block';
+    } catch(e) {
+        console.error(e);
+        document.getElementById('loading').style.display = 'none';
+        alert('Something went wrong. Please try again.');
     }
 
-    function finishLoading() {
-      if (progressIdx) { clearInterval(progressIdx); progressIdx = null; }
-      document.getElementById('loading').classList.add('hidden');
-      document.getElementById('resultSection').classList.remove('hidden');
+    btn.disabled = false; btn.style.opacity = '1';
+}
+
+// ======= DOWNLOAD CARD =======
+async function downloadCard() {
+    const btn = document.getElementById('download-btn');
+    btn.textContent = 'Generating...'; btn.disabled = true;
+    try {
+        const card = document.getElementById('card-inner');
+        const canvas = await html2canvas(card, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+        const link = document.createElement('a');
+        link.download = `korean-name-${Date.now()}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    } catch(e) {
+        console.error(e);
+        alert('Download failed. Try screenshotting manually.');
     }
-  </script>
+    btn.textContent = 'Download Card'; btn.disabled = false;
+}
+
+// ======= LANGUAGE =======
+const langs = [
+    { code:'en', flag:'🇺🇸', name:'English' },
+    { code:'ko', flag:'🇰🇷', name:'한국어' },
+    { code:'es', flag:'🇪🇸', name:'Español' },
+    { code:'zh', flag:'🇨🇳', name:'中文' },
+    { code:'ja', flag:'🇯🇵', name:'日本語' },
+];
+const i18n = {
+    en: { title:'Korean Name Generator', subtitle:'Discover your perfect Korean identity', loading:'Consulting the ancients...', modalTitle:'Sign in to continue', modalSub:'Get 3 free credits · Upgrade for unlimited names' },
+    ko: { title:'한국 이름 생성기', subtitle:'나만의 완벽한 한국 이름을 찾아보세요', loading:'이름을 신중하게 짓는 중...', modalTitle:'로그인이 필요합니다', modalSub:'무료 3회 이용 · 업그레이드로 무제한 이용' },
+    es: { title:'Generador de Nombres Coreanos', subtitle:'Descubre tu identidad coreana perfecta', loading:'Consultando a los ancestros...', modalTitle:'Inicia sesión para continuar', modalSub:'3 créditos gratis · Mejora para uso ilimitado' },
+    zh: { title:'韩文名字生成器', subtitle:'找到您完美的韩国名字', loading:'正在咨询命名大师...', modalTitle:'请登录继续', modalSub:'免费3次 · 升级享无限次数' },
+    ja: { title:'韓国名前ジェネレーター', subtitle:'あなただけの韓国名を見つけよう', loading:'名前を考え中...', modalTitle:'ログインして続ける', modalSub:'無料3回 · アップグレードで無制限' },
+};
+function applyLang(code) {
+    localStorage.setItem('web_lang', code);
+    const l = langs.find(x => x.code === code) || langs[0];
+    const t = i18n[code] || i18n.en;
+    document.getElementById('lang-flag').textContent = l.flag;
+    document.getElementById('lang-label').textContent = l.name;
+    document.getElementById('txt-title').textContent = t.title;
+    document.getElementById('txt-subtitle').textContent = t.subtitle;
+    document.getElementById('txt-loading').textContent = t.loading;
+    document.getElementById('txt-modal-title').textContent = t.modalTitle;
+    document.getElementById('txt-modal-sub').textContent = t.modalSub;
+    document.getElementById('lang-menu').classList.add('hidden');
+}
+const menu = document.getElementById('lang-menu');
+langs.forEach(l => {
+    const btn = document.createElement('button');
+    btn.className = 'flex w-full items-center gap-2 px-3 py-2 text-[11px] font-semibold text-slate-700 hover:bg-slate-50';
+    btn.innerHTML = `<span>${l.flag}</span><span>${l.name}</span>`;
+    btn.onclick = () => applyLang(l.code);
+    menu.appendChild(btn);
+});
+document.getElementById('lang-toggle').onclick = (e) => {
+    e.stopPropagation();
+    document.getElementById('lang-menu').classList.toggle('hidden');
+};
+document.addEventListener('click', () => document.getElementById('lang-menu').classList.add('hidden'));
+
+// ======= SUCCESS BANNER =======
+const params = new URLSearchParams(window.location.search);
+if (params.get('success') === '1') {
+    const banner = document.getElementById('success-banner');
+    banner.style.display = 'block';
+    setTimeout(() => { banner.style.display = 'none'; }, 5000);
+    history.replaceState({}, '', '/');
+}
+
+// ======= INIT =======
+async function init() {
+    applyLang(localStorage.getItem('web_lang') || 'en');
+    const { data: { session } } = await _sp.auth.getSession();
+    if (session?.user) {
+        currentUser = session.user;
+        userPlan = await fetchUserPlan(currentUser.email);
+    }
+    updateAuthUI();
+    updateCreditsDisplay();
+
+    _sp.auth.onAuthStateChange(async (event, session) => {
+        if (session?.user) {
+            currentUser = session.user;
+            userPlan = await fetchUserPlan(currentUser.email);
+            closeLoginModal();
+        } else {
+            currentUser = null; userPlan = null;
+        }
+        updateAuthUI();
+        updateCreditsDisplay();
+    });
+}
+init();
+</script>
 </body>
 </html>
