@@ -19,10 +19,59 @@
             animation: shimmer 1.5s infinite;
         }
         @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
-        .fade-in { animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
         select { -webkit-appearance: none; appearance: none; }
-        .ad-progress { transition: width 1s linear; }
+
+        /* ===== CARD STYLES ===== */
+        .card-classic {
+            background: #0a0a1a;
+            border: 1.5px solid #c9a84c;
+            color: #fff;
+        }
+        .card-classic .card-photo-area { background: #1a1a3e; }
+        .card-classic .card-photo-ring { border-color: #c9a84c; background: #2a2a4a; }
+        .card-classic .card-footer { background: #0a0a1a; border-top: 1px solid rgba(201,168,76,0.3); }
+        .card-classic .card-kname { color: #fff; }
+        .card-classic .card-meaning { color: #c9a84c; }
+        .card-classic .card-brand { color: #c9a84c; }
+
+        .card-pastel {
+            background: #fff0f5;
+            border: 1.5px solid #f4a7c0;
+        }
+        .card-pastel .card-photo-area { background: #fff5f8; }
+        .card-pastel .card-photo-ring { border-color: #f4a7c0; background: #fde8f0; }
+        .card-pastel .card-footer { background: #fff0f5; border-top: 1px solid rgba(244,167,192,0.3); }
+        .card-pastel .card-kname { color: #c45a7a; }
+        .card-pastel .card-meaning { color: #e88aaa; }
+        .card-pastel .card-brand { color: #e88aaa; }
+
+        .card-gen4 {
+            background: #0f0f0f;
+            border: 1.5px solid #00e5cc;
+        }
+        .card-gen4 .card-photo-area { background: #111; }
+        .card-gen4 .card-photo-ring { border-color: #00e5cc; background: #1a1a1a; }
+        .card-gen4 .card-footer { background: #0a0a0a; border-top: 1px solid rgba(0,229,204,0.3); }
+        .card-gen4 .card-kname { color: #fff; }
+        .card-gen4 .card-meaning { color: #00e5cc; }
+        .card-gen4 .card-brand { color: #00e5cc; }
+
+        .card-luxury {
+            background: #1a1030;
+            border: 1.5px solid #9b7fe8;
+        }
+        .card-luxury .card-photo-area { background: #1e1438; }
+        .card-luxury .card-photo-ring { border-color: #9b7fe8; background: #2d1f52; }
+        .card-luxury .card-footer { background: #130c24; border-top: 1px solid rgba(155,127,232,0.3); }
+        .card-luxury .card-kname { color: #e8d5ff; }
+        .card-luxury .card-meaning { color: #9b7fe8; }
+        .card-luxury .card-brand { color: #9b7fe8; }
+
+        .style-btn { transition: all 0.2s; cursor: pointer; }
+        .style-btn.selected { transform: scale(1.05); }
+        .style-btn.selected .style-label { font-weight: 800; }
     </style>
 </head>
 <body class="bg-slate-100 min-h-screen flex flex-col items-center justify-center p-4">
@@ -110,26 +159,106 @@
             <p id="credits-display" class="text-center text-[11px] font-bold text-slate-400 tracking-widest uppercase"></p>
         </div>
 
-        <!-- Loading -->
-        <div id="loading" style="display:none;" class="mt-6 text-center">
-            <div class="w-20 h-20 rounded-full shimmer mx-auto mb-4"></div>
-            <p id="txt-loading" class="text-xs text-slate-400 font-medium animate-pulse">Consulting the ancients...</p>
+        <!-- LOADING + CARD STYLE PICKER -->
+        <div id="loading-section" style="display:none;" class="mt-6">
+            <div class="text-center mb-5">
+                <div class="w-16 h-16 rounded-full shimmer mx-auto mb-3"></div>
+                <p id="txt-loading" class="text-xs text-slate-400 font-medium animate-pulse">Consulting the ancients...</p>
+            </div>
+
+            <div class="border-t border-slate-100 pt-5">
+                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center mb-4">Choose your card style while waiting</p>
+                <div class="grid grid-cols-2 gap-3">
+
+                    <!-- Classic -->
+                    <div class="style-btn selected" onclick="selectCardStyle('classic')" id="style-classic">
+                        <div style="width:100%; aspect-ratio:2/3; background:#0a0a1a; border-radius:10px; border:2px solid #c9a84c; display:flex; flex-direction:column; overflow:hidden;">
+                            <div style="flex:1; background:#1a1a3e; display:flex; align-items:center; justify-content:center;">
+                                <div style="width:36px; height:36px; border-radius:50%; border:1.5px solid #c9a84c; background:#2a2a4a; display:flex; align-items:center; justify-content:center; font-size:14px;">🧑‍🎤</div>
+                            </div>
+                            <div style="padding:6px; text-align:center; background:#0a0a1a; border-top:1px solid rgba(201,168,76,0.3);">
+                                <p style="margin:0; font-size:9px; font-weight:700; color:#fff; font-family:serif;">건우(建宇)</p>
+                                <p style="margin:0; font-size:6px; color:#c9a84c; letter-spacing:0.1em;">ESTABLISH</p>
+                            </div>
+                        </div>
+                        <p class="style-label text-center text-[10px] font-bold text-slate-600 mt-1.5">✦ Classic</p>
+                    </div>
+
+                    <!-- Pastel -->
+                    <div class="style-btn" onclick="selectCardStyle('pastel')" id="style-pastel">
+                        <div style="width:100%; aspect-ratio:2/3; background:#fff0f5; border-radius:10px; border:2px solid #f4a7c0; display:flex; flex-direction:column; overflow:hidden;">
+                            <div style="flex:1; background:#fff5f8; display:flex; align-items:center; justify-content:center;">
+                                <div style="width:36px; height:36px; border-radius:50%; border:1.5px solid #f4a7c0; background:#fde8f0; display:flex; align-items:center; justify-content:center; font-size:14px;">🧑‍🎤</div>
+                            </div>
+                            <div style="padding:6px; text-align:center; background:#fff0f5; border-top:1px solid rgba(244,167,192,0.3);">
+                                <p style="margin:0; font-size:9px; font-weight:700; color:#c45a7a; font-family:serif;">새롬(新美)</p>
+                                <p style="margin:0; font-size:6px; color:#e88aaa; letter-spacing:0.1em;">BEAUTIFUL</p>
+                            </div>
+                        </div>
+                        <p class="style-label text-center text-[10px] font-bold text-slate-500 mt-1.5">🌸 Pastel</p>
+                    </div>
+
+                    <!-- 4th Gen -->
+                    <div class="style-btn" onclick="selectCardStyle('gen4')" id="style-gen4">
+                        <div style="width:100%; aspect-ratio:2/3; background:#0f0f0f; border-radius:10px; border:2px solid #00e5cc; display:flex; flex-direction:column; overflow:hidden;">
+                            <div style="flex:1; background:#111; display:flex; align-items:center; justify-content:center;">
+                                <div style="width:36px; height:36px; border-radius:50%; border:1.5px solid #00e5cc; background:#1a1a1a; display:flex; align-items:center; justify-content:center; font-size:14px;">🧑‍🎤</div>
+                            </div>
+                            <div style="padding:6px; text-align:center; background:#0a0a0a; border-top:1px solid rgba(0,229,204,0.3);">
+                                <p style="margin:0; font-size:9px; font-weight:700; color:#fff; font-family:serif;">지호(智浩)</p>
+                                <p style="margin:0; font-size:6px; color:#00e5cc; letter-spacing:0.1em;">WISDOM</p>
+                            </div>
+                        </div>
+                        <p class="style-label text-center text-[10px] font-bold text-slate-500 mt-1.5">⚡ 4th Gen</p>
+                    </div>
+
+                    <!-- Luxury -->
+                    <div class="style-btn" onclick="selectCardStyle('luxury')" id="style-luxury">
+                        <div style="width:100%; aspect-ratio:2/3; background:#1a1030; border-radius:10px; border:2px solid #9b7fe8; display:flex; flex-direction:column; overflow:hidden;">
+                            <div style="flex:1; background:#1e1438; display:flex; align-items:center; justify-content:center;">
+                                <div style="width:36px; height:36px; border-radius:50%; border:1.5px solid #9b7fe8; background:#2d1f52; display:flex; align-items:center; justify-content:center; font-size:14px;">🧑‍🎤</div>
+                            </div>
+                            <div style="padding:6px; text-align:center; background:#130c24; border-top:1px solid rgba(155,127,232,0.3);">
+                                <p style="margin:0; font-size:9px; font-weight:700; color:#e8d5ff; font-family:serif;">민서(珉瑞)</p>
+                                <p style="margin:0; font-size:6px; color:#9b7fe8; letter-spacing:0.1em;">JADE</p>
+                            </div>
+                        </div>
+                        <p class="style-label text-center text-[10px] font-bold text-slate-500 mt-1.5">💜 Luxury</p>
+                    </div>
+
+                </div>
+            </div>
         </div>
 
-        <!-- Result card -->
-        <div id="result-card" style="display:none;" class="mt-6 fade-in">
-            <div id="card-inner" class="bg-gradient-to-br from-slate-50 to-indigo-50 rounded-2xl p-6 text-center border border-slate-100">
-                <div class="relative w-24 h-24 mx-auto mb-4">
-                    <div id="portrait-placeholder" class="w-24 h-24 rounded-full bg-slate-200 flex items-center justify-center text-3xl border-4 border-white shadow-lg">🧑‍🎤</div>
-                    <img id="portrait-img" style="display:none;" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg absolute inset-0" alt="K-portrait" crossorigin="anonymous">
+        <!-- RESULT CARD -->
+        <div id="result-section" style="display:none;" class="mt-6 fade-in">
+            <!-- Styled photocard -->
+            <div id="card-inner" class="card-classic rounded-2xl overflow-hidden mx-auto" style="width:200px; display:block; margin:0 auto;">
+                <div class="card-photo-area" style="height:200px; display:flex; align-items:center; justify-content:center; position:relative; padding:16px;">
+                    <div style="position:absolute; top:10px; right:12px; font-size:8px; font-weight:700; letter-spacing:0.15em;" class="card-brand">K·NAME</div>
+                    <div class="card-photo-ring" style="width:120px; height:120px; border-radius:50%; border-width:3px; border-style:solid; display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0;">
+                        <div id="portrait-placeholder" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:40px;">🧑‍🎤</div>
+                        <img id="portrait-img" style="display:none; width:100%; height:100%; object-fit:cover;" alt="K-portrait" crossorigin="anonymous">
+                    </div>
                 </div>
-                <h2 id="k-name" class="text-3xl font-bold text-slate-900 mt-1 k-font"></h2>
-                <p id="k-meaning" class="text-[11px] font-bold text-indigo-600 tracking-widest uppercase mt-3 px-2"></p>
-                <p id="k-explain" class="text-xs text-slate-500 mt-3 leading-relaxed px-1"></p>
+                <div class="card-footer" style="padding:14px; text-align:center;">
+                    <h2 id="k-name" class="card-kname k-font" style="margin:0; font-size:22px; font-weight:700; letter-spacing:0.03em;"></h2>
+                    <p id="k-meaning" class="card-meaning" style="margin:4px 0 0; font-size:8px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase;"></p>
+                    <p id="k-explain" style="margin:8px 0 0; font-size:9px; line-height:1.5; opacity:0.7;" class="card-kname"></p>
+                </div>
             </div>
+
+            <!-- Style switcher under result -->
+            <div class="flex gap-2 justify-center mt-4">
+                <button onclick="selectCardStyle('classic')" id="res-classic" class="text-[9px] font-bold px-2 py-1 rounded-full border border-amber-400 text-amber-700 bg-amber-50 hover:bg-amber-100 transition-all">✦ Classic</button>
+                <button onclick="selectCardStyle('pastel')" id="res-pastel" class="text-[9px] font-bold px-2 py-1 rounded-full border border-pink-300 text-pink-600 bg-pink-50 hover:bg-pink-100 transition-all">🌸 Pastel</button>
+                <button onclick="selectCardStyle('gen4')" id="res-gen4" class="text-[9px] font-bold px-2 py-1 rounded-full border border-cyan-400 text-cyan-700 bg-cyan-50 hover:bg-cyan-100 transition-all">⚡ 4th Gen</button>
+                <button onclick="selectCardStyle('luxury')" id="res-luxury" class="text-[9px] font-bold px-2 py-1 rounded-full border border-purple-400 text-purple-700 bg-purple-50 hover:bg-purple-100 transition-all">💜 Luxury</button>
+            </div>
+
             <!-- Download button -->
             <button id="download-btn" onclick="handleDownload()"
-                class="w-full mt-3 bg-gradient-to-r from-pink-500 to-violet-600 text-white font-bold py-3 rounded-2xl shadow-lg hover:opacity-90 transition-all text-sm">
+                class="w-full mt-4 bg-gradient-to-r from-pink-500 to-violet-600 text-white font-bold py-3 rounded-2xl shadow-lg hover:opacity-90 transition-all text-sm">
                 💾 Download Card · $1
             </button>
         </div>
@@ -154,7 +283,7 @@
         <div class="bg-white rounded-3xl p-8 w-80 shadow-2xl text-center">
             <div class="text-4xl mb-3">⚡</div>
             <h3 class="text-lg font-extrabold text-slate-900 mb-1">Out of Credits</h3>
-            <p class="text-xs text-slate-400 mb-6">Watch a short video ad to get 1 credit, or upgrade for unlimited access.</p>
+            <p class="text-xs text-slate-400 mb-6">Watch a short video ad to get 1 credit,<br>or upgrade for unlimited access.</p>
             <div class="space-y-3">
                 <button onclick="startWatchAd()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-2xl transition-all text-sm">
                     📺 Watch Ad (+1 Credit)
@@ -167,12 +296,11 @@
         </div>
     </div>
 
-    <!-- AD WATCHING MODAL -->
+    <!-- AD MODAL -->
     <div id="ad-modal" style="display:none;pointer-events:none;" class="fixed inset-0 bg-black/80 backdrop-blur-sm items-center justify-center z-[60] p-4">
         <div class="bg-white rounded-3xl p-8 w-80 shadow-2xl text-center">
             <h3 class="text-lg font-extrabold text-slate-900 mb-2">📺 Ad Playing...</h3>
             <p class="text-xs text-slate-400 mb-4">Please wait while the ad plays</p>
-            <!-- Simulated video ad area -->
             <div class="bg-slate-900 rounded-2xl h-40 flex items-center justify-center mb-4 relative overflow-hidden">
                 <div class="text-white text-center">
                     <div class="text-3xl mb-2">🎬</div>
@@ -180,11 +308,10 @@
                 </div>
                 <div id="ad-skip-timer" class="absolute top-2 right-2 bg-black/60 text-white text-xs font-bold px-2 py-1 rounded-full"></div>
             </div>
-            <!-- Progress bar -->
             <div class="bg-slate-200 rounded-full h-2 mb-4 overflow-hidden">
-                <div id="ad-progress-bar" class="h-2 bg-amber-500 rounded-full ad-progress" style="width:0%"></div>
+                <div id="ad-progress-bar" class="h-2 bg-amber-500 rounded-full transition-all duration-1000" style="width:0%"></div>
             </div>
-            <button id="ad-skip-btn" onclick="skipAd()" disabled class="w-full bg-slate-300 text-slate-500 font-bold py-3 rounded-2xl text-sm cursor-not-allowed" id="ad-skip-btn">
+            <button id="ad-skip-btn" onclick="skipAd()" disabled class="w-full bg-slate-300 text-slate-500 font-bold py-3 rounded-2xl text-sm cursor-not-allowed">
                 Skip Ad (<span id="ad-countdown">5</span>s)
             </button>
         </div>
@@ -195,18 +322,48 @@
         <div class="bg-white rounded-3xl p-8 w-80 shadow-2xl text-center">
             <div class="text-4xl mb-3">💾</div>
             <h3 class="text-lg font-extrabold text-slate-900 mb-1">Download Your K-Card</h3>
-            <p class="text-xs text-slate-400 mb-6">Pay $1 to download your personalized Korean name card</p>
+            <p class="text-xs text-slate-400 mb-5">Pay $1 to download your personalized Korean name card in full quality</p>
             <div class="space-y-3">
                 <button onclick="proceedDownloadPayment()" class="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-2xl transition-all text-sm">
                     🌐 Pay $1 with PayPal
                 </button>
             </div>
-            <button onclick="closeDownloadModal()" class="mt-3 text-xs text-slate-400 hover:underline w-full">Cancel</button>
+            <button onclick="openSampleModal()" class="mt-3 text-xs text-indigo-500 hover:underline font-bold w-full">👁 View Sample Card</button>
+            <button onclick="closeDownloadModal()" class="mt-1 text-xs text-slate-400 hover:underline w-full">Cancel</button>
+        </div>
+    </div>
+
+    <!-- SAMPLE MODAL -->
+    <div id="sample-modal" style="display:none;pointer-events:none;" class="fixed inset-0 bg-black/60 backdrop-blur-sm items-center justify-center z-[70] p-4">
+        <div class="bg-white rounded-3xl p-8 w-80 shadow-2xl text-center">
+            <h3 class="text-base font-extrabold text-slate-900 mb-4">Sample Cards</h3>
+            <div class="grid grid-cols-2 gap-3 mb-5">
+                <div style="aspect-ratio:2/3; background:#0a0a1a; border-radius:10px; border:1.5px solid #c9a84c; display:flex; flex-direction:column; overflow:hidden;">
+                    <div style="flex:1; background:#1a1a3e; display:flex; align-items:center; justify-content:center;"><div style="width:40px; height:40px; border-radius:50%; border:1.5px solid #c9a84c; background:#2a2a4a; font-size:16px; display:flex; align-items:center; justify-content:center;">🧑‍🎤</div></div>
+                    <div style="padding:6px; background:#0a0a1a; border-top:1px solid rgba(201,168,76,0.3); text-align:center;"><p style="margin:0;font-size:10px;font-weight:700;color:#fff;font-family:serif;">건우(建宇)</p><p style="margin:0;font-size:7px;color:#c9a84c;">ESTABLISH</p></div>
+                </div>
+                <div style="aspect-ratio:2/3; background:#fff0f5; border-radius:10px; border:1.5px solid #f4a7c0; display:flex; flex-direction:column; overflow:hidden;">
+                    <div style="flex:1; background:#fff5f8; display:flex; align-items:center; justify-content:center;"><div style="width:40px; height:40px; border-radius:50%; border:1.5px solid #f4a7c0; background:#fde8f0; font-size:16px; display:flex; align-items:center; justify-content:center;">🧑‍🎤</div></div>
+                    <div style="padding:6px; background:#fff0f5; border-top:1px solid rgba(244,167,192,0.3); text-align:center;"><p style="margin:0;font-size:10px;font-weight:700;color:#c45a7a;font-family:serif;">새롬(新美)</p><p style="margin:0;font-size:7px;color:#e88aaa;">BEAUTIFUL</p></div>
+                </div>
+                <div style="aspect-ratio:2/3; background:#0f0f0f; border-radius:10px; border:1.5px solid #00e5cc; display:flex; flex-direction:column; overflow:hidden;">
+                    <div style="flex:1; background:#111; display:flex; align-items:center; justify-content:center;"><div style="width:40px; height:40px; border-radius:50%; border:1.5px solid #00e5cc; background:#1a1a1a; font-size:16px; display:flex; align-items:center; justify-content:center;">🧑‍🎤</div></div>
+                    <div style="padding:6px; background:#0a0a0a; border-top:1px solid rgba(0,229,204,0.3); text-align:center;"><p style="margin:0;font-size:10px;font-weight:700;color:#fff;font-family:serif;">지호(智浩)</p><p style="margin:0;font-size:7px;color:#00e5cc;">WISDOM</p></div>
+                </div>
+                <div style="aspect-ratio:2/3; background:#1a1030; border-radius:10px; border:1.5px solid #9b7fe8; display:flex; flex-direction:column; overflow:hidden;">
+                    <div style="flex:1; background:#1e1438; display:flex; align-items:center; justify-content:center;"><div style="width:40px; height:40px; border-radius:50%; border:1.5px solid #9b7fe8; background:#2d1f52; font-size:16px; display:flex; align-items:center; justify-content:center;">🧑‍🎤</div></div>
+                    <div style="padding:6px; background:#130c24; border-top:1px solid rgba(155,127,232,0.3); text-align:center;"><p style="margin:0;font-size:10px;font-weight:700;color:#e8d5ff;font-family:serif;">민서(珉瑞)</p><p style="margin:0;font-size:7px;color:#9b7fe8;">JADE</p></div>
+                </div>
+            </div>
+            <p class="text-xs text-slate-400 mb-4">Your actual card will include your AI portrait & name</p>
+            <button onclick="closeSampleModal(); proceedDownloadPayment()" class="w-full bg-gradient-to-r from-pink-500 to-violet-600 text-white font-bold py-3 rounded-2xl text-sm hover:opacity-90 transition-all">
+                💾 Download Mine · $1
+            </button>
+            <button onclick="closeSampleModal()" class="mt-2 text-xs text-slate-400 hover:underline w-full">Close</button>
         </div>
     </div>
 
 <script>
-// ======= CONFIG =======
 let _sp = null;
 let CONFIG = {};
 
@@ -217,77 +374,83 @@ async function loadConfig() {
     await init();
 }
 
-// ======= STATE =======
 let currentStrategy = 'sound';
+let currentCardStyle = 'classic';
 let currentUser = null;
 let userPlan = null;
 const FREE_LIMIT = 3;
-
 const strategyDescriptions = {
     sound: 'Sounds similar to your English name',
     meaning: 'Beautiful Hanja characters matching your personality',
     kdrama: 'Trendy K-drama main character style',
 };
+const cardStyles = {
+    classic: 'card-classic',
+    pastel: 'card-pastel',
+    gen4: 'card-gen4',
+    luxury: 'card-luxury',
+};
 
-// ======= AUTH =======
-async function signInWithGoogle() {
-    await _sp.auth.signInWithOAuth({
-        provider: 'google',
-        options: { redirectTo: window.location.origin }
+// ===== CARD STYLE =====
+function selectCardStyle(style) {
+    currentCardStyle = style;
+    // Update loading picker
+    ['classic','pastel','gen4','luxury'].forEach(s => {
+        const btn = document.getElementById('style-' + s);
+        if (btn) btn.className = s === style ? 'style-btn selected' : 'style-btn';
     });
+    // Update result card class
+    const card = document.getElementById('card-inner');
+    if (card) {
+        card.className = cardStyles[style] + ' rounded-2xl overflow-hidden mx-auto';
+        card.style.width = '200px';
+        card.style.display = 'block';
+        card.style.margin = '0 auto';
+    }
+}
+
+// ===== AUTH =====
+async function signInWithGoogle() {
+    await _sp.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin } });
 }
 async function signOut() {
     await _sp.auth.signOut();
     currentUser = null; userPlan = null;
     updateAuthUI(); updateCreditsDisplay();
 }
-function openLoginModal() {
-    const m = document.getElementById('login-modal');
-    m.style.display = 'flex'; m.style.pointerEvents = 'auto';
-}
-function closeLoginModal() {
-    const m = document.getElementById('login-modal');
-    m.style.display = 'none'; m.style.pointerEvents = 'none';
-}
-document.getElementById('login-modal').addEventListener('click', function(e) {
-    if (e.target === this) closeLoginModal();
+function openLoginModal() { showModal('login-modal'); }
+function closeLoginModal() { hideModal('login-modal'); }
+
+// ===== MODALS =====
+function showModal(id) { const m=document.getElementById(id); m.style.display='flex'; m.style.pointerEvents='auto'; }
+function hideModal(id) { const m=document.getElementById(id); m.style.display='none'; m.style.pointerEvents='none'; }
+function openNoCreditsModal() { showModal('no-credits-modal'); }
+function closeNoCreditsModal() { hideModal('no-credits-modal'); }
+function openDownloadModal() { showModal('download-modal'); }
+function closeDownloadModal() { hideModal('download-modal'); }
+function openSampleModal() { hideModal('download-modal'); showModal('sample-modal'); }
+function closeSampleModal() { hideModal('sample-modal'); }
+
+['login-modal','no-credits-modal','download-modal','sample-modal'].forEach(id => {
+    document.getElementById(id).addEventListener('click', function(e) { if(e.target===this) hideModal(id); });
 });
 
-// ======= NO CREDITS MODAL =======
-function openNoCreditsModal() {
-    const m = document.getElementById('no-credits-modal');
-    m.style.display = 'flex'; m.style.pointerEvents = 'auto';
-}
-function closeNoCreditsModal() {
-    const m = document.getElementById('no-credits-modal');
-    m.style.display = 'none'; m.style.pointerEvents = 'none';
-}
-document.getElementById('no-credits-modal').addEventListener('click', function(e) {
-    if (e.target === this) closeNoCreditsModal();
-});
-
-// ======= AD MODAL =======
+// ===== AD =====
 let adTimer = null;
 function startWatchAd() {
     closeNoCreditsModal();
-    const m = document.getElementById('ad-modal');
-    m.style.display = 'flex'; m.style.pointerEvents = 'auto';
-
+    showModal('ad-modal');
     let seconds = 5;
     const countdown = document.getElementById('ad-countdown');
     const skipTimer = document.getElementById('ad-skip-timer');
     const skipBtn = document.getElementById('ad-skip-btn');
     const progressBar = document.getElementById('ad-progress-bar');
-
     countdown.textContent = seconds;
     skipTimer.textContent = seconds + 's';
-    progressBar.style.width = '0%';
     skipBtn.disabled = true;
     skipBtn.className = 'w-full bg-slate-300 text-slate-500 font-bold py-3 rounded-2xl text-sm cursor-not-allowed';
-
-    // Start progress
+    progressBar.style.width = '0%';
     setTimeout(() => { progressBar.style.width = '100%'; }, 100);
-
     adTimer = setInterval(() => {
         seconds--;
         countdown.textContent = seconds;
@@ -303,45 +466,23 @@ function startWatchAd() {
 }
 function skipAd() {
     clearInterval(adTimer);
-    const m = document.getElementById('ad-modal');
-    m.style.display = 'none'; m.style.pointerEvents = 'none';
-    // Give 1 credit
+    hideModal('ad-modal');
     const used = parseInt(localStorage.getItem('k_used') || '0');
     if (used > 0) localStorage.setItem('k_used', used - 1);
     updateCreditsDisplay(); updateAuthUI();
     alert('🎉 1 credit added!');
 }
 
-// ======= DOWNLOAD MODAL =======
+// ===== DOWNLOAD =====
 function handleDownload() {
-    if (userPlan) {
-        // Paid users download free
-        actualDownload();
-    } else {
-        openDownloadModal();
-    }
+    if (userPlan) { actualDownload(); }
+    else if (!currentUser) { openLoginModal(); }
+    else { openDownloadModal(); }
 }
-function openDownloadModal() {
-    if (!currentUser) {
-        openLoginModal();
-        return;
-    }
-    const m = document.getElementById('download-modal');
-    m.style.display = 'flex'; m.style.pointerEvents = 'auto';
-}
-function closeDownloadModal() {
-    const m = document.getElementById('download-modal');
-    m.style.display = 'none'; m.style.pointerEvents = 'none';
-}
-document.getElementById('download-modal').addEventListener('click', function(e) {
-    if (e.target === this) closeDownloadModal();
-});
-
 async function proceedDownloadPayment() {
-    closeDownloadModal();
+    hideModal('download-modal');
     const { data: { user } } = await _sp.auth.getUser();
     if (!user?.email) { openLoginModal(); return; }
-
     const orderId = 'dl_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     try {
         const response = await PortOne.requestPayment({
@@ -355,33 +496,26 @@ async function proceedDownloadPayment() {
             customer: { email: user.email },
             redirectUrl: window.location.origin + '/?downloaded=1',
         });
-        if (response?.paymentId) {
-            await actualDownload();
-        }
+        if (response?.paymentId) actualDownload();
     } catch(e) {
         if (e?.code !== 'USER_CANCEL') alert('Payment failed. Please try again.');
     }
 }
-
 async function actualDownload() {
     const btn = document.getElementById('download-btn');
-    const originalText = btn.innerHTML;
+    const orig = btn.innerHTML;
     btn.innerHTML = 'Generating...'; btn.disabled = true;
     try {
-        const canvas = await html2canvas(document.getElementById('card-inner'), {
-            scale: 2, useCORS: true, backgroundColor: '#ffffff'
-        });
+        const canvas = await html2canvas(document.getElementById('card-inner'), { scale: 3, useCORS: true, backgroundColor: null });
         const link = document.createElement('a');
-        link.download = 'korean-name-' + Date.now() + '.png';
+        link.download = 'k-name-card-' + Date.now() + '.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
-    } catch(e) {
-        alert('Download failed. Try screenshotting manually.');
-    }
-    btn.innerHTML = originalText; btn.disabled = false;
+    } catch(e) { alert('Download failed. Try screenshotting manually.'); }
+    btn.innerHTML = orig; btn.disabled = false;
 }
 
-// ======= PLAN =======
+// ===== PLAN =====
 async function fetchUserPlan(email) {
     try {
         const res = await fetch('/api/my-plan?email=' + encodeURIComponent(email));
@@ -405,8 +539,8 @@ function updateCreditsDisplay() {
     }
 }
 function updateAuthUI() {
-    const show = (id, type='flex') => { const el = document.getElementById(id); if(el) el.style.display=type; };
-    const hide = (id) => { const el = document.getElementById(id); if(el) el.style.display='none'; };
+    const show = (id) => { const el=document.getElementById(id); if(el) el.style.display='flex'; };
+    const hide = (id) => { const el=document.getElementById(id); if(el) el.style.display='none'; };
     if (currentUser) {
         hide('google-login-btn'); show('user-profile');
         document.getElementById('user-email').textContent = currentUser.email;
@@ -421,14 +555,11 @@ function updateAuthUI() {
     } else {
         show('google-login-btn'); hide('user-profile'); hide('buy-pass-user-btn'); hide('plan-badge');
     }
-    // Update download button text
     const dlBtn = document.getElementById('download-btn');
-    if (dlBtn) {
-        dlBtn.innerHTML = userPlan ? '💾 Download Card (Free)' : '💾 Download Card · $1';
-    }
+    if (dlBtn) dlBtn.innerHTML = userPlan ? '💾 Download Card (Free)' : '💾 Download Card · $1';
 }
 
-// ======= STRATEGY =======
+// ===== STRATEGY =====
 function setStrategy(s) {
     currentStrategy = s;
     ['sound','meaning','kdrama'].forEach(id => {
@@ -440,7 +571,7 @@ function setStrategy(s) {
     document.getElementById('strategy-desc').textContent = strategyDescriptions[s];
 }
 
-// ======= GENERATE =======
+// ===== GENERATE =====
 async function generateName() {
     const name = document.getElementById('name-input').value.trim();
     if (!name) {
@@ -449,17 +580,11 @@ async function generateName() {
         setTimeout(() => inp.classList.remove('border-red-400'), 1500);
         return;
     }
-
-    // Credit gate
     if (!userPlan) {
         const credits = getGuestCredits();
         if (credits <= 0) {
-            if (currentUser) {
-                openNoCreditsModal();
-            } else {
-                // Not logged in: show login first, then no-credits after
-                openLoginModal();
-            }
+            if (currentUser) openNoCreditsModal();
+            else openLoginModal();
             return;
         }
         localStorage.setItem('k_used', parseInt(localStorage.getItem('k_used') || '0') + 1);
@@ -475,17 +600,14 @@ async function generateName() {
         kdrama: 'trendy K-drama style naming conventions used for main characters',
     };
 
-    document.getElementById('result-card').style.display = 'none';
-    document.getElementById('loading').style.display = 'block';
+    document.getElementById('result-section').style.display = 'none';
+    document.getElementById('loading-section').style.display = 'block';
     const btn = document.getElementById('generate-btn');
     btn.disabled = true; btn.style.opacity = '0.6';
+    selectCardStyle(currentCardStyle);
 
     try {
-        const params = new URLSearchParams({
-            english_name: name, vibe, gender, lang,
-            strategy: stratMap[currentStrategy],
-            style: currentStrategy,
-        });
+        const params = new URLSearchParams({ english_name: name, vibe, gender, lang, strategy: stratMap[currentStrategy], style: currentStrategy });
         const res = await fetch('/api/generate-k-identity?' + params);
         const data = await res.json();
 
@@ -503,16 +625,18 @@ async function generateName() {
             img.style.display = 'none'; ph.style.display = 'flex';
         }
 
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('result-card').style.display = 'block';
+        document.getElementById('loading-section').style.display = 'none';
+        document.getElementById('result-section').style.display = 'block';
+        selectCardStyle(currentCardStyle);
+        updateAuthUI();
     } catch(e) {
-        document.getElementById('loading').style.display = 'none';
+        document.getElementById('loading-section').style.display = 'none';
         alert('Something went wrong. Please try again.');
     }
     btn.disabled = false; btn.style.opacity = '1';
 }
 
-// ======= LANGUAGE =======
+// ===== LANGUAGE =====
 const langs = [
     { code:'en', flag:'🇺🇸', name:'English' },
     { code:'ko', flag:'🇰🇷', name:'한국어' },
@@ -548,18 +672,15 @@ langs.forEach(l => {
     btn.onclick = () => applyLang(l.code);
     menu.appendChild(btn);
 });
-document.getElementById('lang-toggle').onclick = (e) => {
-    e.stopPropagation();
-    document.getElementById('lang-menu').classList.toggle('hidden');
-};
+document.getElementById('lang-toggle').onclick = (e) => { e.stopPropagation(); document.getElementById('lang-menu').classList.toggle('hidden'); };
 document.addEventListener('click', () => document.getElementById('lang-menu').classList.add('hidden'));
 
-// ======= BANNERS =======
+// ===== BANNERS =====
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.get('success') === '1') {
-    const banner = document.getElementById('success-banner');
-    banner.style.display = 'block';
-    setTimeout(() => { banner.style.display = 'none'; }, 5000);
+    const b = document.getElementById('success-banner');
+    b.style.display = 'block';
+    setTimeout(() => { b.style.display = 'none'; }, 5000);
     history.replaceState({}, '', '/');
 }
 if (urlParams.get('downloaded') === '1') {
@@ -567,7 +688,7 @@ if (urlParams.get('downloaded') === '1') {
     history.replaceState({}, '', '/');
 }
 
-// ======= INIT =======
+// ===== INIT =====
 async function init() {
     applyLang(localStorage.getItem('web_lang') || 'en');
     const { data: { session } } = await _sp.auth.getSession();
@@ -575,26 +696,17 @@ async function init() {
         currentUser = session.user;
         userPlan = await fetchUserPlan(currentUser.email);
     }
-    updateAuthUI();
-    updateCreditsDisplay();
-
+    updateAuthUI(); updateCreditsDisplay();
     _sp.auth.onAuthStateChange(async (event, session) => {
         if (session?.user) {
             currentUser = session.user;
             userPlan = await fetchUserPlan(currentUser.email);
             closeLoginModal();
-            // If they just logged in and have no credits, show no-credits modal
-            if (!userPlan && getGuestCredits() === 0) {
-                setTimeout(() => openNoCreditsModal(), 500);
-            }
-        } else {
-            currentUser = null; userPlan = null;
-        }
-        updateAuthUI();
-        updateCreditsDisplay();
+            if (!userPlan && getGuestCredits() === 0) setTimeout(() => openNoCreditsModal(), 500);
+        } else { currentUser = null; userPlan = null; }
+        updateAuthUI(); updateCreditsDisplay();
     });
 }
-
 loadConfig();
 </script>
 </body>
