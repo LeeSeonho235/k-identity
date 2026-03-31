@@ -162,6 +162,7 @@ async def generate_k_identity(
     gender: str,
     lang: str,
     strategy: str,
+    style: str = "kdrama",
 ):
     lang_map = {
         "en": "English",
@@ -216,10 +217,12 @@ Line 3: Poetic explanation in 2-3 sentences in {target_lang}
 
     image_url = ""
     if clean_lines:
-        dalle_prompt = (
-            f"A high-quality, realistic studio portrait of a stylish Korean {gender}. "
-            f"{vibe} vibe. K-drama aesthetic, soft lighting, ultra-detailed, 8k."
-        )
+        style_prompt_map = {
+            "sound": f"A high-quality studio portrait of a natural, approachable Korean {gender}. Soft, warm lighting, everyday fashion, friendly expression. {vibe} vibe. Ultra-detailed, 8k.",
+            "meaning": f"A high-quality artistic portrait of a thoughtful, sophisticated Korean {gender}. Dramatic lighting, traditional or high-fashion styling, deep and poetic atmosphere. {vibe} vibe. Ultra-detailed, 8k.",
+            "kdrama": f"A high-quality cinematic portrait of a glamorous Korean {gender} in K-drama style. Perfect makeup, trendy fashion, dramatic lighting, cinematic color grading. {vibe} vibe. Ultra-detailed, 8k.",
+        }
+        dalle_prompt = style_prompt_map.get(style, style_prompt_map["kdrama"])
         try:
             img_response = openai_client.images.generate(
                 model="dall-e-3",

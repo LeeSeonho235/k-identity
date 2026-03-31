@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Serif+KR:wght@700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
@@ -21,6 +22,7 @@
         .fade-in { animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
         select { -webkit-appearance: none; appearance: none; }
+        .ad-progress { transition: width 1s linear; }
     </style>
 </head>
 <body class="bg-slate-100 min-h-screen flex flex-col items-center justify-center p-4">
@@ -39,13 +41,13 @@
             <button id="google-login-btn" onclick="openLoginModal()" class="flex items-center gap-1.5 bg-white border border-slate-200 px-3 py-1.5 rounded-full text-[11px] font-bold text-slate-600 shadow-sm hover:bg-slate-50 transition-all">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-3.5 h-3.5"> Google Login
             </button>
-            <button id="buy-pass-guest-btn" onclick="openLoginModal()" style="display:none;" class="flex items-center gap-1.5 bg-indigo-600 text-white px-3 py-1.5 rounded-full text-[11px] font-bold shadow-sm hover:bg-indigo-700 transition-all">✨ Buy Pass</button>
             <div id="user-profile" style="display:none;" class="flex items-center gap-2 bg-white border border-slate-200 px-3 py-1.5 rounded-full shadow-sm">
                 <span id="user-email" class="text-[11px] font-bold text-slate-600 max-w-[120px] truncate"></span>
                 <button onclick="signOut()" class="text-[11px] text-red-500 font-bold hover:underline">Logout</button>
             </div>
             <button id="buy-pass-user-btn" onclick="location.href='/pricing'" style="display:none;" class="flex items-center gap-1.5 bg-indigo-600 text-white px-3 py-1.5 rounded-full text-[11px] font-bold shadow-sm hover:bg-indigo-700 transition-all">✨ Buy Pass</button>
             <span id="plan-badge" style="display:none;" class="text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full"></span>
+            <a href="/pricing" class="flex items-center gap-1.5 bg-white border border-slate-200 px-3 py-1.5 rounded-full text-[11px] font-bold text-slate-600 shadow-sm hover:bg-slate-50 transition-all">💎 Pricing</a>
         </div>
     </div>
 
@@ -90,10 +92,15 @@
                 </div>
             </div>
 
-            <div class="flex gap-1 bg-slate-100 p-1 rounded-2xl">
-                <button id="strat-sound" onclick="setStrategy('sound')" class="flex-1 text-[10px] font-bold py-2 rounded-xl bg-white shadow text-indigo-600 transition-all">🔤 Sound</button>
-                <button id="strat-meaning" onclick="setStrategy('meaning')" class="flex-1 text-[10px] font-bold py-2 rounded-xl text-slate-500 hover:text-slate-700 transition-all">💎 Meaning</button>
-                <button id="strat-kdrama" onclick="setStrategy('kdrama')" class="flex-1 text-[10px] font-bold py-2 rounded-xl text-slate-500 hover:text-slate-700 transition-all">🎬 K-Drama</button>
+            <!-- Choose Style -->
+            <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Choose Style</p>
+                <div class="flex gap-1 bg-slate-100 p-1 rounded-2xl">
+                    <button id="strat-sound" onclick="setStrategy('sound')" class="flex-1 text-[10px] font-bold py-2 rounded-xl bg-white shadow text-indigo-600 transition-all">🔤 Sound</button>
+                    <button id="strat-meaning" onclick="setStrategy('meaning')" class="flex-1 text-[10px] font-bold py-2 rounded-xl text-slate-500 hover:text-slate-700 transition-all">💎 Meaning</button>
+                    <button id="strat-kdrama" onclick="setStrategy('kdrama')" class="flex-1 text-[10px] font-bold py-2 rounded-xl text-slate-500 hover:text-slate-700 transition-all">🎬 K-Drama</button>
+                </div>
+                <p id="strategy-desc" class="text-[10px] text-slate-400 mt-1.5 ml-1">Sounds similar to your English name</p>
             </div>
 
             <button id="generate-btn" onclick="generateName()"
@@ -103,11 +110,13 @@
             <p id="credits-display" class="text-center text-[11px] font-bold text-slate-400 tracking-widest uppercase"></p>
         </div>
 
+        <!-- Loading -->
         <div id="loading" style="display:none;" class="mt-6 text-center">
             <div class="w-20 h-20 rounded-full shimmer mx-auto mb-4"></div>
             <p id="txt-loading" class="text-xs text-slate-400 font-medium animate-pulse">Consulting the ancients...</p>
         </div>
 
+        <!-- Result card -->
         <div id="result-card" style="display:none;" class="mt-6 fade-in">
             <div id="card-inner" class="bg-gradient-to-br from-slate-50 to-indigo-50 rounded-2xl p-6 text-center border border-slate-100">
                 <div class="relative w-24 h-24 mx-auto mb-4">
@@ -118,9 +127,10 @@
                 <p id="k-meaning" class="text-[11px] font-bold text-indigo-600 tracking-widest uppercase mt-3 px-2"></p>
                 <p id="k-explain" class="text-xs text-slate-500 mt-3 leading-relaxed px-1"></p>
             </div>
-            <button id="download-btn" onclick="downloadCard()"
+            <!-- Download button -->
+            <button id="download-btn" onclick="handleDownload()"
                 class="w-full mt-3 bg-gradient-to-r from-pink-500 to-violet-600 text-white font-bold py-3 rounded-2xl shadow-lg hover:opacity-90 transition-all text-sm">
-                Download Card
+                💾 Download Card · $1
             </button>
         </div>
     </div>
@@ -139,8 +149,64 @@
         </div>
     </div>
 
+    <!-- NO CREDITS MODAL -->
+    <div id="no-credits-modal" style="display:none;pointer-events:none;" class="fixed inset-0 bg-black/40 backdrop-blur-sm items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-3xl p-8 w-80 shadow-2xl text-center">
+            <div class="text-4xl mb-3">⚡</div>
+            <h3 class="text-lg font-extrabold text-slate-900 mb-1">Out of Credits</h3>
+            <p class="text-xs text-slate-400 mb-6">Watch a short video ad to get 1 credit, or upgrade for unlimited access.</p>
+            <div class="space-y-3">
+                <button onclick="startWatchAd()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-2xl transition-all text-sm">
+                    📺 Watch Ad (+1 Credit)
+                </button>
+                <button onclick="closeNoCreditsModal(); location.href='/pricing'" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-2xl transition-all text-sm">
+                    ✨ Buy Pass (Unlimited)
+                </button>
+            </div>
+            <button onclick="closeNoCreditsModal()" class="mt-3 text-xs text-slate-400 hover:underline w-full">Cancel</button>
+        </div>
+    </div>
+
+    <!-- AD WATCHING MODAL -->
+    <div id="ad-modal" style="display:none;pointer-events:none;" class="fixed inset-0 bg-black/80 backdrop-blur-sm items-center justify-center z-[60] p-4">
+        <div class="bg-white rounded-3xl p-8 w-80 shadow-2xl text-center">
+            <h3 class="text-lg font-extrabold text-slate-900 mb-2">📺 Ad Playing...</h3>
+            <p class="text-xs text-slate-400 mb-4">Please wait while the ad plays</p>
+            <!-- Simulated video ad area -->
+            <div class="bg-slate-900 rounded-2xl h-40 flex items-center justify-center mb-4 relative overflow-hidden">
+                <div class="text-white text-center">
+                    <div class="text-3xl mb-2">🎬</div>
+                    <p class="text-xs text-slate-400">Advertisement</p>
+                </div>
+                <div id="ad-skip-timer" class="absolute top-2 right-2 bg-black/60 text-white text-xs font-bold px-2 py-1 rounded-full"></div>
+            </div>
+            <!-- Progress bar -->
+            <div class="bg-slate-200 rounded-full h-2 mb-4 overflow-hidden">
+                <div id="ad-progress-bar" class="h-2 bg-amber-500 rounded-full ad-progress" style="width:0%"></div>
+            </div>
+            <button id="ad-skip-btn" onclick="skipAd()" disabled class="w-full bg-slate-300 text-slate-500 font-bold py-3 rounded-2xl text-sm cursor-not-allowed" id="ad-skip-btn">
+                Skip Ad (<span id="ad-countdown">5</span>s)
+            </button>
+        </div>
+    </div>
+
+    <!-- DOWNLOAD PAYMENT MODAL -->
+    <div id="download-modal" style="display:none;pointer-events:none;" class="fixed inset-0 bg-black/40 backdrop-blur-sm items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-3xl p-8 w-80 shadow-2xl text-center">
+            <div class="text-4xl mb-3">💾</div>
+            <h3 class="text-lg font-extrabold text-slate-900 mb-1">Download Your K-Card</h3>
+            <p class="text-xs text-slate-400 mb-6">Pay $1 to download your personalized Korean name card</p>
+            <div class="space-y-3">
+                <button onclick="proceedDownloadPayment()" class="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-2xl transition-all text-sm">
+                    🌐 Pay $1 with PayPal
+                </button>
+            </div>
+            <button onclick="closeDownloadModal()" class="mt-3 text-xs text-slate-400 hover:underline w-full">Cancel</button>
+        </div>
+    </div>
+
 <script>
-// ======= CONFIG (loaded from /api/config) =======
+// ======= CONFIG =======
 let _sp = null;
 let CONFIG = {};
 
@@ -156,6 +222,12 @@ let currentStrategy = 'sound';
 let currentUser = null;
 let userPlan = null;
 const FREE_LIMIT = 3;
+
+const strategyDescriptions = {
+    sound: 'Sounds similar to your English name',
+    meaning: 'Beautiful Hanja characters matching your personality',
+    kdrama: 'Trendy K-drama main character style',
+};
 
 // ======= AUTH =======
 async function signInWithGoogle() {
@@ -181,6 +253,134 @@ document.getElementById('login-modal').addEventListener('click', function(e) {
     if (e.target === this) closeLoginModal();
 });
 
+// ======= NO CREDITS MODAL =======
+function openNoCreditsModal() {
+    const m = document.getElementById('no-credits-modal');
+    m.style.display = 'flex'; m.style.pointerEvents = 'auto';
+}
+function closeNoCreditsModal() {
+    const m = document.getElementById('no-credits-modal');
+    m.style.display = 'none'; m.style.pointerEvents = 'none';
+}
+document.getElementById('no-credits-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeNoCreditsModal();
+});
+
+// ======= AD MODAL =======
+let adTimer = null;
+function startWatchAd() {
+    closeNoCreditsModal();
+    const m = document.getElementById('ad-modal');
+    m.style.display = 'flex'; m.style.pointerEvents = 'auto';
+
+    let seconds = 5;
+    const countdown = document.getElementById('ad-countdown');
+    const skipTimer = document.getElementById('ad-skip-timer');
+    const skipBtn = document.getElementById('ad-skip-btn');
+    const progressBar = document.getElementById('ad-progress-bar');
+
+    countdown.textContent = seconds;
+    skipTimer.textContent = seconds + 's';
+    progressBar.style.width = '0%';
+    skipBtn.disabled = true;
+    skipBtn.className = 'w-full bg-slate-300 text-slate-500 font-bold py-3 rounded-2xl text-sm cursor-not-allowed';
+
+    // Start progress
+    setTimeout(() => { progressBar.style.width = '100%'; }, 100);
+
+    adTimer = setInterval(() => {
+        seconds--;
+        countdown.textContent = seconds;
+        skipTimer.textContent = seconds + 's';
+        if (seconds <= 0) {
+            clearInterval(adTimer);
+            skipBtn.disabled = false;
+            skipBtn.className = 'w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-2xl text-sm';
+            skipBtn.innerHTML = 'Claim 1 Credit ✓';
+            skipTimer.textContent = '✓';
+        }
+    }, 1000);
+}
+function skipAd() {
+    clearInterval(adTimer);
+    const m = document.getElementById('ad-modal');
+    m.style.display = 'none'; m.style.pointerEvents = 'none';
+    // Give 1 credit
+    const used = parseInt(localStorage.getItem('k_used') || '0');
+    if (used > 0) localStorage.setItem('k_used', used - 1);
+    updateCreditsDisplay(); updateAuthUI();
+    alert('🎉 1 credit added!');
+}
+
+// ======= DOWNLOAD MODAL =======
+function handleDownload() {
+    if (userPlan) {
+        // Paid users download free
+        actualDownload();
+    } else {
+        openDownloadModal();
+    }
+}
+function openDownloadModal() {
+    if (!currentUser) {
+        openLoginModal();
+        return;
+    }
+    const m = document.getElementById('download-modal');
+    m.style.display = 'flex'; m.style.pointerEvents = 'auto';
+}
+function closeDownloadModal() {
+    const m = document.getElementById('download-modal');
+    m.style.display = 'none'; m.style.pointerEvents = 'none';
+}
+document.getElementById('download-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeDownloadModal();
+});
+
+async function proceedDownloadPayment() {
+    closeDownloadModal();
+    const { data: { user } } = await _sp.auth.getUser();
+    if (!user?.email) { openLoginModal(); return; }
+
+    const orderId = 'dl_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    try {
+        const response = await PortOne.requestPayment({
+            storeId: CONFIG.PORTONE_STORE_ID,
+            channelKey: CONFIG.PORTONE_CHANNEL_KEY_PAYPAL,
+            paymentId: orderId,
+            orderName: 'Korean Name Card Download',
+            totalAmount: 1,
+            currency: 'USD',
+            payMethod: 'PAYPAL',
+            customer: { email: user.email },
+            redirectUrl: window.location.origin + '/?downloaded=1',
+        });
+        if (response?.paymentId) {
+            await actualDownload();
+        }
+    } catch(e) {
+        if (e?.code !== 'USER_CANCEL') alert('Payment failed. Please try again.');
+    }
+}
+
+async function actualDownload() {
+    const btn = document.getElementById('download-btn');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = 'Generating...'; btn.disabled = true;
+    try {
+        const canvas = await html2canvas(document.getElementById('card-inner'), {
+            scale: 2, useCORS: true, backgroundColor: '#ffffff'
+        });
+        const link = document.createElement('a');
+        link.download = 'korean-name-' + Date.now() + '.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    } catch(e) {
+        alert('Download failed. Try screenshotting manually.');
+    }
+    btn.innerHTML = originalText; btn.disabled = false;
+}
+
 // ======= PLAN =======
 async function fetchUserPlan(email) {
     try {
@@ -205,10 +405,10 @@ function updateCreditsDisplay() {
     }
 }
 function updateAuthUI() {
-    const show = (id) => { const el = document.getElementById(id); if(el) el.style.display='flex'; };
+    const show = (id, type='flex') => { const el = document.getElementById(id); if(el) el.style.display=type; };
     const hide = (id) => { const el = document.getElementById(id); if(el) el.style.display='none'; };
     if (currentUser) {
-        hide('google-login-btn'); hide('buy-pass-guest-btn'); show('user-profile');
+        hide('google-login-btn'); show('user-profile');
         document.getElementById('user-email').textContent = currentUser.email;
         if (userPlan) {
             hide('buy-pass-user-btn');
@@ -220,8 +420,11 @@ function updateAuthUI() {
         }
     } else {
         show('google-login-btn'); hide('user-profile'); hide('buy-pass-user-btn'); hide('plan-badge');
-        if (getGuestCredits() === 0) show('buy-pass-guest-btn');
-        else hide('buy-pass-guest-btn');
+    }
+    // Update download button text
+    const dlBtn = document.getElementById('download-btn');
+    if (dlBtn) {
+        dlBtn.innerHTML = userPlan ? '💾 Download Card (Free)' : '💾 Download Card · $1';
     }
 }
 
@@ -234,6 +437,7 @@ function setStrategy(s) {
             ? 'flex-1 text-[10px] font-bold py-2 rounded-xl bg-white shadow text-indigo-600 transition-all'
             : 'flex-1 text-[10px] font-bold py-2 rounded-xl text-slate-500 hover:text-slate-700 transition-all';
     });
+    document.getElementById('strategy-desc').textContent = strategyDescriptions[s];
 }
 
 // ======= GENERATE =======
@@ -245,11 +449,17 @@ async function generateName() {
         setTimeout(() => inp.classList.remove('border-red-400'), 1500);
         return;
     }
+
+    // Credit gate
     if (!userPlan) {
         const credits = getGuestCredits();
         if (credits <= 0) {
-            if (currentUser) location.href = '/pricing';
-            else openLoginModal();
+            if (currentUser) {
+                openNoCreditsModal();
+            } else {
+                // Not logged in: show login first, then no-credits after
+                openLoginModal();
+            }
             return;
         }
         localStorage.setItem('k_used', parseInt(localStorage.getItem('k_used') || '0') + 1);
@@ -271,7 +481,11 @@ async function generateName() {
     btn.disabled = true; btn.style.opacity = '0.6';
 
     try {
-        const params = new URLSearchParams({ english_name: name, vibe, gender, lang, strategy: stratMap[currentStrategy] });
+        const params = new URLSearchParams({
+            english_name: name, vibe, gender, lang,
+            strategy: stratMap[currentStrategy],
+            style: currentStrategy,
+        });
         const res = await fetch('/api/generate-k-identity?' + params);
         const data = await res.json();
 
@@ -292,25 +506,10 @@ async function generateName() {
         document.getElementById('loading').style.display = 'none';
         document.getElementById('result-card').style.display = 'block';
     } catch(e) {
-        console.error(e);
         document.getElementById('loading').style.display = 'none';
         alert('Something went wrong. Please try again.');
     }
     btn.disabled = false; btn.style.opacity = '1';
-}
-
-// ======= DOWNLOAD =======
-async function downloadCard() {
-    const btn = document.getElementById('download-btn');
-    btn.textContent = 'Generating...'; btn.disabled = true;
-    try {
-        const canvas = await html2canvas(document.getElementById('card-inner'), { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
-        const link = document.createElement('a');
-        link.download = 'korean-name-' + Date.now() + '.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-    } catch(e) { alert('Download failed. Try screenshotting manually.'); }
-    btn.textContent = 'Download Card'; btn.disabled = false;
 }
 
 // ======= LANGUAGE =======
@@ -355,12 +554,16 @@ document.getElementById('lang-toggle').onclick = (e) => {
 };
 document.addEventListener('click', () => document.getElementById('lang-menu').classList.add('hidden'));
 
-// ======= SUCCESS BANNER =======
+// ======= BANNERS =======
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.get('success') === '1') {
     const banner = document.getElementById('success-banner');
     banner.style.display = 'block';
     setTimeout(() => { banner.style.display = 'none'; }, 5000);
+    history.replaceState({}, '', '/');
+}
+if (urlParams.get('downloaded') === '1') {
+    actualDownload();
     history.replaceState({}, '', '/');
 }
 
@@ -380,6 +583,10 @@ async function init() {
             currentUser = session.user;
             userPlan = await fetchUserPlan(currentUser.email);
             closeLoginModal();
+            // If they just logged in and have no credits, show no-credits modal
+            if (!userPlan && getGuestCredits() === 0) {
+                setTimeout(() => openNoCreditsModal(), 500);
+            }
         } else {
             currentUser = null; userPlan = null;
         }
