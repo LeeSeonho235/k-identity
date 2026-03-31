@@ -50,6 +50,33 @@ async def pricing():
     return FileResponse("pricing.html")
 
 
+# ---------- SEO ----------
+
+@app.get("/sitemap.xml")
+async def sitemap():
+    content = '''<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://www.knamegenerator.com/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://www.knamegenerator.com/pricing</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>'''
+    return Response(content=content, media_type="application/xml")
+
+@app.get("/robots.txt")
+async def robots():
+    content = """User-agent: *
+Allow: /
+Sitemap: https://www.knamegenerator.com/sitemap.xml"""
+    return Response(content=content, media_type="text/plain")
+
+
 # ---------- Config API (환경변수를 프론트로 전달) ----------
 
 @app.get("/api/config")
