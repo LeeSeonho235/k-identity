@@ -5,9 +5,8 @@ from datetime import datetime, timedelta
 from urllib.parse import quote
 
 from fastapi import FastAPI, Response, HTTPException, Request
-from fastapi.responses import RedirectResponse
+from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.templating import Jinja2Templates
 
 from dotenv import load_dotenv
 from google import genai
@@ -16,7 +15,6 @@ import openai
 load_dotenv()
 
 app = FastAPI()
-templates = Jinja2Templates(directory=".")
 
 app.add_middleware(
     CORSMiddleware,
@@ -28,7 +26,7 @@ app.add_middleware(
 gemini_client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 openai_client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# ---------- Supabase Admin ----------
+# ---------- Supabase ----------
 try:
     from supabase import create_client
     _sb_url = os.getenv("SUPABASE_URL")
@@ -41,35 +39,34 @@ except Exception as e:
 PORTONE_API_SECRET = os.getenv("PORTONE_API_SECRET", "")
 
 
-def tpl(request: Request, **kwargs):
+# ---------- Pages ----------
+
+@app.get("/")
+async def index():
+    return FileResponse("index.html")
+
+@app.get("/pricing")
+async def pricing():
+    return FileResponse("pricing.html")
+
+
+# ---------- Config API (환경변수를 프론트로 전달) ----------
+
+@app.get("/api/config")
+async def get_config():
     return {
-        "request": request,
         "SUPABASE_URL": os.getenv("SUPABASE_URL", ""),
         "SUPABASE_ANON_KEY": os.getenv("SUPABASE_ANON_KEY", ""),
         "PORTONE_STORE_ID": os.getenv("PORTONE_STORE_ID", ""),
         "PORTONE_CHANNEL_KEY_KAKAO": os.getenv("PORTONE_CHANNEL_KEY_KAKAO", ""),
         "PORTONE_CHANNEL_KEY_PAYPAL": os.getenv("PORTONE_CHANNEL_KEY_PAYPAL", ""),
-        **kwargs,
     }
-
-
-# ---------- Pages ----------
-
-@app.get("/")
-async def index(request: Request):
-    return templates.TemplateResponse("index.html", tpl(request))
-
-
-@app.get("/pricing")
-async def pricing(request: Request):
-    return templates.TemplateResponse("pricing.html", tpl(request))
 
 
 # ---------- Payment callback ----------
 
 @app.get("/success")
 async def payment_success(
-    request: Request,
     plan: str = "",
     paymentId: str = "",
     email: str = "",

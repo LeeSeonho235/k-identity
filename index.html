@@ -25,9 +25,8 @@
 </head>
 <body class="bg-slate-100 min-h-screen flex flex-col items-center justify-center p-4">
 
-    <!-- ===== TOP RIGHT ===== -->
+    <!-- TOP RIGHT -->
     <div class="fixed top-5 right-5 flex flex-col items-end gap-2 z-50">
-        <!-- Language toggle -->
         <div class="relative">
             <button id="lang-toggle" class="flex items-center gap-1.5 bg-white border border-slate-200 px-3 py-1.5 rounded-full text-[11px] font-bold text-slate-600 shadow-sm hover:bg-slate-50 transition-all">
                 <span id="lang-flag">🇺🇸</span>
@@ -36,7 +35,6 @@
             </button>
             <div id="lang-menu" class="hidden absolute right-0 mt-1 w-40 bg-white rounded-xl shadow-lg border border-slate-100 overflow-hidden z-20"></div>
         </div>
-        <!-- Auth -->
         <div id="auth-section" class="flex flex-col items-end gap-2">
             <button id="google-login-btn" onclick="openLoginModal()" class="flex items-center gap-1.5 bg-white border border-slate-200 px-3 py-1.5 rounded-full text-[11px] font-bold text-slate-600 shadow-sm hover:bg-slate-50 transition-all">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-3.5 h-3.5"> Google Login
@@ -51,12 +49,12 @@
         </div>
     </div>
 
-    <!-- ===== SUCCESS BANNER ===== -->
+    <!-- SUCCESS BANNER -->
     <div id="success-banner" style="display:none;" class="fixed top-4 left-1/2 -translate-x-1/2 bg-emerald-500 text-white px-6 py-3 rounded-full text-sm font-bold shadow-lg z-50">
         🎉 Payment successful! Unlimited access unlocked.
     </div>
 
-    <!-- ===== MAIN CARD ===== -->
+    <!-- MAIN CARD -->
     <div class="bg-white rounded-3xl shadow-xl w-full max-w-sm p-8 my-20">
         <div class="text-center mb-7">
             <div class="text-4xl mb-2">🇰🇷</div>
@@ -64,7 +62,6 @@
             <p id="txt-subtitle" class="text-slate-400 text-xs mt-1 font-medium">Discover your perfect Korean identity</p>
         </div>
 
-        <!-- Form -->
         <div class="space-y-3">
             <input id="name-input" type="text" placeholder="Your English name..."
                 class="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none placeholder-slate-300 transition-all">
@@ -93,7 +90,6 @@
                 </div>
             </div>
 
-            <!-- Strategy toggle -->
             <div class="flex gap-1 bg-slate-100 p-1 rounded-2xl">
                 <button id="strat-sound" onclick="setStrategy('sound')" class="flex-1 text-[10px] font-bold py-2 rounded-xl bg-white shadow text-indigo-600 transition-all">🔤 Sound</button>
                 <button id="strat-meaning" onclick="setStrategy('meaning')" class="flex-1 text-[10px] font-bold py-2 rounded-xl text-slate-500 hover:text-slate-700 transition-all">💎 Meaning</button>
@@ -107,18 +103,16 @@
             <p id="credits-display" class="text-center text-[11px] font-bold text-slate-400 tracking-widest uppercase"></p>
         </div>
 
-        <!-- Loading -->
         <div id="loading" style="display:none;" class="mt-6 text-center">
             <div class="w-20 h-20 rounded-full shimmer mx-auto mb-4"></div>
             <p id="txt-loading" class="text-xs text-slate-400 font-medium animate-pulse">Consulting the ancients...</p>
         </div>
 
-        <!-- Result card -->
         <div id="result-card" style="display:none;" class="mt-6 fade-in">
             <div id="card-inner" class="bg-gradient-to-br from-slate-50 to-indigo-50 rounded-2xl p-6 text-center border border-slate-100">
                 <div class="relative w-24 h-24 mx-auto mb-4">
                     <div id="portrait-placeholder" class="w-24 h-24 rounded-full bg-slate-200 flex items-center justify-center text-3xl border-4 border-white shadow-lg">🧑‍🎤</div>
-                    <img id="portrait-img" style="display:none;" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg" alt="K-portrait" crossorigin="anonymous">
+                    <img id="portrait-img" style="display:none;" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg absolute inset-0" alt="K-portrait" crossorigin="anonymous">
                 </div>
                 <h2 id="k-name" class="text-3xl font-bold text-slate-900 mt-1 k-font"></h2>
                 <p id="k-meaning" class="text-[11px] font-bold text-indigo-600 tracking-widest uppercase mt-3 px-2"></p>
@@ -131,7 +125,7 @@
         </div>
     </div>
 
-    <!-- ===== LOGIN MODAL ===== -->
+    <!-- LOGIN MODAL -->
     <div id="login-modal" style="display:none;pointer-events:none;" class="fixed inset-0 bg-black/40 backdrop-blur-sm items-center justify-center z-50 p-4">
         <div class="bg-white rounded-3xl p-8 w-80 shadow-2xl text-center">
             <div class="text-4xl mb-3">🇰🇷</div>
@@ -146,10 +140,16 @@
     </div>
 
 <script>
-// ======= CONFIG (injected by FastAPI) =======
-const SUPABASE_URL = "{{ SUPABASE_URL }}";
-const SUPABASE_ANON_KEY = "{{ SUPABASE_ANON_KEY }}";
-const _sp = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// ======= CONFIG (loaded from /api/config) =======
+let _sp = null;
+let CONFIG = {};
+
+async function loadConfig() {
+    const res = await fetch('/api/config');
+    CONFIG = await res.json();
+    _sp = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+    await init();
+}
 
 // ======= STATE =======
 let currentStrategy = 'sound';
@@ -184,7 +184,7 @@ document.getElementById('login-modal').addEventListener('click', function(e) {
 // ======= PLAN =======
 async function fetchUserPlan(email) {
     try {
-        const res = await fetch(`/api/my-plan?email=${encodeURIComponent(email)}`);
+        const res = await fetch('/api/my-plan?email=' + encodeURIComponent(email));
         const data = await res.json();
         return data.plan || null;
     } catch { return null; }
@@ -195,39 +195,31 @@ function getGuestCredits() {
 function updateCreditsDisplay() {
     const el = document.getElementById('credits-display');
     if (userPlan === 'annual' || userPlan === 'month') {
-        el.textContent = 'UNLIMITED ACCESS';
-        el.style.color = '#10b981';
+        el.textContent = 'UNLIMITED ACCESS'; el.style.color = '#10b981';
     } else if (userPlan === 'week') {
-        el.textContent = 'WEEK PASS ACTIVE';
-        el.style.color = '#6366f1';
+        el.textContent = 'WEEK PASS ACTIVE'; el.style.color = '#6366f1';
     } else {
         const c = getGuestCredits();
-        el.textContent = `CREDITS: ${c} LEFT`;
+        el.textContent = 'CREDITS: ' + c + ' LEFT';
         el.style.color = c === 0 ? '#f87171' : '#94a3b8';
     }
 }
 function updateAuthUI() {
-    const show = (id) => { const el = document.getElementById(id); if(el) { el.style.display='flex'; } };
-    const hide = (id) => { const el = document.getElementById(id); if(el) { el.style.display='none'; } };
+    const show = (id) => { const el = document.getElementById(id); if(el) el.style.display='flex'; };
+    const hide = (id) => { const el = document.getElementById(id); if(el) el.style.display='none'; };
     if (currentUser) {
-        hide('google-login-btn');
-        hide('buy-pass-guest-btn');
-        show('user-profile');
+        hide('google-login-btn'); hide('buy-pass-guest-btn'); show('user-profile');
         document.getElementById('user-email').textContent = currentUser.email;
         if (userPlan) {
             hide('buy-pass-user-btn');
             const badge = document.getElementById('plan-badge');
-            badge.textContent = `✓ ${userPlan.toUpperCase()}`;
+            badge.textContent = '✓ ' + userPlan.toUpperCase();
             badge.style.display = 'inline-flex';
         } else {
-            show('buy-pass-user-btn');
-            hide('plan-badge');
+            show('buy-pass-user-btn'); hide('plan-badge');
         }
     } else {
-        show('google-login-btn');
-        hide('user-profile');
-        hide('buy-pass-user-btn');
-        hide('plan-badge');
+        show('google-login-btn'); hide('user-profile'); hide('buy-pass-user-btn'); hide('plan-badge');
         if (getGuestCredits() === 0) show('buy-pass-guest-btn');
         else hide('buy-pass-guest-btn');
     }
@@ -237,12 +229,10 @@ function updateAuthUI() {
 function setStrategy(s) {
     currentStrategy = s;
     ['sound','meaning','kdrama'].forEach(id => {
-        const btn = document.getElementById(`strat-${id}`);
-        if (id === s) {
-            btn.className = 'flex-1 text-[10px] font-bold py-2 rounded-xl bg-white shadow text-indigo-600 transition-all';
-        } else {
-            btn.className = 'flex-1 text-[10px] font-bold py-2 rounded-xl text-slate-500 hover:text-slate-700 transition-all';
-        }
+        const btn = document.getElementById('strat-' + id);
+        btn.className = id === s
+            ? 'flex-1 text-[10px] font-bold py-2 rounded-xl bg-white shadow text-indigo-600 transition-all'
+            : 'flex-1 text-[10px] font-bold py-2 rounded-xl text-slate-500 hover:text-slate-700 transition-all';
     });
 }
 
@@ -251,24 +241,19 @@ async function generateName() {
     const name = document.getElementById('name-input').value.trim();
     if (!name) {
         const inp = document.getElementById('name-input');
-        inp.classList.add('border-red-400');
-        inp.focus();
+        inp.classList.add('border-red-400'); inp.focus();
         setTimeout(() => inp.classList.remove('border-red-400'), 1500);
         return;
     }
-
-    // Credit gate
     if (!userPlan) {
         const credits = getGuestCredits();
         if (credits <= 0) {
-            if (currentUser) { location.href = '/pricing'; }
-            else { openLoginModal(); }
+            if (currentUser) location.href = '/pricing';
+            else openLoginModal();
             return;
         }
-        // consume credit
         localStorage.setItem('k_used', parseInt(localStorage.getItem('k_used') || '0') + 1);
-        updateCreditsDisplay();
-        updateAuthUI();
+        updateCreditsDisplay(); updateAuthUI();
     }
 
     const gender = document.getElementById('gender-select').value;
@@ -280,25 +265,20 @@ async function generateName() {
         kdrama: 'trendy K-drama style naming conventions used for main characters',
     };
 
-    // UI: loading
     document.getElementById('result-card').style.display = 'none';
     document.getElementById('loading').style.display = 'block';
     const btn = document.getElementById('generate-btn');
     btn.disabled = true; btn.style.opacity = '0.6';
 
     try {
-        const params = new URLSearchParams({
-            english_name: name, vibe, gender, lang,
-            strategy: stratMap[currentStrategy],
-        });
-        const res = await fetch(`/api/generate-k-identity?${params}`);
+        const params = new URLSearchParams({ english_name: name, vibe, gender, lang, strategy: stratMap[currentStrategy] });
+        const res = await fetch('/api/generate-k-identity?' + params);
         const data = await res.json();
 
         document.getElementById('k-name').textContent = data.k_name || '';
         document.getElementById('k-meaning').textContent = data.meaning || '';
         document.getElementById('k-explain').textContent = data.explain || '';
 
-        // Portrait
         const img = document.getElementById('portrait-img');
         const ph = document.getElementById('portrait-placeholder');
         if (data.image_url) {
@@ -316,25 +296,20 @@ async function generateName() {
         document.getElementById('loading').style.display = 'none';
         alert('Something went wrong. Please try again.');
     }
-
     btn.disabled = false; btn.style.opacity = '1';
 }
 
-// ======= DOWNLOAD CARD =======
+// ======= DOWNLOAD =======
 async function downloadCard() {
     const btn = document.getElementById('download-btn');
     btn.textContent = 'Generating...'; btn.disabled = true;
     try {
-        const card = document.getElementById('card-inner');
-        const canvas = await html2canvas(card, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+        const canvas = await html2canvas(document.getElementById('card-inner'), { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
         const link = document.createElement('a');
-        link.download = `korean-name-${Date.now()}.png`;
+        link.download = 'korean-name-' + Date.now() + '.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
-    } catch(e) {
-        console.error(e);
-        alert('Download failed. Try screenshotting manually.');
-    }
+    } catch(e) { alert('Download failed. Try screenshotting manually.'); }
     btn.textContent = 'Download Card'; btn.disabled = false;
 }
 
@@ -370,7 +345,7 @@ const menu = document.getElementById('lang-menu');
 langs.forEach(l => {
     const btn = document.createElement('button');
     btn.className = 'flex w-full items-center gap-2 px-3 py-2 text-[11px] font-semibold text-slate-700 hover:bg-slate-50';
-    btn.innerHTML = `<span>${l.flag}</span><span>${l.name}</span>`;
+    btn.innerHTML = '<span>' + l.flag + '</span><span>' + l.name + '</span>';
     btn.onclick = () => applyLang(l.code);
     menu.appendChild(btn);
 });
@@ -381,8 +356,8 @@ document.getElementById('lang-toggle').onclick = (e) => {
 document.addEventListener('click', () => document.getElementById('lang-menu').classList.add('hidden'));
 
 // ======= SUCCESS BANNER =======
-const params = new URLSearchParams(window.location.search);
-if (params.get('success') === '1') {
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('success') === '1') {
     const banner = document.getElementById('success-banner');
     banner.style.display = 'block';
     setTimeout(() => { banner.style.display = 'none'; }, 5000);
@@ -412,7 +387,8 @@ async function init() {
         updateCreditsDisplay();
     });
 }
-init();
+
+loadConfig();
 </script>
 </body>
 </html>

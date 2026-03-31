@@ -12,7 +12,6 @@
 </head>
 <body class="bg-slate-900 min-h-screen text-white">
 
-    <!-- ===== TOP RIGHT ===== -->
     <div class="fixed top-6 right-6 flex flex-col items-end gap-2 z-50">
         <div class="relative">
             <button id="lang-toggle" class="flex items-center gap-1.5 bg-slate-800 border border-slate-600 px-3 py-1.5 rounded-full text-[11px] font-bold text-slate-300 shadow-sm hover:bg-slate-700 transition-all">
@@ -24,7 +23,6 @@
         </div>
     </div>
 
-    <!-- ===== PRICING CONTENT ===== -->
     <div class="container mx-auto px-4 py-16 max-w-5xl">
         <div class="text-center mb-12 pt-8">
             <a href="/" id="txt-back" class="inline-block text-slate-500 hover:text-slate-300 text-sm font-bold mb-8 transition-colors">← Back</a>
@@ -33,7 +31,6 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-
             <!-- Week -->
             <div class="bg-slate-800/50 rounded-2xl p-7 border border-slate-700 hover:border-indigo-500/50 transition-colors flex flex-col">
                 <h3 class="text-xl font-bold mb-1" id="txt-week-title">A Week</h3>
@@ -51,7 +48,7 @@
                     class="w-full py-3 rounded-xl bg-slate-700 text-white font-bold hover:bg-slate-600 transition-colors" id="btn-week">Buy</button>
             </div>
 
-            <!-- Month (popular) -->
+            <!-- Month -->
             <div class="bg-slate-800/50 rounded-2xl p-7 border-2 border-indigo-500 relative flex flex-col">
                 <span id="txt-popular" class="absolute -top-3 left-1/2 -translate-x-1/2 bg-indigo-500 text-white text-xs font-bold px-4 py-1 rounded-full">Popular</span>
                 <h3 class="text-xl font-bold mb-1" id="txt-month-title">A Month</h3>
@@ -89,7 +86,6 @@
             </div>
         </div>
 
-        <!-- Policy links -->
         <div class="text-center mt-8 flex items-center justify-center gap-4">
             <button onclick="openRefundModal()" id="txt-refund-btn" class="text-slate-500 hover:text-slate-300 text-xs font-medium underline transition-colors">Refund Policy</button>
             <span class="text-slate-700 text-xs">·</span>
@@ -97,7 +93,7 @@
         </div>
     </div>
 
-    <!-- ===== PAYMENT MODAL ===== -->
+    <!-- PAYMENT MODAL -->
     <div id="payment-modal" style="display:none;pointer-events:none;" class="fixed inset-0 bg-black/60 backdrop-blur-sm items-center justify-center z-[100] p-4">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8 text-center">
             <h3 id="txt-pay-title" class="text-xl font-extrabold text-slate-900 mb-1">Choose Payment Method</h3>
@@ -116,10 +112,10 @@
         </div>
     </div>
 
-    <!-- ===== REFUND MODAL ===== -->
+    <!-- REFUND MODAL -->
     <div id="refund-modal" style="display:none;pointer-events:none;" class="fixed inset-0 bg-black/60 backdrop-blur-sm items-center justify-center z-[100] p-4">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[85vh] overflow-y-auto relative">
-            <div class="flex items-center justify-between px-8 py-5 border-b border-slate-100 sticky top-0 bg-white rounded-t-3xl z-10">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[85vh] overflow-y-auto">
+            <div class="flex items-center justify-between px-8 py-5 border-b border-slate-100 sticky top-0 bg-white rounded-t-3xl">
                 <h2 id="txt-refund-title" class="text-base font-extrabold text-slate-900">Refund Policy</h2>
                 <button onclick="closeRefundModal()" class="text-slate-400 hover:text-slate-700">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -135,27 +131,24 @@
                         <li><strong>환불 신청:</strong> 결제에 사용하신 이메일로 문의해 주세요.</li>
                         <li><strong>처리 기간:</strong> 환불 승인 후 3~5 영업일 내 처리됩니다.</li>
                     </ul>
-                    <p class="text-slate-500 text-xs mt-4">본 환불 규정은 전자상거래 등에서의 소비자보호에 관한 법률에 따릅니다.</p>
                 </div>
                 <div id="refund-en" class="space-y-4">
                     <h3 class="font-extrabold text-base text-slate-900">Refund Policy</h3>
-                    <p>The following refund policy applies to all Korean Name Generator subscription passes.</p>
                     <ul class="space-y-2 list-disc pl-5 text-slate-600">
-                        <li><strong>Before Use:</strong> A full refund is available within 7 days of purchase if the name generation feature has not been used.</li>
-                        <li><strong>After Use:</strong> Once the name generation feature has been used, no refund will be issued.</li>
-                        <li><strong>Refund Request:</strong> Contact us via the email used for payment.</li>
-                        <li><strong>Processing Time:</strong> Approved refunds are processed within 3–5 business days.</li>
+                        <li><strong>Before Use:</strong> Full refund available within 7 days of purchase.</li>
+                        <li><strong>After Use:</strong> No refund once the name generation feature has been used.</li>
+                        <li><strong>Contact:</strong> Email us via the address used for payment.</li>
+                        <li><strong>Processing:</strong> 3–5 business days after approval.</li>
                     </ul>
-                    <p class="text-slate-500 text-xs mt-4">This policy complies with applicable consumer protection regulations.</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ===== STORE MODAL ===== -->
+    <!-- STORE MODAL -->
     <div id="store-modal" style="display:none;pointer-events:none;" class="fixed inset-0 bg-black/60 backdrop-blur-sm items-center justify-center z-[100] p-4">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[85vh] overflow-y-auto relative">
-            <div class="flex items-center justify-between px-8 py-5 border-b border-slate-100 sticky top-0 bg-white rounded-t-3xl z-10">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[85vh] overflow-y-auto">
+            <div class="flex items-center justify-between px-8 py-5 border-b border-slate-100 sticky top-0 bg-white rounded-t-3xl">
                 <h2 id="txt-store-title" class="text-base font-extrabold text-slate-900">Store Policy</h2>
                 <button onclick="closeStoreModal()" class="text-slate-400 hover:text-slate-700">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -164,23 +157,13 @@
             <div class="px-8 py-8 text-slate-700 text-sm leading-relaxed">
                 <div id="store-ko" class="hidden space-y-4">
                     <h3 class="font-extrabold text-base text-slate-900">서비스 이용약관 및 개인정보 처리방침</h3>
-                    <h4 class="font-bold text-slate-800">1. 서비스 소개</h4>
-                    <p>Korean Name Generator는 AI를 활용하여 외국인에게 한국 이름을 추천해 주는 온라인 서비스입니다.</p>
-                    <h4 class="font-bold text-slate-800">2. 수집하는 정보</h4>
-                    <p>이메일 주소(Google 로그인 시), 입력한 이름 및 선택 옵션(이름 생성 후 저장되지 않음), 결제 정보(포트원을 통해 처리되며 카드 정보를 저장하지 않습니다).</p>
-                    <h4 class="font-bold text-slate-800">3. 데이터 보관</h4>
-                    <p>이메일 및 구독 정보는 서비스 제공 목적으로만 사용되며, 제3자에게 판매하거나 공유하지 않습니다.</p>
-                    <p class="text-slate-500 text-xs mt-4">최종 업데이트: 2026년 3월</p>
+                    <p>Korean Name Generator는 AI를 활용하여 외국인에게 한국 이름을 추천해 주는 온라인 서비스입니다. 이메일 및 구독 정보는 서비스 제공 목적으로만 사용되며, 제3자에게 판매하거나 공유하지 않습니다.</p>
+                    <p class="text-slate-500 text-xs">최종 업데이트: 2026년 3월</p>
                 </div>
                 <div id="store-en" class="space-y-4">
                     <h3 class="font-extrabold text-base text-slate-900">Terms of Service & Privacy Policy</h3>
-                    <h4 class="font-bold text-slate-800">1. Service Description</h4>
-                    <p>Korean Name Generator is an online service that uses AI to suggest Korean names for non-Korean users, including AI-generated portraits and Hanja meanings.</p>
-                    <h4 class="font-bold text-slate-800">2. Information We Collect</h4>
-                    <p>Email address (when signing in with Google), input name and selected options (not stored after generation), payment information (processed via PortOne; card details are not stored by us).</p>
-                    <h4 class="font-bold text-slate-800">3. Data Usage</h4>
-                    <p>Email and subscription information are used solely for service provision and are not sold or shared with third parties.</p>
-                    <p class="text-slate-500 text-xs mt-4">Last updated: March 2026</p>
+                    <p>Korean Name Generator uses AI to suggest Korean names for non-Korean users. Email and subscription data are used solely for service delivery and are never sold or shared.</p>
+                    <p class="text-slate-500 text-xs">Last updated: March 2026</p>
                 </div>
             </div>
         </div>
@@ -188,16 +171,17 @@
 
 <script>
 // ======= CONFIG =======
-const SUPABASE_URL = "{{ SUPABASE_URL }}";
-const SUPABASE_ANON_KEY = "{{ SUPABASE_ANON_KEY }}";
-const PORTONE_STORE_ID = "{{ PORTONE_STORE_ID }}";
-const PORTONE_CHANNEL_KEY_KAKAO = "{{ PORTONE_CHANNEL_KEY_KAKAO }}";
-const PORTONE_CHANNEL_KEY_PAYPAL = "{{ PORTONE_CHANNEL_KEY_PAYPAL }}";
-const _sp = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// ======= PAYMENT =======
+let _sp = null;
+let CONFIG = {};
 let _pendingPlan = null;
 
+async function loadConfig() {
+    const res = await fetch('/api/config');
+    CONFIG = await res.json();
+    _sp = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+}
+
+// ======= PAYMENT =======
 function requestPayment(planType, amount, orderName) {
     _pendingPlan = { planType, amount, orderName };
     const modal = document.getElementById('payment-modal');
@@ -225,23 +209,21 @@ async function proceedPayment(method) {
 
     const isKakao = method === 'kakao';
     const orderId = 'kname_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-
     let channelKey, finalAmount, currency, payMethod;
+
     if (isKakao) {
-        channelKey = PORTONE_CHANNEL_KEY_KAKAO;
+        channelKey = CONFIG.PORTONE_CHANNEL_KEY_KAKAO;
         finalAmount = planType === 'week' ? 5000 : planType === 'month' ? 10000 : 60000;
-        currency = 'KRW';
-        payMethod = 'EASY_PAY';
+        currency = 'KRW'; payMethod = 'EASY_PAY';
     } else {
-        channelKey = PORTONE_CHANNEL_KEY_PAYPAL;
+        channelKey = CONFIG.PORTONE_CHANNEL_KEY_PAYPAL;
         finalAmount = planType === 'week' ? 4 : planType === 'month' ? 8 : 45;
-        currency = 'USD';
-        payMethod = 'PAYPAL';
+        currency = 'USD'; payMethod = 'PAYPAL';
     }
 
     try {
         const response = await PortOne.requestPayment({
-            storeId: PORTONE_STORE_ID,
+            storeId: CONFIG.PORTONE_STORE_ID,
             channelKey,
             paymentId: orderId,
             orderName,
@@ -256,7 +238,6 @@ async function proceedPayment(method) {
             window.location.href = '/success?plan=' + planType + '&paymentId=' + response.paymentId + '&email=' + encodeURIComponent(user.email);
         }
     } catch(e) {
-        console.error('Payment error:', e);
         if (e?.code !== 'USER_CANCEL') alert('Payment failed. Please try again.');
     }
 }
@@ -296,13 +277,12 @@ const langs = [
     { code:'ja', flag:'🇯🇵', name:'日本語' },
 ];
 const i18n = {
-    en: { title:'Unlock Your K-Identity', subtitle:'Generate unlimited Korean names & portraits', back:'← Back', week:'A Week', weekDesc:'7 days of unlimited names', month:'A Month', monthDesc:'30 days of unlimited names', annual:'A Year', annualDesc:'365 days of unlimited names', f1:'Unlimited name generations', f2:'AI K-drama portraits', f3w:'Download card feature', f3m:'All 5 languages supported', f3a:'Best value plan', popular:'Popular', save:'Save 50%', buy:'Buy', payTitle:'Choose Payment Method', paySub:'Select your preferred payment method', kakao:'💛 KakaoPay (KRW)', paypal:'🌐 PayPal (USD)', refund:'Refund Policy', store:'Store Policy', refundTitle:'Refund Policy', storeTitle:'Store Policy' },
-    ko: { title:'한국 이름 무제한 이용권', subtitle:'AI가 만들어주는 나만의 한국 이름', back:'← 홈으로', week:'1주일권', weekDesc:'7일 무제한', month:'1개월권', monthDesc:'30일 무제한', annual:'1년권', annualDesc:'365일 무제한', f1:'이름 무제한 생성', f2:'AI K-드라마 초상화', f3w:'카드 다운로드', f3m:'5개 언어 지원', f3a:'최고의 가성비', popular:'인기', save:'50% 할인', buy:'구매하기', payTitle:'결제 방법 선택', paySub:'원하시는 결제 방법을 선택해주세요', kakao:'💛 카카오페이 (원화)', paypal:'🌐 PayPal (달러)', refund:'환불 규정', store:'이용약관', refundTitle:'환불 규정', storeTitle:'이용약관' },
-    es: { title:'Desbloquea tu Identidad Coreana', subtitle:'Genera nombres coreanos ilimitados', back:'← Inicio', week:'Una Semana', weekDesc:'7 días ilimitados', month:'Un Mes', monthDesc:'30 días ilimitados', annual:'Un Año', annualDesc:'365 días ilimitados', f1:'Generaciones ilimitadas', f2:'Retratos IA al estilo K-drama', f3w:'Descarga de tarjeta', f3m:'5 idiomas soportados', f3a:'Mejor relación calidad-precio', popular:'Popular', save:'Ahorra 50%', buy:'Comprar', payTitle:'Método de pago', paySub:'Selecciona tu método de pago', kakao:'💛 KakaoPay (KRW)', paypal:'🌐 PayPal (USD)', refund:'Política de reembolso', store:'Política de la tienda', refundTitle:'Política de reembolso', storeTitle:'Política de la tienda' },
-    zh: { title:'解锁你的韩国身份', subtitle:'无限生成韩国名字和写真', back:'← 返回', week:'一周', weekDesc:'7天无限次使用', month:'一个月', monthDesc:'30天无限次使用', annual:'一年', annualDesc:'365天无限次使用', f1:'无限生成名字', f2:'AI韩剧风格写真', f3w:'卡片下载', f3m:'支持5种语言', f3a:'最佳性价比', popular:'热门', save:'省50%', buy:'购买', payTitle:'选择支付方式', paySub:'请选择您的支付方式', kakao:'💛 KakaoPay (韩元)', paypal:'🌐 PayPal (美元)', refund:'退款政策', store:'商店政策', refundTitle:'退款政策', storeTitle:'商店政策' },
-    ja: { title:'韓国アイデンティティを解放', subtitle:'無制限の韓国名前生成', back:'← ホーム', week:'1週間', weekDesc:'7日間無制限', month:'1ヶ月', monthDesc:'30日間無制限', annual:'1年間', annualDesc:'365日間無制限', f1:'無制限の名前生成', f2:'AIによるKドラマ風ポートレート', f3w:'カードダウンロード', f3m:'5言語対応', f3a:'最高コストパフォーマンス', popular:'人気', save:'50%お得', buy:'購入', payTitle:'お支払い方法', paySub:'支払い方法を選択してください', kakao:'💛 KakaoPay (ウォン)', paypal:'🌐 PayPal (ドル)', refund:'返金ポリシー', store:'ストアポリシー', refundTitle:'返金ポリシー', storeTitle:'ストアポリシー' },
+    en: { title:'Unlock Your K-Identity', subtitle:'Generate unlimited Korean names & portraits', back:'← Back', popular:'Popular', save:'Save 50%', buy:'Buy', payTitle:'Choose Payment Method', paySub:'Select your preferred payment method', refund:'Refund Policy', store:'Store Policy', refundTitle:'Refund Policy', storeTitle:'Store Policy' },
+    ko: { title:'한국 이름 무제한 이용권', subtitle:'AI가 만들어주는 나만의 한국 이름', back:'← 홈으로', popular:'인기', save:'50% 할인', buy:'구매하기', payTitle:'결제 방법 선택', paySub:'원하시는 결제 방법을 선택해주세요', refund:'환불 규정', store:'이용약관', refundTitle:'환불 규정', storeTitle:'이용약관' },
+    es: { title:'Desbloquea tu Identidad Coreana', subtitle:'Genera nombres coreanos ilimitados', back:'← Inicio', popular:'Popular', save:'Ahorra 50%', buy:'Comprar', payTitle:'Método de pago', paySub:'Selecciona tu método de pago', refund:'Reembolso', store:'Política', refundTitle:'Política de reembolso', storeTitle:'Política de la tienda' },
+    zh: { title:'解锁你的韩国身份', subtitle:'无限生成韩国名字', back:'← 返回', popular:'热门', save:'省50%', buy:'购买', payTitle:'选择支付方式', paySub:'请选择您的支付方式', refund:'退款政策', store:'商店政策', refundTitle:'退款政策', storeTitle:'商店政策' },
+    ja: { title:'韓国アイデンティティを解放', subtitle:'無制限の韓国名前生成', back:'← ホーム', popular:'人気', save:'50%お得', buy:'購入', payTitle:'お支払い方法', paySub:'支払い方法を選択してください', refund:'返金ポリシー', store:'ストアポリシー', refundTitle:'返金ポリシー', storeTitle:'ストアポリシー' },
 };
-
 function applyLang(code) {
     localStorage.setItem('web_lang', code);
     const l = langs.find(x => x.code === code) || langs[0];
@@ -312,21 +292,6 @@ function applyLang(code) {
     document.getElementById('txt-title').textContent = t.title;
     document.getElementById('txt-subtitle').textContent = t.subtitle;
     document.getElementById('txt-back').textContent = t.back;
-    document.getElementById('txt-week-title').textContent = t.week;
-    document.getElementById('txt-week-desc').textContent = t.weekDesc;
-    document.getElementById('txt-week-f1').textContent = t.f1;
-    document.getElementById('txt-week-f2').textContent = t.f2;
-    document.getElementById('txt-week-f3').textContent = t.f3w;
-    document.getElementById('txt-month-title').textContent = t.month;
-    document.getElementById('txt-month-desc').textContent = t.monthDesc;
-    document.getElementById('txt-month-f1').textContent = t.f1;
-    document.getElementById('txt-month-f2').textContent = t.f2;
-    document.getElementById('txt-month-f3').textContent = t.f3m;
-    document.getElementById('txt-annual-title').textContent = t.annual;
-    document.getElementById('txt-annual-desc').textContent = t.annualDesc;
-    document.getElementById('txt-annual-f1').textContent = t.f1;
-    document.getElementById('txt-annual-f2').textContent = t.f2;
-    document.getElementById('txt-annual-f3').textContent = t.f3a;
     document.getElementById('txt-popular').textContent = t.popular;
     document.getElementById('txt-save-badge').textContent = t.save;
     document.getElementById('btn-week').textContent = t.buy;
@@ -334,20 +299,17 @@ function applyLang(code) {
     document.getElementById('btn-annual').textContent = t.buy;
     document.getElementById('txt-pay-title').textContent = t.payTitle;
     document.getElementById('txt-pay-sub').textContent = t.paySub;
-    document.getElementById('btn-kakao').innerHTML = t.kakao;
-    document.getElementById('btn-paypal').innerHTML = t.paypal;
     document.getElementById('txt-refund-btn').textContent = t.refund;
     document.getElementById('txt-store-btn').textContent = t.store;
     document.getElementById('txt-refund-title').textContent = t.refundTitle;
     document.getElementById('txt-store-title').textContent = t.storeTitle;
     document.getElementById('lang-menu').classList.add('hidden');
 }
-
 const menu = document.getElementById('lang-menu');
 langs.forEach(l => {
     const btn = document.createElement('button');
     btn.className = 'flex w-full items-center gap-2 px-3 py-2 text-[11px] font-semibold text-slate-200 hover:bg-slate-700';
-    btn.innerHTML = `<span>${l.flag}</span><span>${l.name}</span>`;
+    btn.innerHTML = '<span>' + l.flag + '</span><span>' + l.name + '</span>';
     btn.onclick = () => applyLang(l.code);
     menu.appendChild(btn);
 });
@@ -358,6 +320,7 @@ document.getElementById('lang-toggle').onclick = (e) => {
 document.addEventListener('click', () => document.getElementById('lang-menu').classList.add('hidden'));
 
 applyLang(localStorage.getItem('web_lang') || 'en');
+loadConfig();
 </script>
 </body>
 </html>
