@@ -57,27 +57,27 @@
     <div id="success-banner" style="display:none;" class="fixed top-4 left-1/2 -translate-x-1/2 bg-emerald-500 text-white px-6 py-3 rounded-full text-sm font-bold shadow-lg z-50">🎉 <span id="txt-success-msg">Payment successful!</span></div>
 
     <!-- MAIN CARD -->
-    <div class="bg-white rounded-3xl shadow-xl w-full max-w-lg p-10 my-20">
-        <div class="text-center mb-7">
-            <div class="text-4xl mb-2">🇰🇷</div>
-            <h1 id="txt-title" class="text-2xl font-extrabold text-slate-900 tracking-tight">Korean Name Generator</h1>
-            <p id="txt-subtitle" class="text-slate-400 text-xs mt-1 font-medium">Discover your perfect Korean identity</p>
+    <div class="bg-white rounded-3xl shadow-xl w-full max-w-xl p-12 my-20">
+        <div class="text-center mb-8">
+            <div class="text-5xl mb-3">🇰🇷</div>
+            <h1 id="txt-title" class="text-3xl font-extrabold text-slate-900 tracking-tight">Korean Name Generator</h1>
+            <p id="txt-subtitle" class="text-slate-400 text-sm mt-2 font-medium">Discover your perfect Korean identity</p>
         </div>
 
-        <div class="space-y-3">
+        <div class="space-y-4">
             <input id="name-input" type="text" placeholder="Your name..."
-                class="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none placeholder-slate-300">
-            <div class="grid grid-cols-2 gap-3">
+                class="w-full bg-slate-50 border border-slate-200 px-5 py-4 rounded-2xl text-base font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none placeholder-slate-300">
+            <div class="grid grid-cols-2 gap-4">
                 <div class="relative">
-                    <select id="gender-select" class="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none cursor-pointer pr-8">
+                    <select id="gender-select" class="w-full bg-slate-50 border border-slate-200 px-5 py-4 rounded-2xl text-base font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none cursor-pointer pr-10">
                         <option value="male" id="opt-male">Male</option>
                         <option value="female" id="opt-female">Female</option>
                         <option value="neutral" id="opt-neutral">Neutral</option>
                     </select>
-                    <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" viewBox="0 0 20 20" fill="none" stroke="currentColor"><path d="M5 7l5 6 5-6" stroke-width="2" stroke-linecap="round"/></svg>
+                    <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" viewBox="0 0 20 20" fill="none" stroke="currentColor"><path d="M5 7l5 6 5-6" stroke-width="2" stroke-linecap="round"/></svg>
                 </div>
                 <div class="relative">
-                    <select id="vibe-select" class="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none cursor-pointer pr-8">
+                    <select id="vibe-select" class="w-full bg-slate-50 border border-slate-200 px-5 py-4 rounded-2xl text-base font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none cursor-pointer pr-10">
                         <option value="Cool">Cool</option>
                         <option value="Cute">Cute</option>
                         <option value="Elegant">Elegant</option>
@@ -87,22 +87,22 @@
                         <option value="Warm">Warm</option>
                         <option value="Chic">Chic</option>
                     </select>
-                    <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" viewBox="0 0 20 20" fill="none" stroke="currentColor"><path d="M5 7l5 6 5-6" stroke-width="2" stroke-linecap="round"/></svg>
+                    <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" viewBox="0 0 20 20" fill="none" stroke="currentColor"><path d="M5 7l5 6 5-6" stroke-width="2" stroke-linecap="round"/></svg>
                 </div>
             </div>
             <div>
-                <p id="txt-style-label" class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Choose Style</p>
-                <div class="flex gap-1 bg-slate-100 p-1 rounded-2xl">
-                    <button id="strat-sound" onclick="setStrategy('sound')" class="flex-1 text-[10px] font-bold py-2 rounded-xl bg-white shadow text-indigo-600 transition-all">🔤 <span id="txt-strat-sound">Sound</span></button>
-                    <button id="strat-meaning" onclick="setStrategy('meaning')" class="flex-1 text-[10px] font-bold py-2 rounded-xl text-slate-500 transition-all">💎 <span id="txt-strat-meaning">Meaning</span></button>
-                    <button id="strat-kdrama" onclick="setStrategy('kdrama')" class="flex-1 text-[10px] font-bold py-2 rounded-xl text-slate-500 transition-all">🎬 <span id="txt-strat-kdrama">K-Drama</span></button>
+                <p id="txt-style-label" class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Choose Style</p>
+                <div class="flex gap-1.5 bg-slate-100 p-1.5 rounded-2xl">
+                    <button id="strat-sound" onclick="setStrategy('sound')" class="flex-1 text-xs font-bold py-2.5 rounded-xl bg-white shadow text-indigo-600 transition-all">🔤 <span id="txt-strat-sound">Sound</span></button>
+                    <button id="strat-meaning" onclick="setStrategy('meaning')" class="flex-1 text-xs font-bold py-2.5 rounded-xl text-slate-500 transition-all">💎 <span id="txt-strat-meaning">Meaning</span></button>
+                    <button id="strat-kdrama" onclick="setStrategy('kdrama')" class="flex-1 text-xs font-bold py-2.5 rounded-xl text-slate-500 transition-all">🎬 <span id="txt-strat-kdrama">K-Drama</span></button>
                 </div>
-                <p id="strategy-desc" class="text-[10px] text-slate-400 mt-1.5 ml-1"></p>
+                <p id="strategy-desc" class="text-xs text-slate-400 mt-2 ml-1"></p>
             </div>
-            <button id="generate-btn" onclick="generateName()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-4 rounded-2xl shadow-lg shadow-indigo-100 transition-all text-base">
+            <button id="generate-btn" onclick="generateName()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-5 rounded-2xl shadow-lg shadow-indigo-100 transition-all text-lg">
                 <span id="txt-generate-btn">Find My Name ✨</span>
             </button>
-            <p id="credits-display" class="text-center text-[11px] font-bold text-slate-400 tracking-widest uppercase"></p>
+            <p id="credits-display" class="text-center text-xs font-bold text-slate-400 tracking-widest uppercase"></p>
         </div>
 
         <!-- LOADING + STYLE PICKER -->
@@ -173,32 +173,43 @@
                             <!-- top bar -->
                             <div id="front-topbar" style="height:2px;background:#c9a84c;opacity:0.7;"></div>
                             <!-- brand row -->
-                            <div style="padding:10px 16px 0;display:flex;justify-content:space-between;align-items:center;">
+                            <div style="padding:12px 18px 0;display:flex;justify-content:space-between;align-items:center;">
                                 <p id="pc-brand" style="margin:0;font-size:7px;font-weight:700;letter-spacing:0.3em;color:#c9a84c;">K·NAME</p>
-                                <p id="pc-num" style="margin:0;font-size:7px;color:#c9a84c;opacity:0.4;">01</p>
+                                <p id="pc-num" style="margin:0;font-size:7px;color:#c9a84c;opacity:0.4;">✦</p>
                             </div>
-                            <!-- Center: big Korean name -->
-                            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 16px;margin-top:20px;gap:10px;">
-                                <!-- deco top -->
-                                <div id="front-deco-top" style="display:flex;align-items:center;gap:8px;width:100%;justify-content:center;">
-                                    <div style="height:1px;flex:1;background:#c9a84c;opacity:0.3;"></div>
-                                    <p style="margin:0;font-size:9px;color:#c9a84c;opacity:0.6;">✦</p>
-                                    <div style="height:1px;flex:1;background:#c9a84c;opacity:0.3;"></div>
+                            <!-- top deco -->
+                            <div id="front-deco-top" style="display:flex;align-items:center;gap:8px;padding:10px 18px 0;">
+                                <div style="height:1px;flex:1;background:#c9a84c;opacity:0.3;"></div>
+                                <p style="margin:0;font-size:8px;color:#c9a84c;opacity:0.5;">✦</p>
+                                <div style="height:1px;flex:1;background:#c9a84c;opacity:0.3;"></div>
+                            </div>
+                            <!-- BIG Korean name - centered, pushed down -->
+                            <div style="display:flex;align-items:center;justify-content:center;padding:14px 18px 10px;">
+                                <p id="pc-kname" class="kf" style="margin:0;font-size:72px;font-weight:700;letter-spacing:0.05em;line-height:1;color:#fff;text-align:center;"></p>
+                            </div>
+                            <!-- bot deco -->
+                            <div id="front-deco-bot" style="display:flex;align-items:center;gap:8px;padding:0 18px 12px;">
+                                <div style="height:1px;flex:1;background:#c9a84c;opacity:0.3;"></div>
+                                <p style="margin:0;font-size:8px;color:#c9a84c;opacity:0.5;">✦</p>
+                                <div style="height:1px;flex:1;background:#c9a84c;opacity:0.3;"></div>
+                            </div>
+                            <!-- Hanja calligraphy style - smaller than Korean name -->
+                            <div id="hanja-section" style="display:flex;align-items:center;justify-content:center;gap:16px;padding:0 18px 10px;">
+                                <div id="hanja-left" style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+                                    <p id="pc-hanja-1" class="kf" style="margin:0;font-size:28px;font-weight:700;color:#c9a84c;line-height:1;"></p>
+                                    <div style="width:1px;height:10px;background:#c9a84c;opacity:0.4;"></div>
+                                    <p id="pc-meaning-1" style="margin:0;font-size:6px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#c9a84c;opacity:0.8;"></p>
                                 </div>
-                                <!-- BIG Korean name -->
-                                <p id="pc-kname" class="kf" style="margin:0;font-size:68px;font-weight:700;letter-spacing:0.05em;line-height:1;color:#fff;text-align:center;"></p>
-                                <!-- deco bottom -->
-                                <div id="front-deco-bot" style="display:flex;align-items:center;gap:8px;width:100%;justify-content:center;">
-                                    <div style="height:1px;flex:1;background:#c9a84c;opacity:0.3;"></div>
-                                    <p style="margin:0;font-size:9px;color:#c9a84c;opacity:0.6;">✦</p>
-                                    <div style="height:1px;flex:1;background:#c9a84c;opacity:0.3;"></div>
+                                <div id="hanja-divider" style="width:1px;height:50px;background:#c9a84c;opacity:0.2;"></div>
+                                <div id="hanja-right" style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+                                    <p id="pc-hanja-2" class="kf" style="margin:0;font-size:28px;font-weight:700;color:#c9a84c;line-height:1;"></p>
+                                    <div style="width:1px;height:10px;background:#c9a84c;opacity:0.4;"></div>
+                                    <p id="pc-meaning-2" style="margin:0;font-size:6px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#c9a84c;opacity:0.8;"></p>
                                 </div>
                             </div>
-                            <!-- Footer: Hanja small -->
-                            <div style="padding:0 16px 16px;text-align:center;margin-top:auto;">
-                                <p id="pc-hanja" class="kf" style="margin:0;font-size:13px;color:#c9a84c;opacity:0.85;letter-spacing:0.05em;"></p>
-                                <p id="pc-meaning-front" style="margin:5px 0 0;font-size:7px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#c9a84c;opacity:0.7;"></p>
-                                <p id="pc-user-info" style="margin:4px 0 0;font-size:6px;letter-spacing:0.08em;color:#ffffff44;"></p>
+                            <!-- Footer -->
+                            <div style="padding:0 18px 14px;text-align:center;">
+                                <p id="pc-user-info" style="margin:0;font-size:6px;letter-spacing:0.1em;color:#ffffff33;"></p>
                             </div>
                         </div>
 
@@ -212,9 +223,9 @@
                                 <img id="pc-back-img" style="display:none;width:100%;height:100%;object-fit:cover;object-position:top;" crossorigin="anonymous" alt="Korean portrait">
                             </div>
                             <!-- Back footer -->
-                            <div id="pc-back-footer" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 16px 12px;text-align:center;background:#0a0a1a;border-top:1px solid rgba(201,168,76,0.3);">
-                                <p id="pc-kname-back" class="kf" style="margin:0;font-size:20px;font-weight:700;color:#fff;"></p>
-                                <p id="pc-meaning-back" style="margin:3px 0 0;font-size:7px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#c9a84c;"></p>
+                            <div id="pc-back-footer" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 18px 14px;text-align:center;background:#0a0a1a;border-top:1px solid rgba(201,168,76,0.3);">
+                                <p id="pc-kname-back" class="kf" style="margin:0;font-size:22px;font-weight:700;color:#fff;text-align:center;width:100%;"></p>
+                                <p id="pc-meaning-back" style="margin:4px 0 0;font-size:7px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#c9a84c;text-align:center;width:100%;"></p>
                             </div>
                         </div>
                     </div>
@@ -223,7 +234,7 @@
             <p id="txt-tap-hint" class="text-center text-[10px] text-slate-400 font-medium mb-4">Tap card to flip</p>
 
             <!-- Explanation -->
-            <p id="k-explain" class="text-xs text-slate-500 text-center leading-relaxed px-2 mb-4"></p>
+            <p id="k-explain" class="text-sm text-slate-500 text-center leading-relaxed px-2 mb-5"></p>
 
             <!-- Style pills -->
             <div class="flex gap-1.5 justify-center flex-wrap mb-4">
@@ -352,15 +363,23 @@ function applyTheme(style){
     const front=document.getElementById('pc-front');
     const back=document.getElementById('pc-back');
     if(!front)return;
-    // Front
     front.style.background=t.bg;
     front.style.border=`1.5px solid ${t.border}`;
     document.getElementById('front-topbar').style.background=t.border;
     document.getElementById('pc-brand').style.color=t.accentclr;
     document.getElementById('pc-num').style.color=t.accentclr;
     document.getElementById('pc-kname').style.color=t.nameclr;
-    document.getElementById('pc-hanja').style.color=t.accentclr;
-    document.getElementById('pc-meaning-front').style.color=t.accentclr;
+    // Hanja section
+    ['pc-hanja-1','pc-hanja-2','pc-meaning-1','pc-meaning-2'].forEach(id=>{
+        const el=document.getElementById(id);
+        if(el)el.style.color=t.accentclr;
+    });
+    ['hanja-left','hanja-right'].forEach(id=>{
+        const el=document.getElementById(id);
+        if(el)el.querySelectorAll('div').forEach(d=>{d.style.background=t.border;});
+    });
+    const hd=document.getElementById('hanja-divider');
+    if(hd)hd.style.background=t.border;
     // deco lines
     ['front-deco-top','front-deco-bot'].forEach(id=>{
         const el=document.getElementById(id);
@@ -377,7 +396,6 @@ function applyTheme(style){
     document.getElementById('pc-back-footer').style.borderTop=`1px solid ${t.borderRgba}`;
     document.getElementById('pc-kname-back').style.color=t.nameclr;
     document.getElementById('pc-meaning-back').style.color=t.accentclr;
-    // spinner color
     const spinner=document.querySelector('#back-loading div');
     if(spinner)spinner.style.borderColor=`${t.accentclr} transparent transparent transparent`;
 }
@@ -450,13 +468,24 @@ async function actualDownload(){
     const btn=document.getElementById('download-btn'),orig=btn.innerHTML;
     btn.innerHTML='Generating...';btn.disabled=true;
     try{
-        const target=isFlipped?document.getElementById('pc-back'):document.getElementById('pc-front');
-        const canvas=await html2canvas(target,{scale:3,useCORS:true,backgroundColor:null,logging:false});
+        const sourceEl=isFlipped?document.getElementById('pc-back'):document.getElementById('pc-front');
+        // Clone to avoid 3D transform issues
+        const clone=sourceEl.cloneNode(true);
+        clone.style.cssText=`
+            position:fixed;top:-9999px;left:-9999px;
+            width:240px;height:360px;border-radius:20px;
+            overflow:hidden;transform:none;backface-visibility:visible;
+            -webkit-backface-visibility:visible;
+        `;
+        document.body.appendChild(clone);
+        await new Promise(r=>setTimeout(r,80));
+        const canvas=await html2canvas(clone,{scale:3,useCORS:true,backgroundColor:null,logging:false});
+        document.body.removeChild(clone);
         const a=document.createElement('a');
         a.download='k-name-card-'+Date.now()+'.png';
         a.href=canvas.toDataURL('image/png');
         a.click();
-    }catch(e){alert('Download failed.');}
+    }catch(e){alert('Download failed. Try screenshotting manually.');}
     btn.innerHTML=orig;btn.disabled=false;
 }
 
@@ -526,17 +555,37 @@ async function generateName(){
         const res=await fetch('/api/generate-k-identity?'+params);
         const data=await res.json();
 
-        // Parse name
+        // Parse name & hanja
         const full=data.k_name||'';
         const hanjaMatch=full.match(/\(([^)]+)\)/);
         const koreanName=full.replace(/\([^)]+\)/,'').trim();
-        const hanjaOnly=hanjaMatch?'('+hanjaMatch[1]+')':'';
+        const hanjaOnly=hanjaMatch?hanjaMatch[1]:'';
 
         // Front card
         document.getElementById('pc-kname').textContent=koreanName;
-        document.getElementById('pc-hanja').textContent=hanjaOnly;
-        document.getElementById('pc-meaning-front').textContent=data.meaning||'';
         document.getElementById('pc-user-info').textContent=name+' · '+gender+' · '+vibe;
+
+        // Parse hanja chars and meanings from meaning string
+        // meaning format: "建 (Establish) · 宇 (Universe)"
+        const meaningStr=data.meaning||'';
+        const parts=meaningStr.split('·').map(s=>s.trim());
+        const hanjaChars=hanjaOnly.split('');
+
+        if(parts.length>=2){
+            // Extract hanja char and meaning from each part
+            const m1=parts[0].match(/^([^\s(（]+)\s*[（(]([^)）]+)[)）]?/) || [null,hanjaChars[0]||'',parts[0]];
+            const m2=parts[1].match(/^([^\s(（]+)\s*[（(]([^)）]+)[)）]?/) || [null,hanjaChars[1]||'',parts[1]];
+            document.getElementById('pc-hanja-1').textContent=m1[1]||hanjaChars[0]||'';
+            document.getElementById('pc-meaning-1').textContent=m1[2]||parts[0]||'';
+            document.getElementById('pc-hanja-2').textContent=m2[1]||hanjaChars[1]||'';
+            document.getElementById('pc-meaning-2').textContent=m2[2]||parts[1]||'';
+            document.getElementById('hanja-section').style.display='flex';
+        } else if(hanjaChars.length>=1){
+            document.getElementById('pc-hanja-1').textContent=hanjaChars[0]||'';
+            document.getElementById('pc-meaning-1').textContent=parts[0]||'';
+            document.getElementById('pc-hanja-2').textContent=hanjaChars[1]||'';
+            document.getElementById('pc-meaning-2').textContent=parts[1]||'';
+        }
         // Back card
         document.getElementById('pc-kname-back').textContent=full;
         document.getElementById('pc-meaning-back').textContent=data.meaning||'';
