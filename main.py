@@ -214,8 +214,8 @@ STRICT RULES:
 Line 1: Korean name in Hangul with Hanja in parentheses
 Example: 새롬(新美)
 
-Line 2: Hanja meaning in {target_lang}
-Example: NEW (新), BEAUTIFUL (美)
+Line 2: Each Hanja character with its meaning in {target_lang}, separated by · 
+Example: 新 (New) · 美 (Beautiful)
 
 Line 3: Poetic explanation in 2-3 sentences in {target_lang}
 """
