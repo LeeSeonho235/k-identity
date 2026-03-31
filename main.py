@@ -245,9 +245,24 @@ Line 3: Poetic explanation in 2-3 sentences in {target_lang}
     image_url = ""
     if clean_lines:
         style_prompt_map = {
-            "sound": f"A high-quality studio portrait of a natural, approachable Korean {gender}. Soft, warm lighting, everyday fashion, friendly expression. {vibe} vibe. Ultra-detailed, 8k.",
-            "meaning": f"A high-quality artistic portrait of a thoughtful, sophisticated Korean {gender}. Dramatic lighting, traditional or high-fashion styling, deep and poetic atmosphere. {vibe} vibe. Ultra-detailed, 8k.",
-            "kdrama": f"A high-quality cinematic portrait of a glamorous Korean {gender} in K-drama style. Perfect makeup, trendy fashion, dramatic lighting, cinematic color grading. {vibe} vibe. Ultra-detailed, 8k.",
+            "sound": (
+                f"Korean traditional minhwa painting style portrait of a {gender}. "
+                f"Soft watercolor aesthetic, {vibe} expression, traditional hanbok clothing, "
+                f"delicate floral background with cherry blossoms and lotus flowers, "
+                f"gentle pastel color palette, elegant brushwork, no text, centered composition."
+            ),
+            "meaning": (
+                f"Korean ink wash painting style portrait of a {gender}. "
+                f"Sumi-e brush technique, {vibe} mood, traditional scholar or noble attire, "
+                f"bamboo and moon background, minimalist black and gold tones, "
+                f"poetic and serene atmosphere, no text, centered composition."
+            ),
+            "kdrama": (
+                f"Korean traditional painting meets modern illustration, portrait of a {gender}. "
+                f"{vibe} vibe, fusion of hanbok and contemporary fashion, "
+                f"background with Korean palace architecture and cherry blossoms, "
+                f"vibrant jewel tones, cinematic lighting, ultra detailed, no text."
+            ),
         }
         dalle_prompt = style_prompt_map.get(style, style_prompt_map["kdrama"])
         try:

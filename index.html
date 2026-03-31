@@ -9,22 +9,24 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
         .kf { font-family: 'Noto Serif KR', serif; }
-        .shimmer { background: linear-gradient(90deg,#e2e8f0 25%,#cbd5e1 50%,#e2e8f0 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; }
+        .shimmer { background:linear-gradient(90deg,#e2e8f0 25%,#cbd5e1 50%,#e2e8f0 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; }
         @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
-        .fade-in { animation: fadeIn 0.5s ease-out; }
+        .fade-in { animation:fadeIn 0.5s ease-out; }
         @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
         select { -webkit-appearance:none; appearance:none; }
-        .photocard { width:150px; height:230px; border-radius:16px; overflow:hidden; position:relative; flex-shrink:0; cursor:pointer; transition:transform 0.6s; transform-style:preserve-3d; }
-        .photocard-inner { width:100%; height:100%; position:relative; transition:transform 0.6s; transform-style:preserve-3d; }
-        .photocard-inner.flipped { transform: rotateY(180deg); }
-        .pc-front, .pc-back { position:absolute; width:100%; height:100%; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:16px; overflow:hidden; }
-        .pc-back { transform: rotateY(180deg); }
+
+        /* CARD */
+        .photocard { width:200px; height:300px; border-radius:20px; overflow:hidden; position:relative; flex-shrink:0; cursor:pointer; transform-style:preserve-3d; }
+        .photocard-inner { width:100%; height:100%; position:relative; transition:transform 0.65s cubic-bezier(0.4,0.2,0.2,1); transform-style:preserve-3d; }
+        .photocard-inner.flipped { transform:rotateY(180deg); }
+        .pc-front, .pc-back { position:absolute; width:100%; height:100%; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:20px; overflow:hidden; }
+        .pc-back { transform:rotateY(180deg); }
         .style-pill { cursor:pointer; transition:all 0.15s; border-width:1.5px; border-style:solid; }
-        .style-pill.active { transform:scale(1.05); font-weight:800; }
+        .style-pill.active { transform:scale(1.06); font-weight:800; }
     </style>
 </head>
 <body class="bg-slate-100 min-h-screen flex flex-col items-center justify-center p-4">
@@ -32,27 +34,27 @@
     <!-- TOP RIGHT -->
     <div class="fixed top-5 right-5 flex flex-col items-end gap-2 z-50">
         <div class="relative">
-            <button id="lang-toggle" class="flex items-center gap-1.5 bg-white border border-slate-200 px-3 py-1.5 rounded-full text-[11px] font-bold text-slate-600 shadow-sm hover:bg-slate-50 transition-all">
+            <button id="lang-toggle" class="flex items-center gap-1.5 bg-white border border-slate-200 px-3 py-1.5 rounded-full text-[11px] font-bold text-slate-600 shadow-sm hover:bg-slate-50">
                 <span id="lang-flag">🇺🇸</span><span id="lang-label">English</span>
                 <svg class="w-3 h-3 text-slate-400" viewBox="0 0 20 20" fill="none" stroke="currentColor"><path d="M5 7l5 6 5-6" stroke-width="2" stroke-linecap="round"/></svg>
             </button>
             <div id="lang-menu" class="hidden absolute right-0 mt-1 w-40 bg-white rounded-xl shadow-lg border border-slate-100 overflow-hidden z-20"></div>
         </div>
         <div id="auth-section" class="flex flex-col items-end gap-2">
-            <button id="google-login-btn" onclick="openLoginModal()" class="flex items-center gap-1.5 bg-white border border-slate-200 px-3 py-1.5 rounded-full text-[11px] font-bold text-slate-600 shadow-sm hover:bg-slate-50 transition-all">
+            <button id="google-login-btn" onclick="openLoginModal()" class="flex items-center gap-1.5 bg-white border border-slate-200 px-3 py-1.5 rounded-full text-[11px] font-bold text-slate-600 shadow-sm hover:bg-slate-50">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-3.5 h-3.5"> Google Login
             </button>
             <div id="user-profile" style="display:none;" class="flex items-center gap-2 bg-white border border-slate-200 px-3 py-1.5 rounded-full shadow-sm">
-                <span id="user-email" class="text-[11px] font-bold text-slate-600 max-w-[120px] truncate"></span>
-                <button onclick="signOut()" class="text-[11px] text-red-500 font-bold hover:underline" id="btn-logout">Logout</button>
+                <span id="user-email" class="text-[11px] font-bold text-slate-600 max-w-[130px] truncate"></span>
+                <button onclick="signOut()" id="btn-logout" class="text-[11px] text-red-500 font-bold hover:underline">Logout</button>
             </div>
-            <button id="buy-pass-user-btn" onclick="location.href='/pricing'" style="display:none;" class="flex items-center gap-1.5 bg-indigo-600 text-white px-3 py-1.5 rounded-full text-[11px] font-bold shadow-sm hover:bg-indigo-700 transition-all">✨ <span id="txt-buy-pass">Buy Pass</span></button>
+            <button id="buy-pass-user-btn" onclick="location.href='/pricing'" style="display:none;" class="flex items-center gap-1.5 bg-indigo-600 text-white px-3 py-1.5 rounded-full text-[11px] font-bold shadow-sm hover:bg-indigo-700">✨ <span id="txt-buy-pass">Buy Pass</span></button>
             <span id="plan-badge" style="display:none;" class="text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full"></span>
         </div>
     </div>
 
     <!-- SUCCESS BANNER -->
-    <div id="success-banner" style="display:none;" class="fixed top-4 left-1/2 -translate-x-1/2 bg-emerald-500 text-white px-6 py-3 rounded-full text-sm font-bold shadow-lg z-50">🎉 <span id="txt-success-msg">Payment successful! Unlimited access unlocked.</span></div>
+    <div id="success-banner" style="display:none;" class="fixed top-4 left-1/2 -translate-x-1/2 bg-emerald-500 text-white px-6 py-3 rounded-full text-sm font-bold shadow-lg z-50">🎉 <span id="txt-success-msg">Payment successful!</span></div>
 
     <!-- MAIN CARD -->
     <div class="bg-white rounded-3xl shadow-xl w-full max-w-sm p-8 my-20">
@@ -64,7 +66,7 @@
 
         <div class="space-y-3">
             <input id="name-input" type="text" placeholder="Your name..."
-                class="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none placeholder-slate-300 transition-all">
+                class="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none placeholder-slate-300">
             <div class="grid grid-cols-2 gap-3">
                 <div class="relative">
                     <select id="gender-select" class="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none cursor-pointer pr-8">
@@ -92,8 +94,8 @@
                 <p id="txt-style-label" class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Choose Style</p>
                 <div class="flex gap-1 bg-slate-100 p-1 rounded-2xl">
                     <button id="strat-sound" onclick="setStrategy('sound')" class="flex-1 text-[10px] font-bold py-2 rounded-xl bg-white shadow text-indigo-600 transition-all">🔤 <span id="txt-strat-sound">Sound</span></button>
-                    <button id="strat-meaning" onclick="setStrategy('meaning')" class="flex-1 text-[10px] font-bold py-2 rounded-xl text-slate-500 hover:text-slate-700 transition-all">💎 <span id="txt-strat-meaning">Meaning</span></button>
-                    <button id="strat-kdrama" onclick="setStrategy('kdrama')" class="flex-1 text-[10px] font-bold py-2 rounded-xl text-slate-500 hover:text-slate-700 transition-all">🎬 <span id="txt-strat-kdrama">K-Drama</span></button>
+                    <button id="strat-meaning" onclick="setStrategy('meaning')" class="flex-1 text-[10px] font-bold py-2 rounded-xl text-slate-500 transition-all">💎 <span id="txt-strat-meaning">Meaning</span></button>
+                    <button id="strat-kdrama" onclick="setStrategy('kdrama')" class="flex-1 text-[10px] font-bold py-2 rounded-xl text-slate-500 transition-all">🎬 <span id="txt-strat-kdrama">K-Drama</span></button>
                 </div>
                 <p id="strategy-desc" class="text-[10px] text-slate-400 mt-1.5 ml-1"></p>
             </div>
@@ -109,41 +111,49 @@
                 <div class="w-14 h-14 rounded-full shimmer mx-auto mb-3"></div>
                 <p id="txt-loading" class="text-xs text-slate-400 font-medium animate-pulse">Consulting the ancients...</p>
             </div>
-            <div class="border-t border-slate-100 pt-5">
-                <p id="txt-pick-style" class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center mb-4">Pick your card style while waiting</p>
+            <div class="border-t border-slate-100 pt-4">
+                <p id="txt-pick-style" class="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center mb-3">Pick card style while waiting</p>
                 <div class="grid grid-cols-4 gap-2">
-                    <div onclick="selectCardStyle('classic')" id="stylep-classic" class="cursor-pointer flex flex-col items-center gap-1.5">
-                        <div style="width:100%;aspect-ratio:2/3;background:#0a0a1a;border-radius:10px;border:2px solid #c9a84c;display:flex;flex-direction:column;overflow:hidden;">
-                            <div style="flex:1;background:#1a1a3e;display:flex;align-items:center;justify-content:center;font-size:20px;">🧑‍🎤</div>
-                            <div style="padding:5px;background:#0a0a1a;border-top:1px solid rgba(201,168,76,0.3);text-align:center;">
-                                <p style="margin:0;font-size:8px;font-weight:700;color:#fff;font-family:serif;">건우</p>
+                    <div onclick="selectCardStyle('classic')" id="stylep-classic" class="cursor-pointer flex flex-col items-center gap-1">
+                        <div style="width:100%;aspect-ratio:2/3;background:#0a0a1a;border-radius:8px;border:2px solid #c9a84c;display:flex;flex-direction:column;overflow:hidden;">
+                            <div style="flex:1;background:#1a1a3e;display:flex;align-items:center;justify-content:center;">
+                                <p style="margin:0;font-size:16px;font-weight:700;color:#fff;font-family:'Noto Serif KR',serif;">건우</p>
+                            </div>
+                            <div style="padding:3px;background:#0a0a1a;text-align:center;">
+                                <p style="margin:0;font-size:5px;color:#c9a84c;letter-spacing:0.1em;">建·宇</p>
                             </div>
                         </div>
                         <p id="txt-style-classic" class="text-[9px] font-bold text-amber-600">✦ Classic</p>
                     </div>
-                    <div onclick="selectCardStyle('pastel')" id="stylep-pastel" class="cursor-pointer flex flex-col items-center gap-1.5" style="opacity:0.5;">
-                        <div style="width:100%;aspect-ratio:2/3;background:#fff0f5;border-radius:10px;border:2px solid #f4a7c0;display:flex;flex-direction:column;overflow:hidden;">
-                            <div style="flex:1;background:#ffe4ef;display:flex;align-items:center;justify-content:center;font-size:20px;">🧑‍🎤</div>
-                            <div style="padding:5px;background:#fff0f5;border-top:1px solid rgba(244,167,192,0.3);text-align:center;">
-                                <p style="margin:0;font-size:8px;font-weight:700;color:#c45a7a;font-family:serif;">새롬</p>
+                    <div onclick="selectCardStyle('pastel')" id="stylep-pastel" class="cursor-pointer flex flex-col items-center gap-1" style="opacity:0.5;">
+                        <div style="width:100%;aspect-ratio:2/3;background:#fff0f5;border-radius:8px;border:2px solid #f4a7c0;display:flex;flex-direction:column;overflow:hidden;">
+                            <div style="flex:1;background:#ffe4ef;display:flex;align-items:center;justify-content:center;">
+                                <p style="margin:0;font-size:16px;font-weight:700;color:#c45a7a;font-family:'Noto Serif KR',serif;">새롬</p>
+                            </div>
+                            <div style="padding:3px;background:#fff0f5;text-align:center;">
+                                <p style="margin:0;font-size:5px;color:#e88aaa;letter-spacing:0.1em;">新·美</p>
                             </div>
                         </div>
                         <p id="txt-style-pastel" class="text-[9px] font-bold text-pink-500">🌸 Pastel</p>
                     </div>
-                    <div onclick="selectCardStyle('gen4')" id="stylep-gen4" class="cursor-pointer flex flex-col items-center gap-1.5" style="opacity:0.5;">
-                        <div style="width:100%;aspect-ratio:2/3;background:#0f0f0f;border-radius:10px;border:2px solid #00e5cc;display:flex;flex-direction:column;overflow:hidden;">
-                            <div style="flex:1;background:#0d1a18;display:flex;align-items:center;justify-content:center;font-size:20px;">🧑‍🎤</div>
-                            <div style="padding:5px;background:#0a0a0a;border-top:1px solid rgba(0,229,204,0.3);text-align:center;">
-                                <p style="margin:0;font-size:8px;font-weight:700;color:#fff;font-family:serif;">지호</p>
+                    <div onclick="selectCardStyle('gen4')" id="stylep-gen4" class="cursor-pointer flex flex-col items-center gap-1" style="opacity:0.5;">
+                        <div style="width:100%;aspect-ratio:2/3;background:#0f0f0f;border-radius:8px;border:2px solid #00e5cc;display:flex;flex-direction:column;overflow:hidden;">
+                            <div style="flex:1;background:#0d1a18;display:flex;align-items:center;justify-content:center;">
+                                <p style="margin:0;font-size:16px;font-weight:700;color:#fff;font-family:'Noto Serif KR',serif;">지호</p>
+                            </div>
+                            <div style="padding:3px;background:#0a0a0a;text-align:center;">
+                                <p style="margin:0;font-size:5px;color:#00e5cc;letter-spacing:0.1em;">智·浩</p>
                             </div>
                         </div>
                         <p id="txt-style-gen4" class="text-[9px] font-bold text-cyan-500">⚡ 4th Gen</p>
                     </div>
-                    <div onclick="selectCardStyle('luxury')" id="stylep-luxury" class="cursor-pointer flex flex-col items-center gap-1.5" style="opacity:0.5;">
-                        <div style="width:100%;aspect-ratio:2/3;background:#1a1030;border-radius:10px;border:2px solid #9b7fe8;display:flex;flex-direction:column;overflow:hidden;">
-                            <div style="flex:1;background:#120c28;display:flex;align-items:center;justify-content:center;font-size:20px;">🧑‍🎤</div>
-                            <div style="padding:5px;background:#130c24;border-top:1px solid rgba(155,127,232,0.3);text-align:center;">
-                                <p style="margin:0;font-size:8px;font-weight:700;color:#e8d5ff;font-family:serif;">민서</p>
+                    <div onclick="selectCardStyle('luxury')" id="stylep-luxury" class="cursor-pointer flex flex-col items-center gap-1" style="opacity:0.5;">
+                        <div style="width:100%;aspect-ratio:2/3;background:#1a1030;border-radius:8px;border:2px solid #9b7fe8;display:flex;flex-direction:column;overflow:hidden;">
+                            <div style="flex:1;background:#120c28;display:flex;align-items:center;justify-content:center;">
+                                <p style="margin:0;font-size:16px;font-weight:700;color:#e8d5ff;font-family:'Noto Serif KR',serif;">민서</p>
+                            </div>
+                            <div style="padding:3px;background:#130c24;text-align:center;">
+                                <p style="margin:0;font-size:5px;color:#9b7fe8;letter-spacing:0.1em;">珉·瑞</p>
                             </div>
                         </div>
                         <p id="txt-style-luxury" class="text-[9px] font-bold text-purple-500">💜 Luxury</p>
@@ -154,54 +164,68 @@
 
         <!-- RESULT -->
         <div id="result-section" style="display:none;" class="mt-6 fade-in">
-            <!-- Flip card -->
             <div class="flex justify-center mb-2">
                 <div class="photocard" onclick="flipCard()" id="photocard-wrapper">
                     <div class="photocard-inner" id="photocard-inner">
-                        <!-- FRONT -->
+
+                        <!-- ===== FRONT ===== -->
                         <div class="pc-front" id="pc-front" style="background:#0a0a1a;border:1.5px solid #c9a84c;">
-                            <div style="height:2px;background:#c9a84c;opacity:0.7;"></div>
-                            <div style="padding:10px 14px 0;display:flex;justify-content:space-between;">
-                                <p id="pc-brand-front" style="margin:0;font-size:6px;font-weight:700;letter-spacing:0.3em;color:#c9a84c;">K·NAME</p>
+                            <!-- top bar -->
+                            <div id="front-topbar" style="height:2px;background:#c9a84c;opacity:0.7;"></div>
+                            <!-- brand row -->
+                            <div style="padding:10px 16px 0;display:flex;justify-content:space-between;align-items:center;">
+                                <p id="pc-brand" style="margin:0;font-size:7px;font-weight:700;letter-spacing:0.3em;color:#c9a84c;">K·NAME</p>
+                                <p id="pc-num" style="margin:0;font-size:7px;color:#c9a84c;opacity:0.4;">01</p>
                             </div>
-                            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px 14px;gap:8px;margin-top:16px;">
-                                <svg width="60" height="24" viewBox="0 0 60 24" id="deco-top-front">
-                                    <line x1="0" y1="12" x2="18" y2="12" stroke="#c9a84c" stroke-width="0.5" opacity="0.6"/>
-                                    <circle cx="30" cy="12" r="5" fill="none" stroke="#c9a84c" stroke-width="0.8"/>
-                                    <circle cx="30" cy="12" r="2" fill="#c9a84c" opacity="0.7"/>
-                                    <line x1="42" y1="12" x2="60" y2="12" stroke="#c9a84c" stroke-width="0.5" opacity="0.6"/>
-                                </svg>
-                                <p id="pc-kname" class="kf" style="margin:0;font-size:30px;font-weight:700;letter-spacing:0.05em;line-height:1;color:#fff;"></p>
-                                <p id="pc-hanja" class="kf" style="margin:0;font-size:14px;opacity:0.9;color:#c9a84c;"></p>
-                                <svg width="60" height="24" viewBox="0 0 60 24" id="deco-bot-front">
-                                    <line x1="0" y1="12" x2="18" y2="12" stroke="#c9a84c" stroke-width="0.5" opacity="0.6"/>
-                                    <circle cx="30" cy="12" r="5" fill="none" stroke="#c9a84c" stroke-width="0.8"/>
-                                    <circle cx="30" cy="12" r="2" fill="#c9a84c" opacity="0.7"/>
-                                    <line x1="42" y1="12" x2="60" y2="12" stroke="#c9a84c" stroke-width="0.5" opacity="0.6"/>
-                                </svg>
+                            <!-- Center: big Korean name -->
+                            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 16px;margin-top:20px;gap:10px;">
+                                <!-- deco top -->
+                                <div id="front-deco-top" style="display:flex;align-items:center;gap:8px;width:100%;justify-content:center;">
+                                    <div style="height:1px;flex:1;background:#c9a84c;opacity:0.3;"></div>
+                                    <p style="margin:0;font-size:9px;color:#c9a84c;opacity:0.6;">✦</p>
+                                    <div style="height:1px;flex:1;background:#c9a84c;opacity:0.3;"></div>
+                                </div>
+                                <!-- BIG Korean name -->
+                                <p id="pc-kname" class="kf" style="margin:0;font-size:54px;font-weight:700;letter-spacing:0.05em;line-height:1;color:#fff;text-align:center;"></p>
+                                <!-- deco bottom -->
+                                <div id="front-deco-bot" style="display:flex;align-items:center;gap:8px;width:100%;justify-content:center;">
+                                    <div style="height:1px;flex:1;background:#c9a84c;opacity:0.3;"></div>
+                                    <p style="margin:0;font-size:9px;color:#c9a84c;opacity:0.6;">✦</p>
+                                    <div style="height:1px;flex:1;background:#c9a84c;opacity:0.3;"></div>
+                                </div>
                             </div>
-                            <div style="padding:0 14px 12px;text-align:center;">
-                                <p id="pc-meaning-front" style="margin:0;font-size:6.5px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#c9a84c;"></p>
-                                <p id="pc-user-info" style="margin:4px 0 0;font-size:5.5px;letter-spacing:0.08em;color:#ffffff44;"></p>
+                            <!-- Footer: Hanja small -->
+                            <div style="padding:0 16px 16px;text-align:center;margin-top:auto;">
+                                <p id="pc-hanja" class="kf" style="margin:0;font-size:13px;color:#c9a84c;opacity:0.85;letter-spacing:0.05em;"></p>
+                                <p id="pc-meaning-front" style="margin:5px 0 0;font-size:7px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#c9a84c;opacity:0.7;"></p>
+                                <p id="pc-user-info" style="margin:4px 0 0;font-size:6px;letter-spacing:0.08em;color:#ffffff44;"></p>
                             </div>
                         </div>
-                        <!-- BACK -->
-                        <div class="pc-back" id="pc-back">
-                            <div id="pc-back-svg-container" style="width:150px;height:230px;"></div>
-                            <div id="pc-back-footer" style="position:absolute;bottom:0;left:0;right:0;padding:8px 12px;text-align:center;">
-                                <p id="pc-kname-back" class="kf" style="margin:0;font-size:16px;font-weight:700;"></p>
-                                <p id="pc-meaning-back" style="margin:2px 0 0;font-size:6px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;"></p>
+
+                        <!-- ===== BACK ===== -->
+                        <div class="pc-back" id="pc-back" style="background:#0a0a1a;border:1.5px solid #c9a84c;">
+                            <!-- AI portrait fills the top -->
+                            <div id="pc-back-img-area" style="height:200px;overflow:hidden;position:relative;background:#1a1a3e;">
+                                <div id="back-loading" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+                                    <div style="width:40px;height:40px;border:3px solid #c9a84c;border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite;"></div>
+                                </div>
+                                <img id="pc-back-img" style="display:none;width:100%;height:100%;object-fit:cover;object-position:top;" crossorigin="anonymous" alt="Korean portrait">
+                            </div>
+                            <!-- Back footer -->
+                            <div id="pc-back-footer" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 16px 12px;text-align:center;background:#0a0a1a;border-top:1px solid rgba(201,168,76,0.3);">
+                                <p id="pc-kname-back" class="kf" style="margin:0;font-size:20px;font-weight:700;color:#fff;"></p>
+                                <p id="pc-meaning-back" style="margin:3px 0 0;font-size:7px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#c9a84c;"></p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <p id="txt-tap-hint" style="font-size:10px;color:#94a3b8;text-align:center;margin:0 0 12px;" class="font-medium">Tap card to flip</p>
+            <p id="txt-tap-hint" class="text-center text-[10px] text-slate-400 font-medium mb-4">Tap card to flip</p>
 
             <!-- Explanation -->
             <p id="k-explain" class="text-xs text-slate-500 text-center leading-relaxed px-2 mb-4"></p>
 
-            <!-- Style switcher -->
+            <!-- Style pills -->
             <div class="flex gap-1.5 justify-center flex-wrap mb-4">
                 <button onclick="selectCardStyle('classic')" class="style-pill text-[9px] font-bold px-2.5 py-1 rounded-full border-amber-400 text-amber-700 bg-amber-50 active" id="pill-classic">✦ <span id="pill-txt-classic">Classic</span></button>
                 <button onclick="selectCardStyle('pastel')" class="style-pill text-[9px] font-bold px-2.5 py-1 rounded-full border-pink-300 text-pink-600 bg-pink-50" id="pill-pastel">🌸 <span id="pill-txt-pastel">Pastel</span></button>
@@ -221,11 +245,11 @@
             <div class="text-4xl mb-3">🇰🇷</div>
             <h3 id="txt-modal-title" class="text-lg font-extrabold text-slate-900 mb-1">Sign in to continue</h3>
             <p id="txt-modal-sub" class="text-xs text-slate-400 mb-6">Get 3 free credits · Upgrade for unlimited names</p>
-            <button onclick="signInWithGoogle()" class="w-full flex items-center justify-center gap-3 bg-white border-2 border-slate-200 px-4 py-3 rounded-2xl font-bold text-slate-700 hover:bg-slate-50 transition-all text-sm shadow-sm">
+            <button onclick="signInWithGoogle()" class="w-full flex items-center justify-center gap-3 bg-white border-2 border-slate-200 px-4 py-3 rounded-2xl font-bold text-slate-700 hover:bg-slate-50 text-sm shadow-sm">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5">
                 <span id="txt-google-btn">Continue with Google</span>
             </button>
-            <button onclick="closeModal('login-modal')" class="mt-3 text-xs text-slate-400 hover:underline w-full" id="txt-cancel-btn">Cancel</button>
+            <button onclick="closeModal('login-modal')" id="txt-cancel-btn" class="mt-3 text-xs text-slate-400 hover:underline w-full">Cancel</button>
         </div>
     </div>
 
@@ -234,12 +258,12 @@
         <div class="bg-white rounded-3xl p-8 w-80 shadow-2xl text-center">
             <div class="text-4xl mb-3">⚡</div>
             <h3 id="txt-no-credits-title" class="text-lg font-extrabold text-slate-900 mb-1">Out of Credits</h3>
-            <p id="txt-no-credits-desc" class="text-xs text-slate-400 mb-6">Watch a short ad to get 1 credit, or upgrade for unlimited access.</p>
+            <p id="txt-no-credits-desc" class="text-xs text-slate-400 mb-6">Watch a short ad to get 1 credit, or upgrade.</p>
             <div class="space-y-3">
-                <button onclick="startWatchAd()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-2xl text-sm" id="txt-watch-ad">📺 Watch Ad (+1 Credit)</button>
-                <button onclick="closeModal('no-credits-modal'); location.href='/pricing'" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-2xl text-sm" id="txt-buy-pass-btn">✨ Buy Pass (Unlimited)</button>
+                <button onclick="startWatchAd()" id="txt-watch-ad" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-2xl text-sm">📺 Watch Ad (+1 Credit)</button>
+                <button onclick="closeModal('no-credits-modal');location.href='/pricing'" id="txt-buy-pass-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-2xl text-sm">✨ Buy Pass (Unlimited)</button>
             </div>
-            <button onclick="closeModal('no-credits-modal')" class="mt-3 text-xs text-slate-400 hover:underline w-full" id="txt-cancel-btn2">Cancel</button>
+            <button onclick="closeModal('no-credits-modal')" id="txt-cancel-btn2" class="mt-3 text-xs text-slate-400 hover:underline w-full">Cancel</button>
         </div>
     </div>
 
@@ -266,9 +290,9 @@
             <div class="text-4xl mb-3">💾</div>
             <h3 id="txt-dl-title" class="text-lg font-extrabold text-slate-900 mb-1">Download Your K-Card</h3>
             <p id="txt-dl-desc" class="text-xs text-slate-400 mb-5">Pay $1 to download in full quality</p>
-            <button onclick="proceedDownloadPayment()" class="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-2xl text-sm mb-2" id="txt-pay-paypal">🌐 Pay $1 with PayPal</button>
-            <button onclick="openSampleModal()" class="w-full text-xs text-indigo-500 hover:underline font-bold py-1" id="txt-view-sample">👁 View Sample Cards</button>
-            <button onclick="closeModal('download-modal')" class="mt-1 text-xs text-slate-400 hover:underline w-full" id="txt-cancel-dl">Cancel</button>
+            <button onclick="proceedDownloadPayment()" id="txt-pay-paypal" class="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-2xl text-sm mb-2">🌐 Pay $1 with PayPal</button>
+            <button onclick="openSampleModal()" id="txt-view-sample" class="w-full text-xs text-indigo-500 hover:underline font-bold py-1">👁 View Sample Cards</button>
+            <button onclick="closeModal('download-modal')" id="txt-cancel-dl" class="mt-1 text-xs text-slate-400 hover:underline w-full">Cancel</button>
         </div>
     </div>
 
@@ -277,32 +301,35 @@
         <div class="bg-white rounded-3xl p-6 w-80 shadow-2xl">
             <h3 id="txt-sample-title" class="text-base font-extrabold text-slate-900 mb-4 text-center">Sample Cards</h3>
             <div class="grid grid-cols-2 gap-3 mb-4">
-                <div style="aspect-ratio:2/3;background:#0a0a1a;border-radius:10px;border:1.5px solid #c9a84c;display:flex;flex-direction:column;overflow:hidden;">
-                    <div style="flex:1;background:#1a1a3e;display:flex;align-items:center;justify-content:center;font-size:24px;">🧑‍🎤</div>
-                    <div style="padding:6px;background:#0a0a1a;text-align:center;"><p class="kf" style="margin:0;font-size:11px;font-weight:700;color:#fff;">건우(建宇)</p><p style="margin:0;font-size:6px;color:#c9a84c;">建·宇</p></div>
+                <div style="aspect-ratio:2/3;background:#0a0a1a;border-radius:10px;border:1.5px solid #c9a84c;display:flex;flex-direction:column;overflow:hidden;align-items:center;justify-content:center;gap:4px;">
+                    <p class="kf" style="margin:0;font-size:28px;font-weight:700;color:#fff;">건우</p>
+                    <p style="margin:0;font-size:8px;color:#c9a84c;">建·宇</p>
                 </div>
-                <div style="aspect-ratio:2/3;background:#fff0f5;border-radius:10px;border:1.5px solid #f4a7c0;display:flex;flex-direction:column;overflow:hidden;">
-                    <div style="flex:1;background:#ffe4ef;display:flex;align-items:center;justify-content:center;font-size:24px;">🧑‍🎤</div>
-                    <div style="padding:6px;background:#fff0f5;text-align:center;"><p class="kf" style="margin:0;font-size:11px;font-weight:700;color:#c45a7a;">새롬(新美)</p><p style="margin:0;font-size:6px;color:#e88aaa;">新·美</p></div>
+                <div style="aspect-ratio:2/3;background:#fff0f5;border-radius:10px;border:1.5px solid #f4a7c0;display:flex;flex-direction:column;overflow:hidden;align-items:center;justify-content:center;gap:4px;">
+                    <p class="kf" style="margin:0;font-size:28px;font-weight:700;color:#c45a7a;">새롬</p>
+                    <p style="margin:0;font-size:8px;color:#e88aaa;">新·美</p>
                 </div>
-                <div style="aspect-ratio:2/3;background:#0f0f0f;border-radius:10px;border:1.5px solid #00e5cc;display:flex;flex-direction:column;overflow:hidden;">
-                    <div style="flex:1;background:#0d1a18;display:flex;align-items:center;justify-content:center;font-size:24px;">🧑‍🎤</div>
-                    <div style="padding:6px;background:#0a0a0a;text-align:center;"><p class="kf" style="margin:0;font-size:11px;font-weight:700;color:#fff;">지호(智浩)</p><p style="margin:0;font-size:6px;color:#00e5cc;">智·浩</p></div>
+                <div style="aspect-ratio:2/3;background:#0f0f0f;border-radius:10px;border:1.5px solid #00e5cc;display:flex;flex-direction:column;overflow:hidden;align-items:center;justify-content:center;gap:4px;">
+                    <p class="kf" style="margin:0;font-size:28px;font-weight:700;color:#fff;">지호</p>
+                    <p style="margin:0;font-size:8px;color:#00e5cc;">智·浩</p>
                 </div>
-                <div style="aspect-ratio:2/3;background:#1a1030;border-radius:10px;border:1.5px solid #9b7fe8;display:flex;flex-direction:column;overflow:hidden;">
-                    <div style="flex:1;background:#120c28;display:flex;align-items:center;justify-content:center;font-size:24px;">🧑‍🎤</div>
-                    <div style="padding:6px;background:#130c24;text-align:center;"><p class="kf" style="margin:0;font-size:11px;font-weight:700;color:#e8d5ff;">민서(珉瑞)</p><p style="margin:0;font-size:6px;color:#9b7fe8;">珉·瑞</p></div>
+                <div style="aspect-ratio:2/3;background:#1a1030;border-radius:10px;border:1.5px solid #9b7fe8;display:flex;flex-direction:column;overflow:hidden;align-items:center;justify-content:center;gap:4px;">
+                    <p class="kf" style="margin:0;font-size:28px;font-weight:700;color:#e8d5ff;">민서</p>
+                    <p style="margin:0;font-size:8px;color:#9b7fe8;">珉·瑞</p>
                 </div>
             </div>
-            <p id="txt-sample-note" class="text-[10px] text-slate-400 text-center mb-4">Your card includes AI portrait & personalized name</p>
-            <button onclick="closeModal('sample-modal'); proceedDownloadPayment()" class="w-full bg-gradient-to-r from-pink-500 to-violet-600 text-white font-bold py-3 rounded-2xl text-sm hover:opacity-90" id="txt-dl-mine">💾 Download Mine · $1</button>
-            <button onclick="closeModal('sample-modal')" class="mt-2 text-xs text-slate-400 hover:underline w-full" id="txt-close-sample">Close</button>
+            <p id="txt-sample-note" class="text-[10px] text-slate-400 text-center mb-4">Flip for oriental AI portrait on back</p>
+            <button onclick="closeModal('sample-modal');proceedDownloadPayment()" id="txt-dl-mine" class="w-full bg-gradient-to-r from-pink-500 to-violet-600 text-white font-bold py-3 rounded-2xl text-sm hover:opacity-90">💾 Download Mine · $1</button>
+            <button onclick="closeModal('sample-modal')" id="txt-close-sample" class="mt-2 text-xs text-slate-400 hover:underline w-full">Close</button>
         </div>
     </div>
 
+<style>
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+
 <script>
-let _sp=null, CONFIG={}, currentStrategy='sound', currentCardStyle='classic', currentUser=null, userPlan=null, isFlipped=false;
-let lastGender='male', lastVibe='Cool', lastNameResult='';
+let _sp=null,CONFIG={},currentStrategy='sound',currentCardStyle='classic',currentUser=null,userPlan=null,isFlipped=false;
 const FREE_LIMIT=3;
 
 async function loadConfig(){
@@ -312,196 +339,81 @@ async function loadConfig(){
     await init();
 }
 
-// ===== CARD BACK SVG GENERATOR =====
-function generateBackSVG(gender, vibe, style) {
-    const themes = {
-        classic: { bg:'#0a0a1a', sky:'#0f0f2a', accent:'#c9a84c', text:'#fff', hanbok:'#2a1a5a', jeogori:'#4a2a7a', moon:'#1a1530', moonShadow:'#0a0a1a' },
-        pastel:  { bg:'#fff5f8', sky:'#ffe8f2', accent:'#f4a7c0', text:'#c45a7a', hanbok:'#f4a7c0', jeogori:'#ffcfe0', moon:'#ffd6e8', moonShadow:'#fff0f5' },
-        gen4:    { bg:'#0a0a0a', sky:'#050f0d', accent:'#00e5cc', text:'#fff', hanbok:'#0a2a28', jeogori:'#0d3530', moon:'#061a18', moonShadow:'#0a0a0a' },
-        luxury:  { bg:'#1a1030', sky:'#12082a', accent:'#9b7fe8', text:'#e8d5ff', hanbok:'#2d1a5a', jeogori:'#3d2470', moon:'#1a1040', moonShadow:'#1a1030' },
-    };
-    const t = themes[style] || themes.classic;
-
-    const vibeColors = {
-        Cool:       { flower:'#a0c8e8', leaf:'#3a5a7a' },
-        Cute:       { flower:'#ffb0c8', leaf:'#c45a7a' },
-        Elegant:    { flower:'#d4a0c8', leaf:'#6a3a6a' },
-        Strong:     { flower:'#a8c890', leaf:'#3a6a3a' },
-        Mysterious: { flower:'#8878c8', leaf:'#3a2a6a' },
-        Bright:     { flower:'#ffcc88', leaf:'#c87a20' },
-        Warm:       { flower:'#ffaa88', leaf:'#c85a30' },
-        Chic:       { flower:'#c8c8c8', leaf:'#5a5a5a' },
-    };
-    const fc = vibeColors[vibe] || vibeColors.Cool;
-
-    // Face color based on gender
-    const faceColor = gender === 'female' ? '#fde8d8' : '#f0d8c0';
-    const isFemale = gender === 'female';
-
-    return `<svg viewBox="0 0 150 230" width="150" height="230" xmlns="http://www.w3.org/2000/svg">
-<rect width="150" height="230" fill="${t.bg}"/>
-<!-- Sky -->
-<rect width="150" height="140" fill="${t.sky}"/>
-<!-- Moon -->
-<circle cx="115" cy="30" r="22" fill="${t.moon}"/>
-<circle cx="123" cy="23" r="18" fill="${t.moonShadow}"/>
-<!-- Stars -->
-<circle cx="15" cy="18" r="1" fill="${t.accent}" opacity="0.7"/>
-<circle cx="30" cy="10" r="0.8" fill="${t.accent}" opacity="0.5"/>
-<circle cx="50" cy="15" r="0.7" fill="${t.accent}" opacity="0.4"/>
-<circle cx="8" cy="35" r="0.8" fill="${t.accent}" opacity="0.4"/>
-<!-- Korean decorative pattern top -->
-<rect x="0" y="0" width="150" height="3" fill="${t.accent}" opacity="0.3"/>
-<!-- Figure -->
-<!-- Body/Hanbok skirt -->
-<path d="M52 105 Q47 130 32 170 L118 170 Q103 130 98 105 Z" fill="${t.hanbok}" opacity="0.9"/>
-<!-- Jeogori top -->
-<path d="M54 100 Q75 110 96 100 L98 112 Q75 122 52 112 Z" fill="${t.jeogori}"/>
-${isFemale ? `
-<!-- Female hair - updo with ornament -->
-<ellipse cx="75" cy="68" rx="14" ry="9" fill="#2a1020"/>
-<ellipse cx="75" cy="64" rx="9" ry="6" fill="#3a1828"/>
-<ellipse cx="62" cy="74" rx="6" ry="11" fill="#2a1020"/>
-<ellipse cx="88" cy="74" rx="6" ry="11" fill="#2a1020"/>
-<!-- hair pins -->
-<line x1="82" y1="64" x2="90" y2="55" stroke="${t.accent}" stroke-width="1"/>
-<circle cx="91" cy="54" r="2.5" fill="${t.accent}"/>
-<circle cx="93" cy="52" r="1.5" fill="white" opacity="0.7"/>
-<line x1="68" y1="64" x2="60" y2="55" stroke="${fc.flower}" stroke-width="0.8"/>
-<circle cx="59" cy="54" r="2" fill="${fc.flower}"/>
-` : `
-<!-- Male hair -->
-<ellipse cx="75" cy="66" rx="15" ry="10" fill="#1a0a18"/>
-<ellipse cx="75" cy="62" rx="12" ry="7" fill="#241228"/>
-<ellipse cx="61" cy="72" rx="5" ry="9" fill="#1a0a18"/>
-<ellipse cx="89" cy="72" rx="5" ry="9" fill="#1a0a18"/>
-`}
-<!-- Face -->
-<ellipse cx="75" cy="${isFemale ? '78' : '80'}" rx="11" ry="12" fill="${faceColor}"/>
-<!-- Eyes -->
-<ellipse cx="69" cy="${isFemale ? '76' : '78'}" rx="${isFemale ? '3' : '2.5'}" ry="${isFemale ? '3.5' : '3'}" fill="#1a0818"/>
-<ellipse cx="81" cy="${isFemale ? '76' : '78'}" rx="${isFemale ? '3' : '2.5'}" ry="${isFemale ? '3.5' : '3'}" fill="#1a0818"/>
-<ellipse cx="70" cy="${isFemale ? '75' : '77'}" rx="1.5" ry="1.8" fill="white" opacity="0.5"/>
-<ellipse cx="82" cy="${isFemale ? '75' : '77'}" rx="1.5" ry="1.8" fill="white" opacity="0.5"/>
-${isFemale ? `
-<!-- Female blush & lips -->
-<ellipse cx="63" cy="82" rx="5" ry="3" fill="${fc.flower}" opacity="0.4"/>
-<ellipse cx="87" cy="82" rx="5" ry="3" fill="${fc.flower}" opacity="0.4"/>
-<path d="M71 84 Q75 87 79 84" fill="none" stroke="${fc.flower}" stroke-width="1.2" stroke-linecap="round"/>
-` : `
-<!-- Male features -->
-<path d="M72 86 Q75 88 78 86" fill="none" stroke="#c07060" stroke-width="0.8" stroke-linecap="round"/>
-`}
-<!-- Ribbon/collar -->
-<path d="M66 100 Q75 96 84 100" fill="none" stroke="${t.accent}" stroke-width="1.5"/>
-<!-- Sleeves -->
-<path d="M52 103 Q36 112 30 124 Q34 128 40 121 Q48 111 54 107 Z" fill="${t.jeogori}"/>
-<path d="M98 103 Q114 112 120 124 Q116 128 110 121 Q102 111 96 107 Z" fill="${t.jeogori}"/>
-<!-- Skirt pattern -->
-<line x1="55" y1="132" x2="52" y2="162" stroke="${t.accent}" stroke-width="0.4" opacity="0.35"/>
-<line x1="65" y1="127" x2="63" y2="164" stroke="${t.accent}" stroke-width="0.4" opacity="0.35"/>
-<line x1="75" y1="125" x2="75" y2="165" stroke="${t.accent}" stroke-width="0.4" opacity="0.35"/>
-<line x1="85" y1="127" x2="87" y2="164" stroke="${t.accent}" stroke-width="0.4" opacity="0.35"/>
-<line x1="95" y1="132" x2="98" y2="162" stroke="${t.accent}" stroke-width="0.4" opacity="0.35"/>
-<!-- Branches & flowers -->
-<line x1="0" y1="185" x2="38" y2="145" stroke="${fc.leaf}" stroke-width="1.5" opacity="0.5"/>
-<line x1="38" y1="145" x2="22" y2="118" stroke="${fc.leaf}" stroke-width="1" opacity="0.4"/>
-<line x1="38" y1="145" x2="52" y2="122" stroke="${fc.leaf}" stroke-width="1" opacity="0.4"/>
-<circle cx="20" cy="115" r="4.5" fill="${fc.flower}" opacity="0.8"/>
-<circle cx="26" cy="110" r="3.5" fill="${fc.flower}" opacity="0.7"/>
-<circle cx="14" cy="111" r="3" fill="${fc.flower}" opacity="0.6"/>
-<circle cx="51" cy="120" r="4" fill="${fc.flower}" opacity="0.75"/>
-<circle cx="55" cy="115" r="3" fill="${fc.flower}" opacity="0.6"/>
-<line x1="150" y1="175" x2="118" y2="138" stroke="${fc.leaf}" stroke-width="1.5" opacity="0.5"/>
-<line x1="118" y1="138" x2="130" y2="112" stroke="${fc.leaf}" stroke-width="1" opacity="0.4"/>
-<circle cx="132" cy="110" r="4.5" fill="${fc.flower}" opacity="0.75"/>
-<circle cx="126" cy="106" r="3.5" fill="${fc.flower}" opacity="0.65"/>
-<circle cx="136" cy="105" r="3" fill="${fc.flower}" opacity="0.6"/>
-<!-- Footer background -->
-<rect x="0" y="188" width="150" height="42" fill="${t.bg}" opacity="0.95"/>
-<line x1="12" y1="189" x2="138" y2="189" stroke="${t.accent}" stroke-width="0.5" opacity="0.5"/>
-</svg>`;
-}
-
-// ===== CARD THEMES =====
-const cardThemes = {
-    classic: { bg:'#0a0a1a', border:'#c9a84c', photoBg:'#1a1a3e', footerBg:'#0a0a1a', nameclr:'#fff', meaningclr:'#c9a84c', deco:'#c9a84c', brand:'K·NAME' },
-    pastel:  { bg:'#fff0f5', border:'#f4a7c0', photoBg:'#ffe4ef', footerBg:'#fff0f5', nameclr:'#c45a7a', meaningclr:'#e88aaa', deco:'#f4a7c0', brand:'K·NAME' },
-    gen4:    { bg:'#0f0f0f', border:'#00e5cc', photoBg:'#0d1a18', footerBg:'#0a0a0a', nameclr:'#fff', meaningclr:'#00e5cc', deco:'#00e5cc', brand:'K·NAME' },
-    luxury:  { bg:'#1a1030', border:'#9b7fe8', photoBg:'#120c28', footerBg:'#130c24', nameclr:'#e8d5ff', meaningclr:'#9b7fe8', deco:'#9b7fe8', brand:'K·NAME' },
+// CARD THEMES
+const themes={
+    classic:{bg:'#0a0a1a',border:'#c9a84c',photoBg:'#1a1a3e',footerBg:'#0a0a1a',nameclr:'#fff',accentclr:'#c9a84c',borderRgba:'rgba(201,168,76,0.3)'},
+    pastel: {bg:'#fff0f5',border:'#f4a7c0',photoBg:'#ffe4ef',footerBg:'#fff0f5',nameclr:'#c45a7a',accentclr:'#e88aaa',borderRgba:'rgba(244,167,192,0.3)'},
+    gen4:   {bg:'#0f0f0f',border:'#00e5cc',photoBg:'#0d1a18',footerBg:'#0a0a0a',nameclr:'#fff',accentclr:'#00e5cc',borderRgba:'rgba(0,229,204,0.3)'},
+    luxury: {bg:'#1a1030',border:'#9b7fe8',photoBg:'#120c28',footerBg:'#130c24',nameclr:'#e8d5ff',accentclr:'#9b7fe8',borderRgba:'rgba(155,127,232,0.3)'},
 };
 
-function applyCardTheme(style) {
-    const th = cardThemes[style];
-    const front = document.getElementById('pc-front');
-    if (!front) return;
-    front.style.background = th.bg;
-    front.style.border = `1.5px solid ${th.border}`;
-    // top bar
-    front.querySelector('div').style.background = th.border;
-    // brand
-    document.getElementById('pc-brand-front').style.color = th.meaningclr;
-    // deco svgs
-    ['deco-top-front','deco-bot-front'].forEach(id => {
-        const svg = document.getElementById(id);
-        if (svg) {
-            svg.querySelectorAll('line,circle').forEach(el => {
-                if (el.tagName === 'line') el.setAttribute('stroke', th.deco);
-                if (el.tagName === 'circle' && el.getAttribute('r') === '5') { el.setAttribute('stroke', th.deco); el.setAttribute('fill','none'); }
-                if (el.tagName === 'circle' && el.getAttribute('r') === '2') { el.setAttribute('fill', th.deco); }
-            });
+function applyTheme(style){
+    const t=themes[style];
+    const front=document.getElementById('pc-front');
+    const back=document.getElementById('pc-back');
+    if(!front)return;
+    // Front
+    front.style.background=t.bg;
+    front.style.border=`1.5px solid ${t.border}`;
+    document.getElementById('front-topbar').style.background=t.border;
+    document.getElementById('pc-brand').style.color=t.accentclr;
+    document.getElementById('pc-num').style.color=t.accentclr;
+    document.getElementById('pc-kname').style.color=t.nameclr;
+    document.getElementById('pc-hanja').style.color=t.accentclr;
+    document.getElementById('pc-meaning-front').style.color=t.accentclr;
+    // deco lines
+    ['front-deco-top','front-deco-bot'].forEach(id=>{
+        const el=document.getElementById(id);
+        if(el){
+            el.querySelectorAll('div').forEach(d=>{d.style.background=t.border;});
+            el.querySelectorAll('p').forEach(p=>{p.style.color=t.accentclr;});
         }
     });
-    document.getElementById('pc-kname').style.color = th.nameclr;
-    document.getElementById('pc-hanja').style.color = th.meaningclr;
-    document.getElementById('pc-meaning-front').style.color = th.meaningclr;
-    document.getElementById('pc-user-info').style.color = th.nameclr + '44';
-    // back footer
-    document.getElementById('pc-kname-back').style.color = th.nameclr;
-    document.getElementById('pc-meaning-back').style.color = th.meaningclr;
+    // Back
+    back.style.background=t.bg;
+    back.style.border=`1.5px solid ${t.border}`;
+    document.getElementById('pc-back-img-area').style.background=t.photoBg;
+    document.getElementById('pc-back-footer').style.background=t.footerBg;
+    document.getElementById('pc-back-footer').style.borderTop=`1px solid ${t.borderRgba}`;
+    document.getElementById('pc-kname-back').style.color=t.nameclr;
+    document.getElementById('pc-meaning-back').style.color=t.accentclr;
+    // spinner color
+    const spinner=document.querySelector('#back-loading div');
+    if(spinner)spinner.style.borderColor=`${t.accentclr} transparent transparent transparent`;
 }
 
-function selectCardStyle(style) {
-    currentCardStyle = style;
-    ['classic','pastel','gen4','luxury'].forEach(s => {
-        const p = document.getElementById('stylep-'+s);
-        if (p) p.style.opacity = s === style ? '1' : '0.5';
-        const pill = document.getElementById('pill-'+s);
-        if (pill) pill.classList.toggle('active', s === style);
+function selectCardStyle(style){
+    currentCardStyle=style;
+    ['classic','pastel','gen4','luxury'].forEach(s=>{
+        const p=document.getElementById('stylep-'+s);
+        if(p)p.style.opacity=s===style?'1':'0.5';
+        const pill=document.getElementById('pill-'+s);
+        if(pill)pill.classList.toggle('active',s===style);
     });
-    applyCardTheme(style);
-    // Regenerate back SVG with current theme
-    const container = document.getElementById('pc-back-svg-container');
-    if (container && lastNameResult) {
-        container.innerHTML = generateBackSVG(lastGender, lastVibe, style);
-    }
-    // Set back footer bg
-    const th = cardThemes[style];
-    document.getElementById('pc-back').style.background = th.bg;
-    document.getElementById('pc-back').style.border = `1.5px solid ${th.border}`;
+    applyTheme(style);
 }
 
-// ===== FLIP =====
-function flipCard() {
-    isFlipped = !isFlipped;
-    document.getElementById('photocard-inner').classList.toggle('flipped', isFlipped);
+// FLIP
+function flipCard(){
+    isFlipped=!isFlipped;
+    document.getElementById('photocard-inner').classList.toggle('flipped',isFlipped);
 }
 
-// ===== MODALS =====
+// MODALS
 function showModal(id){const m=document.getElementById(id);m.style.display='flex';m.style.pointerEvents='auto';}
 function closeModal(id){const m=document.getElementById(id);m.style.display='none';m.style.pointerEvents='none';}
 function openLoginModal(){showModal('login-modal');}
 function openSampleModal(){closeModal('download-modal');showModal('sample-modal');}
 ['login-modal','no-credits-modal','download-modal','sample-modal','ad-modal'].forEach(id=>{
     const el=document.getElementById(id);
-    if(el) el.addEventListener('click',function(e){if(e.target===this)closeModal(id);});
+    if(el)el.addEventListener('click',function(e){if(e.target===this)closeModal(id);});
 });
 
-// ===== AUTH =====
+// AUTH
 async function signInWithGoogle(){await _sp.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin}});}
 async function signOut(){await _sp.auth.signOut();currentUser=null;userPlan=null;updateAuthUI();updateCreditsDisplay();}
 
-// ===== AD =====
+// AD
 let adTimer=null;
 function startWatchAd(){
     closeModal('no-credits-modal');showModal('ad-modal');
@@ -518,7 +430,7 @@ function skipAd(){
     updateCreditsDisplay();updateAuthUI();alert('🎉 +1 credit!');
 }
 
-// ===== DOWNLOAD =====
+// DOWNLOAD
 function handleDownload(){
     if(userPlan)actualDownload();
     else if(!currentUser)openLoginModal();
@@ -538,7 +450,7 @@ async function actualDownload(){
     const btn=document.getElementById('download-btn'),orig=btn.innerHTML;
     btn.innerHTML='Generating...';btn.disabled=true;
     try{
-        const target = isFlipped ? document.getElementById('pc-back') : document.getElementById('pc-front');
+        const target=isFlipped?document.getElementById('pc-back'):document.getElementById('pc-front');
         const canvas=await html2canvas(target,{scale:3,useCORS:true,backgroundColor:null,logging:false});
         const a=document.createElement('a');
         a.download='k-name-card-'+Date.now()+'.png';
@@ -548,13 +460,12 @@ async function actualDownload(){
     btn.innerHTML=orig;btn.disabled=false;
 }
 
-// ===== PLAN =====
+// PLAN
 async function fetchUserPlan(email){try{const r=await fetch('/api/my-plan?email='+encodeURIComponent(email));const d=await r.json();return d.plan||null;}catch{return null;}}
 function getGuestCredits(){return Math.max(0,FREE_LIMIT-parseInt(localStorage.getItem('k_used')||'0'));}
 function updateCreditsDisplay(){
     const el=document.getElementById('credits-display');
-    const lang=localStorage.getItem('web_lang')||'en';
-    const t=i18n[lang]||i18n.en;
+    const t=i18n[localStorage.getItem('web_lang')||'en']||i18n.en;
     if(userPlan==='annual'||userPlan==='month'){el.textContent=t.unlimited;el.style.color='#10b981';}
     else if(userPlan==='week'){el.textContent=t.weekActive;el.style.color='#6366f1';}
     else{const c=getGuestCredits();el.textContent=t.credits.replace('{n}',c);el.style.color=c===0?'#f87171':'#94a3b8';}
@@ -562,8 +473,7 @@ function updateCreditsDisplay(){
 function updateAuthUI(){
     const show=id=>{const el=document.getElementById(id);if(el)el.style.display='flex';};
     const hide=id=>{const el=document.getElementById(id);if(el)el.style.display='none';};
-    const lang=localStorage.getItem('web_lang')||'en';
-    const t=i18n[lang]||i18n.en;
+    const t=i18n[localStorage.getItem('web_lang')||'en']||i18n.en;
     if(currentUser){
         hide('google-login-btn');show('user-profile');
         document.getElementById('user-email').textContent=currentUser.email;
@@ -574,25 +484,19 @@ function updateAuthUI(){
     if(dl)dl.textContent=userPlan?t.downloadFree:t.downloadPaid;
 }
 
-// ===== STRATEGY =====
-const stratMap={
-    sound:'sound similarity to the name',
-    meaning:'meaningful Hanja characters that reflect the personality and vibe',
-    kdrama:'trendy K-drama style naming conventions used for main characters',
-};
+// STRATEGY
+const stratMap={sound:'sound similarity to the name',meaning:'meaningful Hanja characters that reflect the personality and vibe',kdrama:'trendy K-drama style naming conventions used for main characters'};
 function setStrategy(s){
     currentStrategy=s;
-    const lang=localStorage.getItem('web_lang')||'en';
-    const t=i18n[lang]||i18n.en;
+    const t=i18n[localStorage.getItem('web_lang')||'en']||i18n.en;
     ['sound','meaning','kdrama'].forEach(id=>{
         const b=document.getElementById('strat-'+id);
-        b.className=id===s?'flex-1 text-[10px] font-bold py-2 rounded-xl bg-white shadow text-indigo-600 transition-all':'flex-1 text-[10px] font-bold py-2 rounded-xl text-slate-500 hover:text-slate-700 transition-all';
+        b.className=id===s?'flex-1 text-[10px] font-bold py-2 rounded-xl bg-white shadow text-indigo-600 transition-all':'flex-1 text-[10px] font-bold py-2 rounded-xl text-slate-500 transition-all';
     });
-    const descMap={sound:t.descSound,meaning:t.descMeaning,kdrama:t.descKdrama};
-    document.getElementById('strategy-desc').textContent=descMap[s];
+    document.getElementById('strategy-desc').textContent={sound:t.descSound,meaning:t.descMeaning,kdrama:t.descKdrama}[s];
 }
 
-// ===== GENERATE =====
+// GENERATE
 async function generateName(){
     const name=document.getElementById('name-input').value.trim();
     if(!name){const inp=document.getElementById('name-input');inp.classList.add('border-red-400');inp.focus();setTimeout(()=>inp.classList.remove('border-red-400'),1500);return;}
@@ -605,13 +509,15 @@ async function generateName(){
     const gender=document.getElementById('gender-select').value;
     const vibe=document.getElementById('vibe-select').value;
     const lang=localStorage.getItem('web_lang')||'en';
-    lastGender=gender; lastVibe=vibe;
 
     document.getElementById('result-section').style.display='none';
     document.getElementById('loading-section').style.display='block';
     selectCardStyle(currentCardStyle);
     isFlipped=false;
     document.getElementById('photocard-inner').classList.remove('flipped');
+    // Reset back image
+    document.getElementById('pc-back-img').style.display='none';
+    document.getElementById('back-loading').style.display='flex';
 
     const btn=document.getElementById('generate-btn');btn.disabled=true;btn.style.opacity='0.6';
 
@@ -619,29 +525,33 @@ async function generateName(){
         const params=new URLSearchParams({english_name:name,vibe,gender,lang,strategy:stratMap[currentStrategy],style:currentStrategy});
         const res=await fetch('/api/generate-k-identity?'+params);
         const data=await res.json();
-        lastNameResult=data.k_name||'';
 
-        // Parse kname and hanja
-        const fullName = data.k_name||'';
-        const hanjaMatch = fullName.match(/\(([^)]+)\)/);
-        const koreanName = fullName.replace(/\([^)]+\)/,'').trim();
-        const hanjaOnly = hanjaMatch ? '('+hanjaMatch[1]+')' : '';
+        // Parse name
+        const full=data.k_name||'';
+        const hanjaMatch=full.match(/\(([^)]+)\)/);
+        const koreanName=full.replace(/\([^)]+\)/,'').trim();
+        const hanjaOnly=hanjaMatch?'('+hanjaMatch[1]+')':'';
 
         // Front card
         document.getElementById('pc-kname').textContent=koreanName;
         document.getElementById('pc-hanja').textContent=hanjaOnly;
         document.getElementById('pc-meaning-front').textContent=data.meaning||'';
         document.getElementById('pc-user-info').textContent=name+' · '+gender+' · '+vibe;
-
         // Back card
-        document.getElementById('pc-kname-back').textContent=fullName;
+        document.getElementById('pc-kname-back').textContent=full;
         document.getElementById('pc-meaning-back').textContent=data.meaning||'';
-        const container=document.getElementById('pc-back-svg-container');
-        container.innerHTML=generateBackSVG(gender,vibe,currentCardStyle);
-
+        // Explanation
         document.getElementById('k-explain').textContent=data.explain||'';
 
-        applyCardTheme(currentCardStyle);
+        // Load back image
+        if(data.image_url){
+            const img=document.getElementById('pc-back-img');
+            img.src=data.image_url;
+            img.onload=()=>{img.style.display='block';document.getElementById('back-loading').style.display='none';};
+            img.onerror=()=>{document.getElementById('back-loading').innerHTML='<p style="color:#ffffff55;font-size:10px;">Image unavailable</p>';};
+        }
+
+        applyTheme(currentCardStyle);
         document.getElementById('loading-section').style.display='none';
         document.getElementById('result-section').style.display='block';
         updateAuthUI();
@@ -649,135 +559,14 @@ async function generateName(){
     btn.disabled=false;btn.style.opacity='1';
 }
 
-// ===== LANGUAGE =====
-const langs=[
-    {code:'en',flag:'🇺🇸',name:'English'},
-    {code:'ko',flag:'🇰🇷',name:'한국어'},
-    {code:'es',flag:'🇪🇸',name:'Español'},
-    {code:'zh',flag:'🇨🇳',name:'中文'},
-    {code:'ja',flag:'🇯🇵',name:'日本語'},
-];
+// I18N
+const langs=[{code:'en',flag:'🇺🇸',name:'English'},{code:'ko',flag:'🇰🇷',name:'한국어'},{code:'es',flag:'🇪🇸',name:'Español'},{code:'zh',flag:'🇨🇳',name:'中文'},{code:'ja',flag:'🇯🇵',name:'日本語'}];
 const i18n={
-    en:{
-        title:'Korean Name Generator', subtitle:'Discover your perfect Korean identity',
-        placeholder:'Your name...', styleLabel:'Choose Style',
-        stratSound:'Sound', stratMeaning:'Meaning', stratKdrama:'K-Drama',
-        descSound:'Sounds similar to your name', descMeaning:'Beautiful Hanja matching your personality', descKdrama:'Trendy K-drama character style',
-        generateBtn:'Find My Name ✨', loading:'Consulting the ancients...',
-        pickStyle:'Pick your card style while waiting',
-        tapHint:'Tap card to flip',
-        credits:'CREDITS: {n} LEFT', unlimited:'UNLIMITED ACCESS', weekActive:'WEEK PASS ACTIVE',
-        downloadFree:'💾 Download Card (Free)', downloadPaid:'💾 Download Card · $1',
-        buyPass:'Buy Pass', logout:'Logout',
-        modalTitle:'Sign in to continue', modalSub:'Get 3 free credits · Upgrade for unlimited names',
-        googleBtn:'Continue with Google', cancel:'Cancel',
-        noCreditsTitle:'Out of Credits', noCreditsDesc:'Watch a short ad to get 1 credit, or upgrade.',
-        watchAd:'📺 Watch Ad (+1 Credit)', buyPassBtn:'✨ Buy Pass (Unlimited)',
-        adTitle:'📺 Ad Playing...', adLabel:'Advertisement', skipAd:'Skip Ad',
-        dlTitle:'Download Your K-Card', dlDesc:'Pay $1 to download in full quality',
-        payPaypal:'🌐 Pay $1 with PayPal', viewSample:'👁 View Sample Cards',
-        sampleTitle:'Sample Cards', sampleNote:'Your card includes AI portrait & personalized name',
-        dlMine:'💾 Download Mine · $1', close:'Close',
-        styleClassic:'Classic', stylePastel:'Pastel', styleGen4:'4th Gen', styleLuxury:'Luxury',
-        optMale:'Male', optFemale:'Female', optNeutral:'Neutral',
-        successMsg:'Payment successful! Unlimited access unlocked.',
-    },
-    ko:{
-        title:'한국 이름 생성기', subtitle:'나만의 완벽한 한국 이름을 찾아보세요',
-        placeholder:'이름을 입력하세요...', styleLabel:'스타일 선택',
-        stratSound:'발음', stratMeaning:'의미', stratKdrama:'K-드라마',
-        descSound:'영어 이름과 발음이 비슷한 이름', descMeaning:'성격과 분위기를 담은 한자 이름', descKdrama:'드라마 주인공 스타일 이름',
-        generateBtn:'이름 찾기 ✨', loading:'이름을 신중하게 짓는 중...',
-        pickStyle:'기다리는 동안 카드 스타일을 골라보세요',
-        tapHint:'카드를 탭하여 뒤집기',
-        credits:'크레딧: {n}개 남음', unlimited:'무제한 이용 중', weekActive:'1주일 패스 이용 중',
-        downloadFree:'💾 카드 다운로드 (무료)', downloadPaid:'💾 카드 다운로드 · $1',
-        buyPass:'패스 구매', logout:'로그아웃',
-        modalTitle:'계속하려면 로그인하세요', modalSub:'무료 3회 이용 · 업그레이드로 무제한',
-        googleBtn:'Google로 계속하기', cancel:'취소',
-        noCreditsTitle:'크레딧 소진', noCreditsDesc:'광고를 보고 크레딧 1개를 받거나 업그레이드하세요.',
-        watchAd:'📺 광고 보기 (+1 크레딧)', buyPassBtn:'✨ 패스 구매 (무제한)',
-        adTitle:'📺 광고 재생 중...', adLabel:'광고', skipAd:'광고 건너뛰기',
-        dlTitle:'K-카드 다운로드', dlDesc:'$1을 지불하고 고화질로 다운로드하세요',
-        payPaypal:'🌐 PayPal로 $1 결제', viewSample:'👁 샘플 카드 보기',
-        sampleTitle:'샘플 카드', sampleNote:'실제 카드에는 AI 초상화와 개인화된 이름이 포함됩니다',
-        dlMine:'💾 내 카드 다운로드 · $1', close:'닫기',
-        styleClassic:'클래식', stylePastel:'파스텔', styleGen4:'4세대', styleLuxury:'럭셔리',
-        optMale:'남성', optFemale:'여성', optNeutral:'중성',
-        successMsg:'결제가 완료되었습니다! 무제한 이용권이 활성화되었습니다.',
-    },
-    es:{
-        title:'Generador de Nombres Coreanos', subtitle:'Descubre tu identidad coreana perfecta',
-        placeholder:'Tu nombre...', styleLabel:'Elige estilo',
-        stratSound:'Sonido', stratMeaning:'Significado', stratKdrama:'K-Drama',
-        descSound:'Suena similar a tu nombre', descMeaning:'Hermosos caracteres Hanja para tu personalidad', descKdrama:'Estilo de personaje principal K-drama',
-        generateBtn:'Encuentra Mi Nombre ✨', loading:'Consultando a los ancestros...',
-        pickStyle:'Elige el estilo de tu tarjeta mientras esperas',
-        tapHint:'Toca la tarjeta para girar',
-        credits:'CRÉDITOS: {n} RESTANTES', unlimited:'ACCESO ILIMITADO', weekActive:'PASE SEMANAL ACTIVO',
-        downloadFree:'💾 Descargar tarjeta (Gratis)', downloadPaid:'💾 Descargar tarjeta · $1',
-        buyPass:'Comprar pase', logout:'Cerrar sesión',
-        modalTitle:'Inicia sesión para continuar', modalSub:'3 créditos gratis · Mejora para acceso ilimitado',
-        googleBtn:'Continuar con Google', cancel:'Cancelar',
-        noCreditsTitle:'Sin créditos', noCreditsDesc:'Mira un anuncio para obtener 1 crédito, o mejora.',
-        watchAd:'📺 Ver anuncio (+1 crédito)', buyPassBtn:'✨ Comprar pase (Ilimitado)',
-        adTitle:'📺 Anuncio en reproducción...', adLabel:'Publicidad', skipAd:'Omitir anuncio',
-        dlTitle:'Descarga tu tarjeta K', dlDesc:'Paga $1 para descargar en alta calidad',
-        payPaypal:'🌐 Pagar $1 con PayPal', viewSample:'👁 Ver tarjetas de muestra',
-        sampleTitle:'Tarjetas de muestra', sampleNote:'Tu tarjeta incluye retrato IA y nombre personalizado',
-        dlMine:'💾 Descargar la mía · $1', close:'Cerrar',
-        styleClassic:'Clásico', stylePastel:'Pastel', styleGen4:'4ª Gen', styleLuxury:'Lujo',
-        optMale:'Masculino', optFemale:'Femenino', optNeutral:'Neutro',
-        successMsg:'¡Pago completado! Acceso ilimitado desbloqueado.',
-    },
-    zh:{
-        title:'韩文名字生成器', subtitle:'找到您完美的韩国名字',
-        placeholder:'您的名字...', styleLabel:'选择风格',
-        stratSound:'音似', stratMeaning:'含义', stratKdrama:'韩剧',
-        descSound:'发音与您的名字相似', descMeaning:'反映个性的美丽汉字名', descKdrama:'韩剧主角命名风格',
-        generateBtn:'找到我的名字 ✨', loading:'正在咨询命名大师...',
-        pickStyle:'等待时选择卡片风格',
-        tapHint:'点击卡片翻转',
-        credits:'剩余积分：{n}', unlimited:'无限次使用', weekActive:'周卡有效中',
-        downloadFree:'💾 下载卡片（免费）', downloadPaid:'💾 下载卡片 · $1',
-        buyPass:'购买通行证', logout:'退出登录',
-        modalTitle:'登录以继续', modalSub:'免费3次 · 升级享无限次数',
-        googleBtn:'使用Google继续', cancel:'取消',
-        noCreditsTitle:'积分不足', noCreditsDesc:'观看广告获得1积分，或升级。',
-        watchAd:'📺 看广告（+1积分）', buyPassBtn:'✨ 购买通行证（无限）',
-        adTitle:'📺 广告播放中...', adLabel:'广告', skipAd:'跳过广告',
-        dlTitle:'下载您的K名片', dlDesc:'支付$1以高质量下载',
-        payPaypal:'🌐 PayPal支付$1', viewSample:'👁 查看样品卡片',
-        sampleTitle:'样品卡片', sampleNote:'您的卡片包含AI肖像和个性化名字',
-        dlMine:'💾 下载我的 · $1', close:'关闭',
-        styleClassic:'经典', stylePastel:'粉彩', styleGen4:'第四代', styleLuxury:'奢华',
-        optMale:'男性', optFemale:'女性', optNeutral:'中性',
-        successMsg:'支付成功！无限访问已解锁。',
-    },
-    ja:{
-        title:'韓国名前ジェネレーター', subtitle:'あなただけの韓国名を見つけよう',
-        placeholder:'お名前...', styleLabel:'スタイルを選択',
-        stratSound:'音', stratMeaning:'意味', stratKdrama:'Kドラマ',
-        descSound:'あなたの名前に音が似た韓国名', descMeaning:'個性に合った漢字の名前', descKdrama:'Kドラマ主人公スタイルの名前',
-        generateBtn:'名前を見つける ✨', loading:'名前を考え中...',
-        pickStyle:'待っている間にカードスタイルを選んでください',
-        tapHint:'カードをタップして裏返す',
-        credits:'クレジット残り：{n}', unlimited:'無制限アクセス中', weekActive:'週間パス有効中',
-        downloadFree:'💾 カードをダウンロード（無料）', downloadPaid:'💾 カードをダウンロード · $1',
-        buyPass:'パス購入', logout:'ログアウト',
-        modalTitle:'続けるにはサインイン', modalSub:'無料3回 · アップグレードで無制限',
-        googleBtn:'Googleで続ける', cancel:'キャンセル',
-        noCreditsTitle:'クレジット不足', noCreditsDesc:'広告を見て1クレジット獲得、またはアップグレード。',
-        watchAd:'📺 広告を見る（+1クレジット）', buyPassBtn:'✨ パス購入（無制限）',
-        adTitle:'📺 広告再生中...', adLabel:'広告', skipAd:'広告をスキップ',
-        dlTitle:'Kカードをダウンロード', dlDesc:'$1を支払って高画質でダウンロード',
-        payPaypal:'🌐 PayPalで$1支払い', viewSample:'👁 サンプルカードを見る',
-        sampleTitle:'サンプルカード', sampleNote:'カードにはAIポートレートと個人名が含まれます',
-        dlMine:'💾 自分のをダウンロード · $1', close:'閉じる',
-        styleClassic:'クラシック', stylePastel:'パステル', styleGen4:'4世代', styleLuxury:'ラグジュアリー',
-        optMale:'男性', optFemale:'女性', optNeutral:'中性',
-        successMsg:'支払い完了！無制限アクセスが解放されました。',
-    },
+    en:{title:'Korean Name Generator',subtitle:'Discover your perfect Korean identity',placeholder:'Your name...',styleLabel:'Choose Style',stratSound:'Sound',stratMeaning:'Meaning',stratKdrama:'K-Drama',descSound:'Sounds similar to your name',descMeaning:'Beautiful Hanja matching your personality',descKdrama:'Trendy K-drama character style',generateBtn:'Find My Name ✨',loading:'Consulting the ancients...',pickStyle:'Pick card style while waiting',tapHint:'Tap card to flip',credits:'CREDITS: {n} LEFT',unlimited:'UNLIMITED ACCESS',weekActive:'WEEK PASS ACTIVE',downloadFree:'💾 Download Card (Free)',downloadPaid:'💾 Download Card · $1',buyPass:'Buy Pass',logout:'Logout',modalTitle:'Sign in to continue',modalSub:'Get 3 free credits · Upgrade for unlimited names',googleBtn:'Continue with Google',cancel:'Cancel',noCreditsTitle:'Out of Credits',noCreditsDesc:'Watch a short ad to get 1 credit, or upgrade.',watchAd:'📺 Watch Ad (+1 Credit)',buyPassBtn:'✨ Buy Pass (Unlimited)',adTitle:'📺 Ad Playing...',adLabel:'Advertisement',skipAd:'Skip Ad',dlTitle:'Download Your K-Card',dlDesc:'Pay $1 to download in full quality',payPaypal:'🌐 Pay $1 with PayPal',viewSample:'👁 View Sample Cards',sampleTitle:'Sample Cards',sampleNote:'Flip for oriental AI portrait on back',dlMine:'💾 Download Mine · $1',close:'Close',styleClassic:'Classic',stylePastel:'Pastel',styleGen4:'4th Gen',styleLuxury:'Luxury',optMale:'Male',optFemale:'Female',optNeutral:'Neutral',successMsg:'Payment successful! Unlimited access unlocked.'},
+    ko:{title:'한국 이름 생성기',subtitle:'나만의 완벽한 한국 이름을 찾아보세요',placeholder:'이름을 입력하세요...',styleLabel:'스타일 선택',stratSound:'발음',stratMeaning:'의미',stratKdrama:'K-드라마',descSound:'이름과 발음이 비슷한 한국어 이름',descMeaning:'성격과 분위기를 담은 한자 이름',descKdrama:'드라마 주인공 스타일 이름',generateBtn:'이름 찾기 ✨',loading:'이름을 신중하게 짓는 중...',pickStyle:'기다리는 동안 카드 스타일 선택',tapHint:'카드를 탭하여 뒤집기',credits:'크레딧: {n}개 남음',unlimited:'무제한 이용 중',weekActive:'1주일 패스 이용 중',downloadFree:'💾 카드 다운로드 (무료)',downloadPaid:'💾 카드 다운로드 · $1',buyPass:'패스 구매',logout:'로그아웃',modalTitle:'계속하려면 로그인하세요',modalSub:'무료 3회 이용 · 업그레이드로 무제한',googleBtn:'Google로 계속하기',cancel:'취소',noCreditsTitle:'크레딧 소진',noCreditsDesc:'광고를 보고 크레딧 1개를 받거나 업그레이드하세요.',watchAd:'📺 광고 보기 (+1 크레딧)',buyPassBtn:'✨ 패스 구매 (무제한)',adTitle:'📺 광고 재생 중...',adLabel:'광고',skipAd:'광고 건너뛰기',dlTitle:'K-카드 다운로드',dlDesc:'$1을 지불하고 고화질로 다운로드하세요',payPaypal:'🌐 PayPal로 $1 결제',viewSample:'👁 샘플 카드 보기',sampleTitle:'샘플 카드',sampleNote:'뒤집으면 동양풍 AI 초상화가 나와요',dlMine:'💾 내 카드 다운로드 · $1',close:'닫기',styleClassic:'클래식',stylePastel:'파스텔',styleGen4:'4세대',styleLuxury:'럭셔리',optMale:'남성',optFemale:'여성',optNeutral:'중성',successMsg:'결제가 완료되었습니다! 무제한 이용권이 활성화되었습니다.'},
+    es:{title:'Generador de Nombres Coreanos',subtitle:'Descubre tu identidad coreana perfecta',placeholder:'Tu nombre...',styleLabel:'Elige estilo',stratSound:'Sonido',stratMeaning:'Significado',stratKdrama:'K-Drama',descSound:'Suena similar a tu nombre',descMeaning:'Hermosos caracteres Hanja para tu personalidad',descKdrama:'Estilo de personaje principal K-drama',generateBtn:'Encuentra Mi Nombre ✨',loading:'Consultando a los ancestros...',pickStyle:'Elige el estilo mientras esperas',tapHint:'Toca la tarjeta para girar',credits:'CRÉDITOS: {n} RESTANTES',unlimited:'ACCESO ILIMITADO',weekActive:'PASE SEMANAL ACTIVO',downloadFree:'💾 Descargar tarjeta (Gratis)',downloadPaid:'💾 Descargar tarjeta · $1',buyPass:'Comprar pase',logout:'Cerrar sesión',modalTitle:'Inicia sesión para continuar',modalSub:'3 créditos gratis · Mejora para acceso ilimitado',googleBtn:'Continuar con Google',cancel:'Cancelar',noCreditsTitle:'Sin créditos',noCreditsDesc:'Mira un anuncio para obtener 1 crédito, o mejora.',watchAd:'📺 Ver anuncio (+1 crédito)',buyPassBtn:'✨ Comprar pase (Ilimitado)',adTitle:'📺 Anuncio en reproducción...',adLabel:'Publicidad',skipAd:'Omitir anuncio',dlTitle:'Descarga tu tarjeta K',dlDesc:'Paga $1 para descargar en alta calidad',payPaypal:'🌐 Pagar $1 con PayPal',viewSample:'👁 Ver tarjetas de muestra',sampleTitle:'Tarjetas de muestra',sampleNote:'Gira para ver el retrato oriental IA',dlMine:'💾 Descargar la mía · $1',close:'Cerrar',styleClassic:'Clásico',stylePastel:'Pastel',styleGen4:'4ª Gen',styleLuxury:'Lujo',optMale:'Masculino',optFemale:'Femenino',optNeutral:'Neutro',successMsg:'¡Pago completado! Acceso ilimitado desbloqueado.'},
+    zh:{title:'韩文名字生成器',subtitle:'找到您完美的韩国名字',placeholder:'您的名字...',styleLabel:'选择风格',stratSound:'音似',stratMeaning:'含义',stratKdrama:'韩剧',descSound:'发音与您的名字相似',descMeaning:'反映个性的美丽汉字名',descKdrama:'韩剧主角命名风格',generateBtn:'找到我的名字 ✨',loading:'正在咨询命名大师...',pickStyle:'等待时选择卡片风格',tapHint:'点击卡片翻转',credits:'剩余积分：{n}',unlimited:'无限次使用',weekActive:'周卡有效中',downloadFree:'💾 下载卡片（免费）',downloadPaid:'💾 下载卡片 · $1',buyPass:'购买通行证',logout:'退出登录',modalTitle:'登录以继续',modalSub:'免费3次 · 升级享无限次数',googleBtn:'使用Google继续',cancel:'取消',noCreditsTitle:'积分不足',noCreditsDesc:'观看广告获得1积分，或升级。',watchAd:'📺 看广告（+1积分）',buyPassBtn:'✨ 购买通行证（无限）',adTitle:'📺 广告播放中...',adLabel:'广告',skipAd:'跳过广告',dlTitle:'下载您的K名片',dlDesc:'支付$1以高质量下载',payPaypal:'🌐 PayPal支付$1',viewSample:'👁 查看样品卡片',sampleTitle:'样品卡片',sampleNote:'翻转查看东方风格AI肖像',dlMine:'💾 下载我的 · $1',close:'关闭',styleClassic:'经典',stylePastel:'粉彩',styleGen4:'第四代',styleLuxury:'奢华',optMale:'男性',optFemale:'女性',optNeutral:'中性',successMsg:'支付成功！无限访问已解锁。'},
+    ja:{title:'韓国名前ジェネレーター',subtitle:'あなただけの韓国名を見つけよう',placeholder:'お名前...',styleLabel:'スタイルを選択',stratSound:'音',stratMeaning:'意味',stratKdrama:'Kドラマ',descSound:'あなたの名前に音が似た韓国名',descMeaning:'個性に合った漢字の名前',descKdrama:'Kドラマ主人公スタイルの名前',generateBtn:'名前を見つける ✨',loading:'名前を考え中...',pickStyle:'待っている間にスタイルを選択',tapHint:'カードをタップして裏返す',credits:'クレジット残り：{n}',unlimited:'無制限アクセス中',weekActive:'週間パス有効中',downloadFree:'💾 カードをダウンロード（無料）',downloadPaid:'💾 カードをダウンロード · $1',buyPass:'パス購入',logout:'ログアウト',modalTitle:'続けるにはサインイン',modalSub:'無料3回 · アップグレードで無制限',googleBtn:'Googleで続ける',cancel:'キャンセル',noCreditsTitle:'クレジット不足',noCreditsDesc:'広告を見て1クレジット獲得、またはアップグレード。',watchAd:'📺 広告を見る（+1クレジット）',buyPassBtn:'✨ パス購入（無制限）',adTitle:'📺 広告再生中...',adLabel:'広告',skipAd:'広告をスキップ',dlTitle:'Kカードをダウンロード',dlDesc:'$1を支払って高画質でダウンロード',payPaypal:'🌐 PayPalで$1支払い',viewSample:'👁 サンプルカードを見る',sampleTitle:'サンプルカード',sampleNote:'裏面に東洋風AIポートレートが表示されます',dlMine:'💾 自分のをダウンロード · $1',close:'閉じる',styleClassic:'クラシック',stylePastel:'パステル',styleGen4:'4世代',styleLuxury:'ラグジュアリー',optMale:'男性',optFemale:'女性',optNeutral:'中性',successMsg:'支払い完了！無制限アクセスが解放されました。'},
 };
 
 function applyLang(code){
@@ -786,92 +575,44 @@ function applyLang(code){
     const t=i18n[code]||i18n.en;
     document.getElementById('lang-flag').textContent=l.flag;
     document.getElementById('lang-label').textContent=l.name;
-    // Main
-    document.getElementById('txt-title').textContent=t.title;
-    document.getElementById('txt-subtitle').textContent=t.subtitle;
+    const ids={
+        'txt-title':t.title,'txt-subtitle':t.subtitle,'txt-style-label':t.styleLabel,
+        'txt-strat-sound':t.stratSound,'txt-strat-meaning':t.stratMeaning,'txt-strat-kdrama':t.stratKdrama,
+        'txt-generate-btn':t.generateBtn,'txt-loading':t.loading,'txt-pick-style':t.pickStyle,'txt-tap-hint':t.tapHint,
+        'txt-style-classic':t.styleClassic,'txt-style-pastel':t.stylePastel,'txt-style-gen4':t.styleGen4,'txt-style-luxury':t.styleLuxury,
+        'pill-txt-classic':t.styleClassic,'pill-txt-pastel':t.stylePastel,'pill-txt-gen4':t.styleGen4,'pill-txt-luxury':t.styleLuxury,
+        'txt-buy-pass':t.buyPass,'btn-logout':t.logout,
+        'txt-modal-title':t.modalTitle,'txt-modal-sub':t.modalSub,'txt-google-btn':t.googleBtn,'txt-cancel-btn':t.cancel,
+        'txt-no-credits-title':t.noCreditsTitle,'txt-no-credits-desc':t.noCreditsDesc,'txt-watch-ad':t.watchAd,'txt-buy-pass-btn':t.buyPassBtn,'txt-cancel-btn2':t.cancel,
+        'txt-ad-title':t.adTitle,'txt-ad-label':t.adLabel,'txt-skip-ad':t.skipAd,
+        'txt-dl-title':t.dlTitle,'txt-dl-desc':t.dlDesc,'txt-pay-paypal':t.payPaypal,'txt-view-sample':t.viewSample,'txt-cancel-dl':t.cancel,
+        'txt-sample-title':t.sampleTitle,'txt-sample-note':t.sampleNote,'txt-dl-mine':t.dlMine,'txt-close-sample':t.close,
+        'txt-success-msg':t.successMsg,
+    };
+    Object.entries(ids).forEach(([id,val])=>{const el=document.getElementById(id);if(el)el.textContent=val;});
     document.getElementById('name-input').placeholder=t.placeholder;
-    document.getElementById('txt-style-label').textContent=t.styleLabel;
-    document.getElementById('txt-strat-sound').textContent=t.stratSound;
-    document.getElementById('txt-strat-meaning').textContent=t.stratMeaning;
-    document.getElementById('txt-strat-kdrama').textContent=t.stratKdrama;
-    document.getElementById('txt-generate-btn').textContent=t.generateBtn;
-    document.getElementById('txt-loading').textContent=t.loading;
-    document.getElementById('txt-pick-style').textContent=t.pickStyle;
-    document.getElementById('txt-tap-hint').textContent=t.tapHint;
-    // Style labels
-    document.getElementById('txt-style-classic').textContent=t.styleClassic;
-    document.getElementById('txt-style-pastel').textContent=t.stylePastel;
-    document.getElementById('txt-style-gen4').textContent=t.styleGen4;
-    document.getElementById('txt-style-luxury').textContent=t.styleLuxury;
-    document.getElementById('pill-txt-classic').textContent=t.styleClassic;
-    document.getElementById('pill-txt-pastel').textContent=t.stylePastel;
-    document.getElementById('pill-txt-gen4').textContent=t.styleGen4;
-    document.getElementById('pill-txt-luxury').textContent=t.styleLuxury;
-    // Gender options
     document.getElementById('opt-male').textContent=t.optMale;
     document.getElementById('opt-female').textContent=t.optFemale;
     document.getElementById('opt-neutral').textContent=t.optNeutral;
-    // Auth
-    document.getElementById('txt-buy-pass').textContent=t.buyPass;
-    document.getElementById('btn-logout').textContent=t.logout;
-    // Login modal
-    document.getElementById('txt-modal-title').textContent=t.modalTitle;
-    document.getElementById('txt-modal-sub').textContent=t.modalSub;
-    document.getElementById('txt-google-btn').textContent=t.googleBtn;
-    document.getElementById('txt-cancel-btn').textContent=t.cancel;
-    // No credits modal
-    document.getElementById('txt-no-credits-title').textContent=t.noCreditsTitle;
-    document.getElementById('txt-no-credits-desc').textContent=t.noCreditsDesc;
-    document.getElementById('txt-watch-ad').textContent=t.watchAd;
-    document.getElementById('txt-buy-pass-btn').textContent=t.buyPassBtn;
-    document.getElementById('txt-cancel-btn2').textContent=t.cancel;
-    // Ad modal
-    document.getElementById('txt-ad-title').textContent=t.adTitle;
-    document.getElementById('txt-ad-label').textContent=t.adLabel;
-    document.getElementById('txt-skip-ad').textContent=t.skipAd;
-    // Download modal
-    document.getElementById('txt-dl-title').textContent=t.dlTitle;
-    document.getElementById('txt-dl-desc').textContent=t.dlDesc;
-    document.getElementById('txt-pay-paypal').textContent=t.payPaypal;
-    document.getElementById('txt-view-sample').textContent=t.viewSample;
-    document.getElementById('txt-cancel-dl').textContent=t.cancel;
-    // Sample modal
-    document.getElementById('txt-sample-title').textContent=t.sampleTitle;
-    document.getElementById('txt-sample-note').textContent=t.sampleNote;
-    document.getElementById('txt-dl-mine').textContent=t.dlMine;
-    document.getElementById('txt-close-sample').textContent=t.close;
-    // Success
-    document.getElementById('txt-success-msg').textContent=t.successMsg;
-    // Update strategy desc
-    const descMap={sound:t.descSound,meaning:t.descMeaning,kdrama:t.descKdrama};
-    document.getElementById('strategy-desc').textContent=descMap[currentStrategy];
-    // Update credits display
-    updateCreditsDisplay();
-    updateAuthUI();
+    document.getElementById('strategy-desc').textContent={sound:t.descSound,meaning:t.descMeaning,kdrama:t.descKdrama}[currentStrategy];
     document.getElementById('lang-menu').classList.add('hidden');
+    updateCreditsDisplay();updateAuthUI();
 }
 
 const menu=document.getElementById('lang-menu');
-langs.forEach(l=>{
-    const b=document.createElement('button');
-    b.className='flex w-full items-center gap-2 px-3 py-2 text-[11px] font-semibold text-slate-700 hover:bg-slate-50';
-    b.innerHTML='<span>'+l.flag+'</span><span>'+l.name+'</span>';
-    b.onclick=()=>applyLang(l.code);
-    menu.appendChild(b);
-});
+langs.forEach(l=>{const b=document.createElement('button');b.className='flex w-full items-center gap-2 px-3 py-2 text-[11px] font-semibold text-slate-700 hover:bg-slate-50';b.innerHTML='<span>'+l.flag+'</span><span>'+l.name+'</span>';b.onclick=()=>applyLang(l.code);menu.appendChild(b);});
 document.getElementById('lang-toggle').onclick=e=>{e.stopPropagation();document.getElementById('lang-menu').classList.toggle('hidden');};
 document.addEventListener('click',()=>document.getElementById('lang-menu').classList.add('hidden'));
 
-// ===== BANNERS =====
+// BANNERS
 const urlP=new URLSearchParams(window.location.search);
 if(urlP.get('success')==='1'){const b=document.getElementById('success-banner');b.style.display='block';setTimeout(()=>{b.style.display='none';},5000);history.replaceState({},'','/');}
 if(urlP.get('downloaded')==='1'){actualDownload();history.replaceState({},'','/');}
 
-// ===== INIT =====
+// INIT
 async function init(){
     applyLang(localStorage.getItem('web_lang')||'en');
-    selectCardStyle('classic');
-    setStrategy('sound');
+    selectCardStyle('classic');setStrategy('sound');
     const{data:{session}}=await _sp.auth.getSession();
     if(session?.user){currentUser=session.user;userPlan=await fetchUserPlan(currentUser.email);}
     updateAuthUI();updateCreditsDisplay();
