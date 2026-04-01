@@ -170,46 +170,60 @@
 
                         <!-- ===== FRONT ===== -->
                         <div class="pc-front" id="pc-front" style="background:#0a0a1a;border:1.5px solid #c9a84c;">
-                            <!-- top bar -->
                             <div id="front-topbar" style="height:2px;background:#c9a84c;opacity:0.7;"></div>
-                            <!-- brand row -->
-                            <div style="padding:12px 18px 0;display:flex;justify-content:space-between;align-items:center;">
-                                <p id="pc-brand" style="margin:0;font-size:7px;font-weight:700;letter-spacing:0.3em;color:#c9a84c;">K·NAME</p>
-                                <p id="pc-num" style="margin:0;font-size:7px;color:#c9a84c;opacity:0.4;">✦</p>
-                            </div>
-                            <!-- top deco -->
-                            <div id="front-deco-top" style="display:flex;align-items:center;gap:8px;padding:10px 18px 0;">
-                                <div style="height:1px;flex:1;background:#c9a84c;opacity:0.3;"></div>
-                                <p style="margin:0;font-size:8px;color:#c9a84c;opacity:0.5;">✦</p>
-                                <div style="height:1px;flex:1;background:#c9a84c;opacity:0.3;"></div>
-                            </div>
-                            <!-- BIG Korean name - centered, pushed down -->
-                            <div style="display:flex;align-items:center;justify-content:center;padding:14px 18px 10px;">
-                                <p id="pc-kname" class="kf" style="margin:0;font-size:72px;font-weight:700;letter-spacing:0.05em;line-height:1;color:#fff;text-align:center;"></p>
-                            </div>
-                            <!-- bot deco -->
-                            <div id="front-deco-bot" style="display:flex;align-items:center;gap:8px;padding:0 18px 12px;">
-                                <div style="height:1px;flex:1;background:#c9a84c;opacity:0.3;"></div>
-                                <p style="margin:0;font-size:8px;color:#c9a84c;opacity:0.5;">✦</p>
-                                <div style="height:1px;flex:1;background:#c9a84c;opacity:0.3;"></div>
-                            </div>
-                            <!-- Hanja calligraphy style - smaller than Korean name -->
-                            <div id="hanja-section" style="display:flex;align-items:center;justify-content:center;gap:16px;padding:0 18px 10px;">
-                                <div id="hanja-left" style="display:flex;flex-direction:column;align-items:center;gap:3px;">
-                                    <p id="pc-hanja-1" class="kf" style="margin:0;font-size:28px;font-weight:700;color:#c9a84c;line-height:1;"></p>
-                                    <div style="width:1px;height:10px;background:#c9a84c;opacity:0.4;"></div>
-                                    <p id="pc-meaning-1" style="margin:0;font-size:6px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#c9a84c;opacity:0.8;"></p>
+
+                            <!-- Top section ~38% : brand + top deco -->
+                            <div style="height:38%;display:flex;flex-direction:column;justify-content:space-between;padding:10px 16px 0;">
+                                <!-- Brand row -->
+                                <div style="display:flex;justify-content:space-between;align-items:center;">
+                                    <p id="pc-brand" style="margin:0;font-size:7px;font-weight:700;letter-spacing:0.35em;color:#c9a84c;">K·NAME</p>
+                                    <p id="pc-num" style="margin:0;font-size:7px;color:#c9a84c;opacity:0.35;">✦</p>
                                 </div>
-                                <div id="hanja-divider" style="width:1px;height:50px;background:#c9a84c;opacity:0.2;"></div>
-                                <div id="hanja-right" style="display:flex;flex-direction:column;align-items:center;gap:3px;">
-                                    <p id="pc-hanja-2" class="kf" style="margin:0;font-size:28px;font-weight:700;color:#c9a84c;line-height:1;"></p>
-                                    <div style="width:1px;height:10px;background:#c9a84c;opacity:0.4;"></div>
-                                    <p id="pc-meaning-2" style="margin:0;font-size:6px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#c9a84c;opacity:0.8;"></p>
+                                <!-- Decorative element -->
+                                <div style="display:flex;align-items:center;justify-content:center;gap:6px;">
+                                    <svg width="60" height="20" viewBox="0 0 60 20" id="deco-svg-1">
+                                        <line x1="0" y1="10" x2="20" y2="10" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
+                                        <circle cx="30" cy="10" r="4" fill="none" stroke="#c9a84c" stroke-width="0.8" opacity="0.7"/>
+                                        <circle cx="30" cy="10" r="1.5" fill="#c9a84c" opacity="0.6"/>
+                                        <line x1="40" y1="10" x2="60" y2="10" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
+                                    </svg>
                                 </div>
                             </div>
-                            <!-- Footer -->
-                            <div style="padding:0 18px 14px;text-align:center;">
-                                <p id="pc-user-info" style="margin:0;font-size:6px;letter-spacing:0.1em;color:#ffffff33;"></p>
+
+                            <!-- Middle section ~38% : Korean name (golden ratio center) -->
+                            <div style="height:38%;display:flex;align-items:center;justify-content:center;">
+                                <p id="pc-kname" class="kf" style="margin:0;font-size:76px;font-weight:700;letter-spacing:0.04em;line-height:1;color:#fff;text-align:center;"></p>
+                            </div>
+
+                            <!-- Bottom section ~24% : hanja + info -->
+                            <div style="height:24%;display:flex;flex-direction:column;justify-content:space-between;padding:0 16px 12px;">
+                                <!-- Top divider -->
+                                <div style="display:flex;align-items:center;gap:6px;">
+                                    <div style="height:1px;flex:1;background:#c9a84c;opacity:0.25;"></div>
+                                    <svg width="60" height="16" viewBox="0 0 60 16" id="deco-svg-2">
+                                        <line x1="0" y1="8" x2="20" y2="8" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
+                                        <circle cx="30" cy="8" r="4" fill="none" stroke="#c9a84c" stroke-width="0.8" opacity="0.7"/>
+                                        <circle cx="30" cy="8" r="1.5" fill="#c9a84c" opacity="0.6"/>
+                                        <line x1="40" y1="8" x2="60" y2="8" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
+                                    </svg>
+                                    <div style="height:1px;flex:1;background:#c9a84c;opacity:0.25;"></div>
+                                </div>
+                                <!-- Hanja two chars -->
+                                <div id="hanja-section" style="display:flex;align-items:flex-start;justify-content:center;gap:20px;">
+                                    <div id="hanja-left" style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+                                        <p id="pc-hanja-1" class="kf" style="margin:0;font-size:26px;font-weight:700;color:#c9a84c;line-height:1;"></p>
+                                        <div style="width:1px;height:8px;background:#c9a84c;opacity:0.35;"></div>
+                                        <p id="pc-meaning-1" style="margin:0;font-size:6px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#c9a84c;opacity:0.75;"></p>
+                                    </div>
+                                    <div id="hanja-divider" style="width:1px;height:44px;background:#c9a84c;opacity:0.18;margin-top:2px;"></div>
+                                    <div id="hanja-right" style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+                                        <p id="pc-hanja-2" class="kf" style="margin:0;font-size:26px;font-weight:700;color:#c9a84c;line-height:1;"></p>
+                                        <div style="width:1px;height:8px;background:#c9a84c;opacity:0.35;"></div>
+                                        <p id="pc-meaning-2" style="margin:0;font-size:6px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#c9a84c;opacity:0.75;"></p>
+                                    </div>
+                                </div>
+                                <!-- User info -->
+                                <p id="pc-user-info" style="margin:0;font-size:6px;letter-spacing:0.1em;color:#ffffff25;text-align:center;"></p>
                             </div>
                         </div>
 
@@ -369,25 +383,26 @@ function applyTheme(style){
     document.getElementById('pc-brand').style.color=t.accentclr;
     document.getElementById('pc-num').style.color=t.accentclr;
     document.getElementById('pc-kname').style.color=t.nameclr;
-    // Hanja section
+    // SVG decos
+    ['deco-svg-1','deco-svg-2'].forEach(id=>{
+        const svg=document.getElementById(id);
+        if(svg){
+            svg.querySelectorAll('line').forEach(l=>l.setAttribute('stroke',t.accentclr));
+            svg.querySelectorAll('circle').forEach(c=>{
+                if(c.getAttribute('fill')==='none')c.setAttribute('stroke',t.accentclr);
+                else c.setAttribute('fill',t.accentclr);
+            });
+        }
+    });
+    // Hanja
     ['pc-hanja-1','pc-hanja-2','pc-meaning-1','pc-meaning-2'].forEach(id=>{
-        const el=document.getElementById(id);
-        if(el)el.style.color=t.accentclr;
+        const el=document.getElementById(id);if(el)el.style.color=t.accentclr;
     });
     ['hanja-left','hanja-right'].forEach(id=>{
         const el=document.getElementById(id);
-        if(el)el.querySelectorAll('div').forEach(d=>{d.style.background=t.border;});
+        if(el)el.querySelectorAll('div').forEach(d=>{if(d.style.width==='1px')d.style.background=t.border;});
     });
-    const hd=document.getElementById('hanja-divider');
-    if(hd)hd.style.background=t.border;
-    // deco lines
-    ['front-deco-top','front-deco-bot'].forEach(id=>{
-        const el=document.getElementById(id);
-        if(el){
-            el.querySelectorAll('div').forEach(d=>{d.style.background=t.border;});
-            el.querySelectorAll('p').forEach(p=>{p.style.color=t.accentclr;});
-        }
-    });
+    const hd=document.getElementById('hanja-divider');if(hd)hd.style.background=t.border;
     // Back
     back.style.background=t.bg;
     back.style.border=`1.5px solid ${t.border}`;
