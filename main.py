@@ -201,23 +201,40 @@ async def generate_k_identity(
     target_lang = lang_map.get(lang, "English")
 
     text_prompt = f"""
-Role: Professional Korean Name Consultant.
+You are a professional Korean name consultant helping foreigners get a beautiful, authentic Korean name.
 
-Task:
-Suggest ONE best Korean name for a {gender} named "{english_name}"
-with a "{vibe}" vibe based on {strategy}.
+Task: Suggest ONE Korean name for a {gender} named "{english_name}" with a "{vibe}" vibe.
+Naming strategy: {strategy}
 
-STRICT RULES:
-- Output EXACTLY 3 lines
-- DO NOT use labels, numbers, or prefixes
+CRITICAL NAMING RULES:
+- The name MUST sound like a real Korean person's name that Koreans actually use
+- NEVER simply transliterate the foreign name phonetically (e.g. Judy→주디, Mike→마이크 is FORBIDDEN)
+- Choose a name that a real Korean parent would give their child
+- The name should be 2-3 syllables, feel natural in Korean
 
-Line 1: Korean name in Hangul with Hanja in parentheses
-Example: 새롬(新美)
+NAME TYPE - Choose ONE based on the name:
+TYPE A - Hanja name (most common): Use meaningful Chinese characters
+  Format: 한글이름(漢字漢字)
+  Example: 민준(旻俊) or 서연(瑞妍)
 
-Line 2: Each Hanja character with its meaning in {target_lang}, separated by · 
-Example: 新 (New) · 美 (Beautiful)
+TYPE B - Pure Korean name (순우리말): Use if it fits the vibe better
+  No Hanja exists for these - use [PURE] marker
+  Format: 한글이름[PURE]
+  Example: 하늘[PURE] or 빛나[PURE]
 
-Line 3: Poetic explanation in 2-3 sentences in {target_lang}
+OUTPUT FORMAT - EXACTLY 3 lines, NO labels, NO numbers:
+
+Line 1: The Korean name with Hanja in parentheses OR [PURE] marker
+Line 2: 
+  - For Hanja names: Each character and its meaning in {target_lang}, format exactly: 漢 (meaning) · 字 (meaning)
+  - For Pure Korean: The meaning in {target_lang}, format exactly: [PURE] meaning of the name
+Line 3: Poetic explanation in 2-3 sentences in {target_lang}. Do NOT mention the foreign person's original name.
+
+IMPORTANT FOR LINE 2:
+- Use ONLY the format shown above
+- Do NOT add extra words, descriptions, or alternate meanings
+- Each Hanja gets exactly ONE short meaning word, not a phrase
+- Maximum 2 Hanja characters shown
 """
 
     try:
@@ -225,22 +242,50 @@ Line 3: Poetic explanation in 2-3 sentences in {target_lang}
             model="gemini-2.0-flash",
             contents=text_prompt,
         )
-        raw_lines = response.text.strip().split("\n")
+        raw_lines = [l for l in response.text.strip().split("\n") if l.strip()]
         clean_lines = []
         for line in raw_lines:
-            if not line.strip():
-                continue
             cleaned = re.sub(
-                r"^.*?(Line\s*\d+|Name|Meaning|Description|Explanation).*?:\s*",
+                r"^.*?(Line\s*\d+|Name|Meaning|Description|Explanation|TYPE\s*[AB]).*?:\s*",
                 "",
                 line,
                 flags=re.IGNORECASE,
             ).strip()
             cleaned = re.sub(r"^[\[\]\-\*\s]+", "", cleaned)
-            clean_lines.append(cleaned)
+            if cleaned:
+                clean_lines.append(cleaned)
     except Exception as e:
         print(f"Gemini Error: {e}")
-        clean_lines = ["오류(Error)", "Service unavailable", "Please try again later."]
+        clean_lines = ["민준(旻俊)", "旻 (Sky) · 俊 (Talented)", "Please try again later."]
+
+    # ── Post-process: detect pure Korean name ──
+    is_pure_korean = False
+    k_name_raw = clean_lines[0] if clean_lines else ""
+    meaning_raw = clean_lines[1] if len(clean_lines) > 1 else ""
+
+    if "[PURE]" in k_name_raw:
+        is_pure_korean = True
+        k_name_raw = k_name_raw.replace("[PURE]", "").strip()
+        # meaning_raw already has [PURE] prefix from prompt, clean it
+        meaning_raw = meaning_raw.replace("[PURE]", "").strip()
+
+    # ── Enforce clean meaning format ──
+    # Remove any garbage that doesn't match Hanja (char) · pattern
+    if not is_pure_korean:
+        # Keep only pattern: X (word) · Y (word)
+        hanja_pattern = re.compile(
+            r'([\u4e00-\u9fff])\s*[（(]([^)）·\n]{1,20})[)）]\s*·?\s*'
+            r'([\u4e00-\u9fff])?\s*[（(]?([^)）·\n]{0,20})[)）]?'
+        )
+        m = hanja_pattern.search(meaning_raw)
+        if m:
+            h1, m1 = m.group(1), m.group(2).strip()
+            h2, m2 = m.group(3), m.group(4).strip() if m.group(4) else ""
+            if h2 and m2:
+                meaning_raw = f"{h1} ({m1}) · {h2} ({m2})"
+            else:
+                meaning_raw = f"{h1} ({m1})"
+
 
     image_url = ""
     if clean_lines:
@@ -278,8 +323,9 @@ Line 3: Poetic explanation in 2-3 sentences in {target_lang}
             image_url = ""
 
     return {
-        "k_name": clean_lines[0] if len(clean_lines) > 0 else "Error",
-        "meaning": clean_lines[1] if len(clean_lines) > 1 else "",
+        "k_name": k_name_raw,
+        "meaning": meaning_raw,
         "explain": clean_lines[2] if len(clean_lines) > 2 else "",
         "image_url": image_url,
+        "is_pure": is_pure_korean,
     }

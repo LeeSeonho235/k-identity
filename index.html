@@ -577,41 +577,49 @@ async function generateName(){
 
         // Parse name & hanja
         const full=data.k_name||'';
+        const isPure=data.is_pure||false;
         const hanjaMatch=full.match(/\(([^)]+)\)/);
         const koreanName=full.replace(/\([^)]+\)/,'').trim();
-        const hanjaOnly=hanjaMatch?hanjaMatch[1]:'';
+        const hanjaOnly=hanjaMatch?'('+hanjaMatch[1]+')':'';
+        const meaningStr=data.meaning||'';
 
         // Front card
         document.getElementById('pc-kname').textContent=koreanName;
         document.getElementById('pc-user-info').textContent=name+' · '+gender+' · '+vibe;
-        // English name at top
         const engNameEl=document.getElementById('pc-eng-name');
         if(engNameEl)engNameEl.textContent=name.toUpperCase();
 
-        // Parse hanja chars and meanings from meaning string
-        // meaning format: "建 (Establish) · 宇 (Universe)"
-        const meaningStr=data.meaning||'';
-        const parts=meaningStr.split('·').map(s=>s.trim());
-        const hanjaChars=hanjaOnly.split('');
-
-        if(parts.length>=2){
-            // Extract hanja char and meaning from each part
-            const m1=parts[0].match(/^([^\s(（]+)\s*[（(]([^)）]+)[)）]?/) || [null,hanjaChars[0]||'',parts[0]];
-            const m2=parts[1].match(/^([^\s(（]+)\s*[（(]([^)）]+)[)）]?/) || [null,hanjaChars[1]||'',parts[1]];
-            document.getElementById('pc-hanja-1').textContent=m1[1]||hanjaChars[0]||'';
-            document.getElementById('pc-meaning-1').textContent=m1[2]||parts[0]||'';
-            document.getElementById('pc-hanja-2').textContent=m2[1]||hanjaChars[1]||'';
-            document.getElementById('pc-meaning-2').textContent=m2[2]||parts[1]||'';
+        // Parse hanja for front card
+        if(isPure){
+            // Pure Korean name - show special markers
+            document.getElementById('pc-hanja-1').textContent='순';
+            document.getElementById('pc-meaning-1').textContent='PURE';
+            document.getElementById('pc-hanja-2').textContent='우리';
+            document.getElementById('pc-meaning-2').textContent='KOREAN';
             document.getElementById('hanja-section').style.display='flex';
-        } else if(hanjaChars.length>=1){
-            document.getElementById('pc-hanja-1').textContent=hanjaChars[0]||'';
-            document.getElementById('pc-meaning-1').textContent=parts[0]||'';
-            document.getElementById('pc-hanja-2').textContent=hanjaChars[1]||'';
-            document.getElementById('pc-meaning-2').textContent=parts[1]||'';
+        } else {
+            const parts=meaningStr.split('·').map(s=>s.trim()).filter(s=>s);
+            if(parts.length>=2){
+                const m1=parts[0].match(/([\u4e00-\u9fff])\s*[（(]([^)）]+)[)）]/) || [null,parts[0].charAt(0),parts[0]];
+                const m2=parts[1].match(/([\u4e00-\u9fff])\s*[（(]([^)）]+)[)）]/) || [null,parts[1].charAt(0),parts[1]];
+                document.getElementById('pc-hanja-1').textContent=m1[1]||'';
+                document.getElementById('pc-meaning-1').textContent=(m1[2]||'').trim().toUpperCase();
+                document.getElementById('pc-hanja-2').textContent=m2[1]||'';
+                document.getElementById('pc-meaning-2').textContent=(m2[2]||'').trim().toUpperCase();
+            } else if(parts.length===1){
+                const m1=parts[0].match(/([\u4e00-\u9fff])\s*[（(]([^)）]+)[)）]/);
+                document.getElementById('pc-hanja-1').textContent=m1?m1[1]:'';
+                document.getElementById('pc-meaning-1').textContent=m1?(m1[2]||'').trim().toUpperCase():parts[0].toUpperCase();
+                document.getElementById('pc-hanja-2').textContent='';
+                document.getElementById('pc-meaning-2').textContent='';
+            }
+            document.getElementById('hanja-section').style.display='flex';
         }
-        // Back card
-        document.getElementById('pc-kname-back').textContent=full;
-        document.getElementById('pc-meaning-back').textContent=data.meaning||'';
+
+        // Back card - clean format
+        const backName=koreanName+(hanjaOnly?hanjaOnly:(isPure?' (순우리말)':''));
+        document.getElementById('pc-kname-back').textContent=backName;
+        document.getElementById('pc-meaning-back').textContent=meaningStr;
         // Explanation
         document.getElementById('k-explain').textContent=data.explain||'';
 
