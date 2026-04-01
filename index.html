@@ -172,58 +172,62 @@
                         <div class="pc-front" id="pc-front" style="background:#0a0a1a;border:1.5px solid #c9a84c;">
                             <div id="front-topbar" style="height:2px;background:#c9a84c;opacity:0.7;"></div>
 
-                            <!-- Top section ~38% : brand + top deco -->
-                            <div style="height:38%;display:flex;flex-direction:column;justify-content:space-between;padding:10px 16px 0;">
-                                <!-- Brand row -->
+                            <!-- Top ~30%: brand + English name -->
+                            <div style="height:30%;display:flex;flex-direction:column;justify-content:space-between;padding:10px 16px 8px;">
                                 <div style="display:flex;justify-content:space-between;align-items:center;">
                                     <p id="pc-brand" style="margin:0;font-size:7px;font-weight:700;letter-spacing:0.35em;color:#c9a84c;">K·NAME</p>
                                     <p id="pc-num" style="margin:0;font-size:7px;color:#c9a84c;opacity:0.35;">✦</p>
                                 </div>
-                                <!-- Decorative element -->
-                                <div style="display:flex;align-items:center;justify-content:center;gap:6px;">
-                                    <svg width="60" height="20" viewBox="0 0 60 20" id="deco-svg-1">
-                                        <line x1="0" y1="10" x2="20" y2="10" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
-                                        <circle cx="30" cy="10" r="4" fill="none" stroke="#c9a84c" stroke-width="0.8" opacity="0.7"/>
-                                        <circle cx="30" cy="10" r="1.5" fill="#c9a84c" opacity="0.6"/>
-                                        <line x1="40" y1="10" x2="60" y2="10" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
+                                <!-- English name centered -->
+                                <div style="text-align:center;">
+                                    <p id="pc-eng-name" style="margin:0;font-size:11px;font-weight:700;letter-spacing:0.25em;text-transform:uppercase;color:#c9a84c;opacity:0.7;"></p>
+                                </div>
+                                <!-- Deco line -->
+                                <div style="display:flex;align-items:center;gap:6px;">
+                                    <div style="height:1px;flex:1;background:#c9a84c;opacity:0.2;"></div>
+                                    <svg width="40" height="14" viewBox="0 0 40 14" id="deco-svg-1">
+                                        <line x1="0" y1="7" x2="13" y2="7" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
+                                        <circle cx="20" cy="7" r="3.5" fill="none" stroke="#c9a84c" stroke-width="0.8" opacity="0.7"/>
+                                        <circle cx="20" cy="7" r="1.2" fill="#c9a84c" opacity="0.6"/>
+                                        <line x1="27" y1="7" x2="40" y2="7" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
                                     </svg>
+                                    <div style="height:1px;flex:1;background:#c9a84c;opacity:0.2;"></div>
                                 </div>
                             </div>
 
-                            <!-- Middle section ~38% : Korean name (golden ratio center) -->
-                            <div style="height:38%;display:flex;align-items:center;justify-content:center;">
+                            <!-- Middle ~42%: Korean name big -->
+                            <div style="height:42%;display:flex;align-items:center;justify-content:center;">
                                 <p id="pc-kname" class="kf" style="margin:0;font-size:76px;font-weight:700;letter-spacing:0.04em;line-height:1;color:#fff;text-align:center;"></p>
                             </div>
 
-                            <!-- Bottom section ~24% : hanja + info -->
-                            <div style="height:24%;display:flex;flex-direction:column;justify-content:space-between;padding:0 16px 12px;">
-                                <!-- Top divider -->
-                                <div style="display:flex;align-items:center;gap:6px;">
-                                    <div style="height:1px;flex:1;background:#c9a84c;opacity:0.25;"></div>
-                                    <svg width="60" height="16" viewBox="0 0 60 16" id="deco-svg-2">
-                                        <line x1="0" y1="8" x2="20" y2="8" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
-                                        <circle cx="30" cy="8" r="4" fill="none" stroke="#c9a84c" stroke-width="0.8" opacity="0.7"/>
-                                        <circle cx="30" cy="8" r="1.5" fill="#c9a84c" opacity="0.6"/>
-                                        <line x1="40" y1="8" x2="60" y2="8" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
+                            <!-- Bottom ~28%: deco + hanja 50/50 + user info -->
+                            <div style="height:28%;display:flex;flex-direction:column;justify-content:space-between;padding:0 0 10px;">
+                                <!-- Deco line -->
+                                <div style="display:flex;align-items:center;gap:6px;padding:0 16px;">
+                                    <div style="height:1px;flex:1;background:#c9a84c;opacity:0.2;"></div>
+                                    <svg width="40" height="14" viewBox="0 0 40 14" id="deco-svg-2">
+                                        <line x1="0" y1="7" x2="13" y2="7" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
+                                        <circle cx="20" cy="7" r="3.5" fill="none" stroke="#c9a84c" stroke-width="0.8" opacity="0.7"/>
+                                        <circle cx="20" cy="7" r="1.2" fill="#c9a84c" opacity="0.6"/>
+                                        <line x1="27" y1="7" x2="40" y2="7" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
                                     </svg>
-                                    <div style="height:1px;flex:1;background:#c9a84c;opacity:0.25;"></div>
+                                    <div style="height:1px;flex:1;background:#c9a84c;opacity:0.2;"></div>
                                 </div>
-                                <!-- Hanja two chars -->
-                                <div id="hanja-section" style="display:flex;align-items:flex-start;justify-content:center;gap:20px;">
-                                    <div id="hanja-left" style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+                                <!-- Hanja 50/50 strict split -->
+                                <div id="hanja-section" style="display:flex;width:100%;">
+                                    <div id="hanja-left" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border-right:1px solid rgba(201,168,76,0.15);">
                                         <p id="pc-hanja-1" class="kf" style="margin:0;font-size:26px;font-weight:700;color:#c9a84c;line-height:1;"></p>
-                                        <div style="width:1px;height:8px;background:#c9a84c;opacity:0.35;"></div>
-                                        <p id="pc-meaning-1" style="margin:0;font-size:6px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#c9a84c;opacity:0.75;"></p>
+                                        <div style="width:1px;height:7px;background:#c9a84c;opacity:0.3;"></div>
+                                        <p id="pc-meaning-1" style="margin:0;font-size:5.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#c9a84c;opacity:0.7;text-align:center;padding:0 4px;"></p>
                                     </div>
-                                    <div id="hanja-divider" style="width:1px;height:44px;background:#c9a84c;opacity:0.18;margin-top:2px;"></div>
-                                    <div id="hanja-right" style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+                                    <div id="hanja-right" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;">
                                         <p id="pc-hanja-2" class="kf" style="margin:0;font-size:26px;font-weight:700;color:#c9a84c;line-height:1;"></p>
-                                        <div style="width:1px;height:8px;background:#c9a84c;opacity:0.35;"></div>
-                                        <p id="pc-meaning-2" style="margin:0;font-size:6px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#c9a84c;opacity:0.75;"></p>
+                                        <div style="width:1px;height:7px;background:#c9a84c;opacity:0.3;"></div>
+                                        <p id="pc-meaning-2" style="margin:0;font-size:5.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#c9a84c;opacity:0.7;text-align:center;padding:0 4px;"></p>
                                     </div>
                                 </div>
                                 <!-- User info -->
-                                <p id="pc-user-info" style="margin:0;font-size:6px;letter-spacing:0.1em;color:#ffffff25;text-align:center;"></p>
+                                <p id="pc-user-info" style="margin:0;font-size:5.5px;letter-spacing:0.1em;color:#ffffff22;text-align:center;"></p>
                             </div>
                         </div>
 
@@ -383,6 +387,8 @@ function applyTheme(style){
     document.getElementById('pc-brand').style.color=t.accentclr;
     document.getElementById('pc-num').style.color=t.accentclr;
     document.getElementById('pc-kname').style.color=t.nameclr;
+    const engName=document.getElementById('pc-eng-name');
+    if(engName)engName.style.color=t.accentclr;
     // SVG decos
     ['deco-svg-1','deco-svg-2'].forEach(id=>{
         const svg=document.getElementById(id);
@@ -579,6 +585,9 @@ async function generateName(){
         // Front card
         document.getElementById('pc-kname').textContent=koreanName;
         document.getElementById('pc-user-info').textContent=name+' · '+gender+' · '+vibe;
+        // English name at top
+        const engNameEl=document.getElementById('pc-eng-name');
+        if(engNameEl)engNameEl.textContent=name.toUpperCase();
 
         // Parse hanja chars and meanings from meaning string
         // meaning format: "建 (Establish) · 宇 (Universe)"

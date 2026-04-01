@@ -246,22 +246,22 @@ Line 3: Poetic explanation in 2-3 sentences in {target_lang}
     if clean_lines:
         style_prompt_map = {
             "sound": (
-                f"Korean traditional minhwa painting style portrait of a {gender}. "
-                f"Soft watercolor aesthetic, {vibe} expression, traditional hanbok clothing, "
-                f"delicate floral background with cherry blossoms and lotus flowers, "
-                f"gentle pastel color palette, elegant brushwork, no text, centered composition."
+                f"Portrait illustration of a modern Korean {gender}, "
+                f"wearing a stylish fusion of contemporary fashion with subtle traditional Korean hanbok elements. "
+                f"{vibe} expression and atmosphere. Soft watercolor background with delicate cherry blossoms. "
+                f"Clean, elegant, K-pop idol aesthetic meets traditional beauty. No text. Centered portrait."
             ),
             "meaning": (
-                f"Korean ink wash painting style portrait of a {gender}. "
-                f"Sumi-e brush technique, {vibe} mood, traditional scholar or noble attire, "
-                f"bamboo and moon background, minimalist black and gold tones, "
-                f"poetic and serene atmosphere, no text, centered composition."
+                f"Portrait illustration of a modern Korean {gender}, "
+                f"wearing refined contemporary Korean fashion with traditional hanbok-inspired details. "
+                f"{vibe} mood. Soft floral background with lotus and plum blossoms in pastel tones. "
+                f"Sophisticated, editorial, timeless Korean beauty. No text. Centered portrait."
             ),
             "kdrama": (
-                f"Korean traditional painting meets modern illustration, portrait of a {gender}. "
-                f"{vibe} vibe, fusion of hanbok and contemporary fashion, "
-                f"background with Korean palace architecture and cherry blossoms, "
-                f"vibrant jewel tones, cinematic lighting, ultra detailed, no text."
+                f"Portrait illustration of a modern Korean {gender} in K-drama lead role style. "
+                f"Wearing elegant contemporary outfit with subtle traditional Korean aesthetic accents. "
+                f"{vibe} vibe. Cinematic lighting, cherry blossom background, soft warm tones. "
+                f"Think modern Korean drama lead — beautiful, charismatic, stylish. No text. Centered portrait."
             ),
         }
         dalle_prompt = style_prompt_map.get(style, style_prompt_map["kdrama"])
