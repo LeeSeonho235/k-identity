@@ -76,6 +76,11 @@ Allow: /
 Sitemap: https://www.knamegenerator.com/sitemap.xml"""
     return Response(content=content, media_type="text/plain")
 
+@app.get("/ads.txt")
+async def ads_txt():
+    content = "google.com, pub-4002075177790525, DIRECT, f08c47fec0942fa0"
+    return Response(content=content, media_type="text/plain")
+
 
 # ---------- Config API (환경변수를 프론트로 전달) ----------
 
