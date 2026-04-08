@@ -209,37 +209,23 @@ async def generate_k_identity(
 You are a professional Korean name consultant helping foreigners get a beautiful, authentic Korean name.
 
 Task: Suggest ONE Korean name for a {gender} named "{english_name}" with a "{vibe}" vibe.
-Naming strategy: {strategy}
 
 CRITICAL NAMING RULES:
-- The name MUST sound like a real Korean person's name that Koreans actually use
-- NEVER simply transliterate the foreign name phonetically (e.g. Judy→주디, Mike→마이크 is FORBIDDEN)
-- Choose a name that a real Korean parent would give their child
-- The name should be 2-3 syllables, feel natural in Korean
+- The name MUST sound like a real Korean person's name that Koreans actually use today
+- NEVER phonetically transliterate: Judy→주디, Mike→마이크, Sally→샐리 are ALL FORBIDDEN
+- Choose a name a real Korean parent would proudly give their child
+- 2-3 syllables, naturally Korean-sounding
 
-NAME TYPE - Choose ONE based on the name:
-TYPE A - Hanja name (most common): Use meaningful Chinese characters
-  Format: 한글이름(漢字漢字)
-  Example: 민준(旻俊) or 서연(瑞妍)
+NAME TYPE - choose whichever fits better:
+TYPE A - Hanja name: 민준(旻俊) or 서연(瑞妍)
+TYPE B - Pure Korean (순우리말): 하늘[PURE] or 빛나[PURE]
 
-TYPE B - Pure Korean name (순우리말): Use if it fits the vibe better
-  No Hanja exists for these - use [PURE] marker
-  Format: 한글이름[PURE]
-  Example: 하늘[PURE] or 빛나[PURE]
+OUTPUT FORMAT - EXACTLY 3 lines, NO labels, NO numbers, NO extra text:
+Line 1: Korean name with Hanja OR [PURE] marker
+Line 2: For Hanja → 漢 (meaning) · 字 (meaning) | For Pure → [PURE] one-line meaning
+Line 3: Poetic 2-3 sentence description in {target_lang}. Do NOT mention their original name.
 
-OUTPUT FORMAT - EXACTLY 3 lines, NO labels, NO numbers:
-
-Line 1: The Korean name with Hanja in parentheses OR [PURE] marker
-Line 2: 
-  - For Hanja names: Each character and its meaning in {target_lang}, format exactly: 漢 (meaning) · 字 (meaning)
-  - For Pure Korean: The meaning in {target_lang}, format exactly: [PURE] meaning of the name
-Line 3: Poetic explanation in 2-3 sentences in {target_lang}. Do NOT mention the foreign person's original name.
-
-IMPORTANT FOR LINE 2:
-- Use ONLY the format shown above
-- Do NOT add extra words, descriptions, or alternate meanings
-- Each Hanja gets exactly ONE short meaning word, not a phrase
-- Maximum 2 Hanja characters shown
+LINE 2 RULES: ONE short word per Hanja, max 2 characters, no phrases.
 """
 
     try:
@@ -271,13 +257,9 @@ IMPORTANT FOR LINE 2:
     if "[PURE]" in k_name_raw:
         is_pure_korean = True
         k_name_raw = k_name_raw.replace("[PURE]", "").strip()
-        # meaning_raw already has [PURE] prefix from prompt, clean it
         meaning_raw = meaning_raw.replace("[PURE]", "").strip()
 
-    # ── Enforce clean meaning format ──
-    # Remove any garbage that doesn't match Hanja (char) · pattern
     if not is_pure_korean:
-        # Keep only pattern: X (word) · Y (word)
         hanja_pattern = re.compile(
             r'([\u4e00-\u9fff])\s*[（(]([^)）·\n]{1,20})[)）]\s*·?\s*'
             r'([\u4e00-\u9fff])?\s*[（(]?([^)）·\n]{0,20})[)）]?'
@@ -291,30 +273,19 @@ IMPORTANT FOR LINE 2:
             else:
                 meaning_raw = f"{h1} ({m1})"
 
-
+    # ── Single unified DALL-E prompt - always Korean/East Asian ──
     image_url = ""
     if clean_lines:
-        style_prompt_map = {
-            "sound": (
-                f"Portrait illustration of a modern Korean {gender}, "
-                f"wearing a stylish fusion of contemporary fashion with subtle traditional Korean hanbok elements. "
-                f"{vibe} expression and atmosphere. Soft watercolor background with delicate cherry blossoms. "
-                f"Clean, elegant, K-pop idol aesthetic meets traditional beauty. No text. Centered portrait."
-            ),
-            "meaning": (
-                f"Portrait illustration of a modern Korean {gender}, "
-                f"wearing refined contemporary Korean fashion with traditional hanbok-inspired details. "
-                f"{vibe} mood. Soft floral background with lotus and plum blossoms in pastel tones. "
-                f"Sophisticated, editorial, timeless Korean beauty. No text. Centered portrait."
-            ),
-            "kdrama": (
-                f"Portrait illustration of a modern Korean {gender} in K-drama lead role style. "
-                f"Wearing elegant contemporary outfit with subtle traditional Korean aesthetic accents. "
-                f"{vibe} vibe. Cinematic lighting, cherry blossom background, soft warm tones. "
-                f"Think modern Korean drama lead — beautiful, charismatic, stylish. No text. Centered portrait."
-            ),
-        }
-        dalle_prompt = style_prompt_map.get(style, style_prompt_map["kdrama"])
+        dalle_prompt = (
+            f"Watercolor illustration portrait of a Korean {gender}. "
+            f"CRITICAL: The subject MUST have East Asian features — Korean facial structure, "
+            f"monolid or natural double eyelid eyes, straight dark hair, fair smooth skin. "
+            f"Style: elegant Korean beauty, similar to Korean webtoon or manhwa illustration. "
+            f"Wearing traditional Korean hanbok with soft floral patterns. "
+            f"Background: soft pastel watercolor with cherry blossoms and gentle ink wash. "
+            f"Mood: {vibe}. Centered portrait composition. NO text in image. "
+            f"The portrait must look unmistakably Korean, like a character from a Korean historical drama."
+        )
         try:
             img_response = openai_client.images.generate(
                 model="dall-e-3",

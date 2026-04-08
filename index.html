@@ -91,13 +91,7 @@
                 </div>
             </div>
             <div>
-                <p id="txt-style-label" class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Choose Style</p>
-                <div class="flex gap-1.5 bg-slate-100 p-1.5 rounded-2xl">
-                    <button id="strat-sound" onclick="setStrategy('sound')" class="flex-1 text-xs font-bold py-2.5 rounded-xl bg-white shadow text-indigo-600 transition-all">🔤 <span id="txt-strat-sound">Sound</span></button>
-                    <button id="strat-meaning" onclick="setStrategy('meaning')" class="flex-1 text-xs font-bold py-2.5 rounded-xl text-slate-500 transition-all">💎 <span id="txt-strat-meaning">Meaning</span></button>
-                    <button id="strat-kdrama" onclick="setStrategy('kdrama')" class="flex-1 text-xs font-bold py-2.5 rounded-xl text-slate-500 transition-all">🎬 <span id="txt-strat-kdrama">K-Drama</span></button>
-                </div>
-                <p id="strategy-desc" class="text-xs text-slate-400 mt-2 ml-1"></p>
+                <p class="text-xs text-slate-400 ml-1">✨ AI will find your perfect Korean name based on vibe & gender</p>
             </div>
             <button id="generate-btn" onclick="generateName()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-5 rounded-2xl shadow-lg shadow-indigo-100 transition-all text-lg">
                 <span id="txt-generate-btn">Find My Name ✨</span>
@@ -164,15 +158,13 @@
 
         <!-- RESULT -->
         <div id="result-section" style="display:none;" class="mt-6 fade-in">
-            <div class="flex justify-center mb-2">
-                <div class="photocard" onclick="flipCard()" id="photocard-wrapper">
+            <div class="flex justify-center mb-3">
+                <div class="photocard" onclick="toggleCard()" id="photocard-wrapper" style="cursor:pointer;">
                     <div class="photocard-inner" id="photocard-inner">
 
                         <!-- ===== FRONT ===== -->
                         <div class="pc-front" id="pc-front" style="background:#0a0a1a;border:1.5px solid #c9a84c;">
                             <div id="front-topbar" style="height:2px;background:#c9a84c;opacity:0.7;"></div>
-
-                            <!-- Top ~30%: brand + English name -->
                             <div style="height:30%;display:flex;flex-direction:column;justify-content:space-between;padding:10px 16px 8px;">
                                 <div style="display:flex;justify-content:space-between;align-items:center;">
                                     <p id="pc-brand" style="margin:0;font-size:7px;font-weight:700;letter-spacing:0.35em;color:#c9a84c;">K·NAME</p>
@@ -181,38 +173,21 @@
                                 <div style="text-align:center;">
                                     <p id="pc-eng-name" style="margin:0;font-size:20px;font-weight:800;letter-spacing:0.35em;text-transform:uppercase;color:#c9a84c;opacity:0.9;"></p>
                                 </div>
-                                <!-- Deco line -->
                                 <div style="display:flex;align-items:center;gap:6px;">
                                     <div style="height:1px;flex:1;background:#c9a84c;opacity:0.2;"></div>
-                                    <svg width="40" height="14" viewBox="0 0 40 14" id="deco-svg-1">
-                                        <line x1="0" y1="7" x2="13" y2="7" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
-                                        <circle cx="20" cy="7" r="3.5" fill="none" stroke="#c9a84c" stroke-width="0.8" opacity="0.7"/>
-                                        <circle cx="20" cy="7" r="1.2" fill="#c9a84c" opacity="0.6"/>
-                                        <line x1="27" y1="7" x2="40" y2="7" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
-                                    </svg>
+                                    <svg width="40" height="14" viewBox="0 0 40 14" id="deco-svg-1"><line x1="0" y1="7" x2="13" y2="7" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/><circle cx="20" cy="7" r="3.5" fill="none" stroke="#c9a84c" stroke-width="0.8" opacity="0.7"/><circle cx="20" cy="7" r="1.2" fill="#c9a84c" opacity="0.6"/><line x1="27" y1="7" x2="40" y2="7" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/></svg>
                                     <div style="height:1px;flex:1;background:#c9a84c;opacity:0.2;"></div>
                                 </div>
                             </div>
-
-                            <!-- Middle ~42%: Korean name big -->
                             <div style="height:42%;display:flex;align-items:center;justify-content:center;">
                                 <p id="pc-kname" class="kf" style="margin:0;font-size:76px;font-weight:700;letter-spacing:0.04em;line-height:1;color:#fff;text-align:center;"></p>
                             </div>
-
-                            <!-- Bottom ~28%: deco + hanja 50/50 + user info -->
                             <div style="height:28%;display:flex;flex-direction:column;justify-content:space-between;padding:0 0 10px;">
-                                <!-- Deco line -->
                                 <div style="display:flex;align-items:center;gap:6px;padding:0 16px;">
                                     <div style="height:1px;flex:1;background:#c9a84c;opacity:0.2;"></div>
-                                    <svg width="40" height="14" viewBox="0 0 40 14" id="deco-svg-2">
-                                        <line x1="0" y1="7" x2="13" y2="7" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
-                                        <circle cx="20" cy="7" r="3.5" fill="none" stroke="#c9a84c" stroke-width="0.8" opacity="0.7"/>
-                                        <circle cx="20" cy="7" r="1.2" fill="#c9a84c" opacity="0.6"/>
-                                        <line x1="27" y1="7" x2="40" y2="7" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
-                                    </svg>
+                                    <svg width="40" height="14" viewBox="0 0 40 14" id="deco-svg-2"><line x1="0" y1="7" x2="13" y2="7" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/><circle cx="20" cy="7" r="3.5" fill="none" stroke="#c9a84c" stroke-width="0.8" opacity="0.7"/><circle cx="20" cy="7" r="1.2" fill="#c9a84c" opacity="0.6"/><line x1="27" y1="7" x2="40" y2="7" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/></svg>
                                     <div style="height:1px;flex:1;background:#c9a84c;opacity:0.2;"></div>
                                 </div>
-                                <!-- Hanja 50/50 strict split -->
                                 <div id="hanja-section" style="display:flex;width:100%;">
                                     <div id="hanja-left" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border-right:1px solid rgba(201,168,76,0.15);">
                                         <p id="pc-hanja-1" class="kf" style="margin:0;font-size:26px;font-weight:700;color:#c9a84c;line-height:1;"></p>
@@ -225,21 +200,18 @@
                                         <p id="pc-meaning-2" style="margin:0;font-size:5.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#c9a84c;opacity:0.7;text-align:center;padding:0 4px;"></p>
                                     </div>
                                 </div>
-                                <!-- User info -->
                                 <p id="pc-user-info" style="margin:0;font-size:5.5px;letter-spacing:0.1em;color:#ffffff22;text-align:center;"></p>
                             </div>
                         </div>
 
                         <!-- ===== BACK ===== -->
                         <div class="pc-back" id="pc-back" style="background:#0a0a1a;border:1.5px solid #c9a84c;display:flex;flex-direction:column;">
-                            <!-- AI portrait: fixed height -->
                             <div id="pc-back-img-area" style="height:200px;overflow:hidden;position:relative;background:#1a1a3e;flex-shrink:0;">
                                 <div id="back-loading" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
                                     <div style="width:40px;height:40px;border:3px solid #c9a84c;border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite;"></div>
                                 </div>
                                 <img id="pc-back-img" style="display:none;width:100%;height:100%;object-fit:cover;object-position:top;" crossorigin="anonymous" alt="Korean portrait">
                             </div>
-                            <!-- Back footer: takes remaining space, content centered -->
                             <div id="pc-back-footer" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:16px;text-align:center;background:#0a0a1a;border-top:1px solid rgba(201,168,76,0.3);">
                                 <p id="pc-kname-back" class="kf" style="margin:0;font-size:24px;font-weight:700;color:#fff;"></p>
                                 <p id="pc-meaning-back" style="margin:0;font-size:8px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#c9a84c;"></p>
@@ -248,7 +220,14 @@
                     </div>
                 </div>
             </div>
-            <p id="txt-tap-hint" class="text-center text-[10px] text-slate-400 font-medium mb-4">Tap card to flip</p>
+
+            <!-- TAP HINT - big and animated -->
+            <div class="flex justify-center mb-4">
+                <div id="tap-hint-box" class="flex items-center gap-2 bg-slate-800 text-white px-5 py-2.5 rounded-full shadow-md" style="animation:pulse 2s infinite;">
+                    <span style="font-size:18px;">👆</span>
+                    <p id="tap-hint-text" class="text-sm font-bold tracking-wide" style="margin:0;">Tap card · See Name Card</p>
+                </div>
+            </div>
 
             <!-- Explanation -->
             <p id="k-explain" class="text-sm text-slate-500 text-center leading-relaxed px-2 mb-5"></p>
@@ -432,10 +411,23 @@ function selectCardStyle(style){
 }
 
 // FLIP
-function flipCard(){
-    isFlipped=!isFlipped;
-    document.getElementById('photocard-inner').classList.toggle('flipped',isFlipped);
+// CARD TOGGLE
+function toggleCard(){
+    if(isFlipped) showBack(); else showFront();
 }
+function showFront(){
+    isFlipped=true;
+    document.getElementById('photocard-inner').classList.add('flipped');
+    const h=document.getElementById('tap-hint-text');
+    if(h)h.textContent='Tap card · See Portrait';
+}
+function showBack(){
+    isFlipped=false;
+    document.getElementById('photocard-inner').classList.remove('flipped');
+    const h=document.getElementById('tap-hint-text');
+    if(h)h.textContent='Tap card · See Name Card';
+}
+function flipCard(){ toggleCard(); } // legacy alias
 
 // MODALS
 function showModal(id){const m=document.getElementById(id);m.style.display='flex';m.style.pointerEvents='auto';}
@@ -470,7 +462,8 @@ function skipAd(){
 
 // DOWNLOAD
 function handleDownload(){
-    if(userPlan)actualDownload();
+    const hasPlan=userPlan==='annual'||userPlan==='month'||userPlan==='week';
+    if(hasPlan)actualDownload();
     else if(!currentUser)openLoginModal();
     else showModal('download-modal');
 }
@@ -486,38 +479,52 @@ async function proceedDownloadPayment(){
 }
 async function actualDownload(){
     const btn=document.getElementById('download-btn'),orig=btn.innerHTML;
-    btn.innerHTML='Generating...';btn.disabled=true;
+    btn.innerHTML='Saving...';btn.disabled=true;
     try{
-        const sourceEl=isFlipped?document.getElementById('pc-back'):document.getElementById('pc-front');
-        // Clone to avoid 3D transform issues
-        const clone=sourceEl.cloneNode(true);
-        clone.style.cssText=`
-            position:fixed;top:-9999px;left:-9999px;
-            width:240px;height:360px;border-radius:20px;
-            overflow:hidden;transform:none;backface-visibility:visible;
-            -webkit-backface-visibility:visible;
-        `;
-        document.body.appendChild(clone);
-        await new Promise(r=>setTimeout(r,80));
-        const canvas=await html2canvas(clone,{scale:3,useCORS:true,backgroundColor:null,logging:false});
-        document.body.removeChild(clone);
-        const a=document.createElement('a');
-        a.download='k-name-card-'+Date.now()+'.png';
-        a.href=canvas.toDataURL('image/png');
-        a.click();
-    }catch(e){alert('Download failed. Try screenshotting manually.');}
+        const W=240,H=360;
+        async function capture(el,fname){
+            const wrap=document.createElement('div');
+            wrap.style.cssText=`position:fixed;left:-9999px;top:0;width:${W}px;height:${H}px;overflow:hidden;border-radius:20px;`;
+            const cl=el.cloneNode(true);
+            cl.style.cssText=`width:${W}px;height:${H}px;min-width:${W}px;min-height:${H}px;max-width:${W}px;max-height:${H}px;overflow:hidden;border-radius:20px;display:flex;flex-direction:column;transform:none;opacity:1;`;
+            wrap.appendChild(cl);
+            document.body.appendChild(wrap);
+            await new Promise(r=>setTimeout(r,150));
+            const c=await html2canvas(wrap,{scale:3,useCORS:true,backgroundColor:null,logging:false,width:W,height:H});
+            document.body.removeChild(wrap);
+            const a=document.createElement('a');
+            a.download=fname+'-'+Date.now()+'.png';
+            a.href=c.toDataURL('image/png');
+            a.click();
+        }
+        // Save portrait (back) first, then name card (front)
+        await capture(document.getElementById('pc-back'),'k-portrait');
+        await new Promise(r=>setTimeout(r,400));
+        await capture(document.getElementById('pc-front'),'k-namecard');
+    }catch(e){alert('Download failed.');}
     btn.innerHTML=orig;btn.disabled=false;
 }
 
 // PLAN
-async function fetchUserPlan(email){try{const r=await fetch('/api/my-plan?email='+encodeURIComponent(email));const d=await r.json();return d.plan||null;}catch{return null;}}
+async function fetchUserPlan(email){
+    try{
+        const r=await fetch('/api/my-plan?email='+encodeURIComponent(email));
+        const d=await r.json();
+        return d.plan||null;
+    }catch{return null;}
+}
 function getGuestCredits(){return Math.max(0,FREE_LIMIT-parseInt(localStorage.getItem('k_used')||'0'));}
 function updateCreditsDisplay(){
     const el=document.getElementById('credits-display');
     const t=i18n[localStorage.getItem('web_lang')||'en']||i18n.en;
-    if(userPlan==='annual'||userPlan==='month'){el.textContent=t.unlimited;el.style.color='#10b981';}
-    else if(userPlan==='week'){el.textContent=t.weekActive;el.style.color='#6366f1';}
-    else{const c=getGuestCredits();el.textContent=t.credits.replace('{n}',c);el.style.color=c===0?'#f87171':'#94a3b8';}
+    if(userPlan==='annual'||userPlan==='month'||userPlan==='week'){
+        el.textContent=userPlan==='week'?t.weekActive:t.unlimited;
+        el.style.color=userPlan==='week'?'#6366f1':'#10b981';
+    }else{
+        const c=getGuestCredits();
+        el.textContent=t.credits.replace('{n}',c);
+        el.style.color=c===0?'#f87171':'#94a3b8';
+    }
 }
 function updateAuthUI(){
     const show=id=>{const el=document.getElementById(id);if(el)el.style.display='flex';};
@@ -549,7 +556,8 @@ function setStrategy(s){
 async function generateName(){
     const name=document.getElementById('name-input').value.trim();
     if(!name){const inp=document.getElementById('name-input');inp.classList.add('border-red-400');inp.focus();setTimeout(()=>inp.classList.remove('border-red-400'),1500);return;}
-    if(!userPlan){
+    const hasPlan = userPlan === 'annual' || userPlan === 'month' || userPlan === 'week';
+    if(!hasPlan){
         const c=getGuestCredits();
         if(c<=0){if(currentUser)showModal('no-credits-modal');else openLoginModal();return;}
         localStorage.setItem('k_used',parseInt(localStorage.getItem('k_used')||'0')+1);
@@ -571,7 +579,7 @@ async function generateName(){
     const btn=document.getElementById('generate-btn');btn.disabled=true;btn.style.opacity='0.6';
 
     try{
-        const params=new URLSearchParams({english_name:name,vibe,gender,lang,strategy:stratMap[currentStrategy],style:currentStrategy});
+        const params=new URLSearchParams({english_name:name,vibe,gender,lang,strategy:'K-drama lead character naming style — beautiful, meaningful, and naturally Korean',style:'kdrama'});
         const res=await fetch('/api/generate-k-identity?'+params);
         const data=await res.json();
 
@@ -635,6 +643,12 @@ async function generateName(){
         document.getElementById('loading-section').style.display='none';
         document.getElementById('result-section').style.display='block';
         updateAuthUI();
+        // 시작은 Portrait(뒷면), 1초 후 Name Card로 뒤집고, 1.8초 후 다시 Portrait으로
+        showBack();
+        setTimeout(()=>{
+            showFront();
+            setTimeout(()=>{ showBack(); }, 1800);
+        }, 1000);
     }catch(e){document.getElementById('loading-section').style.display='none';alert('Something went wrong.');}
     btn.disabled=false;btn.style.opacity='1';
 }
