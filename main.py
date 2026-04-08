@@ -296,25 +296,22 @@ IMPORTANT FOR LINE 2:
     if clean_lines:
         style_prompt_map = {
             "sound": (
-                f"Portrait illustration of a modern Korean {gender} with East Asian facial features, "
-                f"Korean beauty standards, monolid or double eyelid eyes, straight black or dark brown hair. "
-                f"Wearing stylish Korean contemporary fashion with subtle hanbok-inspired elements. "
-                f"{vibe} expression. Soft watercolor background with cherry blossoms. "
-                f"K-pop idol aesthetic. No text. Centered portrait. The subject must look distinctly East Asian Korean."
+                f"Portrait illustration of a modern Korean {gender}, "
+                f"wearing a stylish fusion of contemporary fashion with subtle traditional Korean hanbok elements. "
+                f"{vibe} expression and atmosphere. Soft watercolor background with delicate cherry blossoms. "
+                f"Clean, elegant, K-pop idol aesthetic meets traditional beauty. No text. Centered portrait."
             ),
             "meaning": (
-                f"Portrait illustration of a modern Korean {gender} with East Asian facial features, "
-                f"Korean beauty standards, elegant almond-shaped eyes, smooth skin, dark hair styled beautifully. "
-                f"Wearing refined Korean fashion with hanbok-inspired details. "
+                f"Portrait illustration of a modern Korean {gender}, "
+                f"wearing refined contemporary Korean fashion with traditional hanbok-inspired details. "
                 f"{vibe} mood. Soft floral background with lotus and plum blossoms in pastel tones. "
-                f"Timeless Korean beauty. No text. Centered portrait. The subject must look distinctly East Asian Korean."
+                f"Sophisticated, editorial, timeless Korean beauty. No text. Centered portrait."
             ),
             "kdrama": (
-                f"Portrait illustration of a Korean {gender} K-drama lead with East Asian facial features, "
-                f"Korean idol visual standard, defined jawline, expressive Korean eyes, dark lustrous hair. "
-                f"Wearing elegant outfit with subtle Korean aesthetic. "
-                f"{vibe} vibe. Cinematic cherry blossom background, soft warm tones. "
-                f"The subject must look like a real Korean actor or actress — distinctly East Asian. No text. Centered portrait."
+                f"Portrait illustration of a modern Korean {gender} in K-drama lead role style. "
+                f"Wearing elegant contemporary outfit with subtle traditional Korean aesthetic accents. "
+                f"{vibe} vibe. Cinematic lighting, cherry blossom background, soft warm tones. "
+                f"Think modern Korean drama lead — beautiful, charismatic, stylish. No text. Centered portrait."
             ),
         }
         dalle_prompt = style_prompt_map.get(style, style_prompt_map["kdrama"])

@@ -20,12 +20,11 @@
         select { -webkit-appearance:none; appearance:none; }
 
         /* CARD */
-        .photocard { width:240px; height:360px; border-radius:20px; overflow:hidden; position:relative; flex-shrink:0; }
-        .pc-front, .pc-back { position:absolute; top:0; left:0; width:100%; height:100%; border-radius:20px; overflow:hidden; transition:opacity 0.3s; }
-        .pc-front { opacity:0; pointer-events:none; }
-        .pc-back { opacity:1; }
-        .photocard.show-front .pc-front { opacity:1; pointer-events:auto; }
-        .photocard.show-front .pc-back { opacity:0; }
+        .photocard { width:240px; height:360px; border-radius:20px; overflow:hidden; position:relative; flex-shrink:0; cursor:pointer; transform-style:preserve-3d; }
+        .photocard-inner { width:100%; height:100%; position:relative; transition:transform 0.65s cubic-bezier(0.4,0.2,0.2,1); transform-style:preserve-3d; }
+        .photocard-inner.flipped { transform:rotateY(180deg); }
+        .pc-front, .pc-back { position:absolute; width:100%; height:100%; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:20px; overflow:hidden; }
+        .pc-back { transform:rotateY(180deg); }
         .style-pill { cursor:pointer; transition:all 0.15s; border-width:1.5px; border-style:solid; }
         .style-pill.active { transform:scale(1.06); font-weight:800; }
     </style>
@@ -165,9 +164,12 @@
 
         <!-- RESULT -->
         <div id="result-section" style="display:none;" class="mt-6 fade-in">
-            <div class="flex justify-center mb-3">
-                <div class="photocard" id="photocard-wrapper" onclick="toggleCard()" style="cursor:pointer;">
-                    <div id="pc-front" style="background:#0a0a1a;border:1.5px solid #c9a84c;display:flex;flex-direction:column;">
+            <div class="flex justify-center mb-2">
+                <div class="photocard" onclick="flipCard()" id="photocard-wrapper">
+                    <div class="photocard-inner" id="photocard-inner">
+
+                        <!-- ===== FRONT ===== -->
+                        <div class="pc-front" id="pc-front" style="background:#0a0a1a;border:1.5px solid #c9a84c;">
                             <div id="front-topbar" style="height:2px;background:#c9a84c;opacity:0.7;"></div>
 
                             <!-- Top ~30%: brand + English name -->
@@ -246,17 +248,10 @@
                     </div>
                 </div>
             </div>
-            <!-- Tap hint - big and visible -->
-            <p class="text-center text-sm font-bold text-slate-400 mb-3" id="tap-hint-text">👆 Tap card to see Name Card</p>
+            <p id="txt-tap-hint" class="text-center text-[10px] text-slate-400 font-medium mb-4">Tap card to flip</p>
 
-            <!-- Front/Back switch tabs -->
-            <div class="flex gap-2 justify-center mb-4">
-                <button onclick="showBack()" id="tab-back" class="text-[11px] font-bold px-4 py-1.5 rounded-full bg-slate-800 text-white transition-all">🖼 Portrait</button>
-                <button onclick="showFront()" id="tab-front" class="text-[11px] font-bold px-4 py-1.5 rounded-full bg-slate-100 text-slate-500 transition-all">📋 Name Card</button>
-            </div>
-
-            <!-- Explanation - bigger -->
-            <p id="k-explain" class="text-base text-slate-600 text-center leading-relaxed px-2 mb-5 font-medium"></p>
+            <!-- Explanation -->
+            <p id="k-explain" class="text-sm text-slate-500 text-center leading-relaxed px-2 mb-5"></p>
 
             <!-- Style pills -->
             <div class="flex gap-1.5 justify-center flex-wrap mb-4">
@@ -436,25 +431,10 @@ function selectCardStyle(style){
     applyTheme(style);
 }
 
-// CARD VIEW TOGGLE
-function toggleCard(){
-    if(isFlipped) showBack(); else showFront();
-}
-function showBack(){
-    isFlipped=false;
-    document.getElementById('photocard-wrapper').classList.remove('show-front');
-    document.getElementById('tab-back').className='text-[11px] font-bold px-4 py-1.5 rounded-full bg-slate-800 text-white transition-all';
-    document.getElementById('tab-front').className='text-[11px] font-bold px-4 py-1.5 rounded-full bg-slate-100 text-slate-500 transition-all';
-    const hint=document.getElementById('tap-hint-text');
-    if(hint)hint.textContent='👆 Tap card to see Name Card';
-}
-function showFront(){
-    isFlipped=true;
-    document.getElementById('photocard-wrapper').classList.add('show-front');
-    document.getElementById('tab-front').className='text-[11px] font-bold px-4 py-1.5 rounded-full bg-slate-800 text-white transition-all';
-    document.getElementById('tab-back').className='text-[11px] font-bold px-4 py-1.5 rounded-full bg-slate-100 text-slate-500 transition-all';
-    const hint=document.getElementById('tap-hint-text');
-    if(hint)hint.textContent='👆 Tap card to see Portrait';
+// FLIP
+function flipCard(){
+    isFlipped=!isFlipped;
+    document.getElementById('photocard-inner').classList.toggle('flipped',isFlipped);
 }
 
 // MODALS
@@ -508,48 +488,23 @@ async function actualDownload(){
     const btn=document.getElementById('download-btn'),orig=btn.innerHTML;
     btn.innerHTML='Generating...';btn.disabled=true;
     try{
-        const CARD_W=240, CARD_H=360;
-
-        async function captureCard(sourceEl, filename){
-            const wrapper=document.createElement('div');
-            wrapper.style.cssText=`
-                position:fixed;top:-9999px;left:0;
-                width:${CARD_W}px;height:${CARD_H}px;
-                overflow:hidden;border-radius:20px;
-                flex-shrink:0;flex-direction:column;
-            `;
-            const clone=sourceEl.cloneNode(true);
-            // Force exact size, remove all transform/opacity overrides
-            clone.style.cssText=`
-                position:static;
-                width:${CARD_W}px;height:${CARD_H}px;
-                min-width:${CARD_W}px;max-width:${CARD_W}px;
-                min-height:${CARD_H}px;max-height:${CARD_H}px;
-                transform:none;opacity:1;pointer-events:none;
-                border-radius:20px;overflow:hidden;
-                display:flex;flex-direction:column;flex-shrink:0;
-            `;
-            wrapper.appendChild(clone);
-            document.body.appendChild(wrapper);
-            await new Promise(r=>setTimeout(r,120));
-            const canvas=await html2canvas(wrapper,{
-                scale:3,useCORS:true,backgroundColor:null,logging:false,
-                width:CARD_W,height:CARD_H,
-            });
-            document.body.removeChild(wrapper);
-            const a=document.createElement('a');
-            a.download=filename+'-'+Date.now()+'.png';
-            a.href=canvas.toDataURL('image/png');
-            a.click();
-        }
-
-        // Always save BOTH front and back
-        const front=document.getElementById('pc-front');
-        const back=document.getElementById('pc-back');
-        await captureCard(back,'k-name-portrait');
-        await new Promise(r=>setTimeout(r,300));
-        await captureCard(front,'k-name-card');
-
+        const sourceEl=isFlipped?document.getElementById('pc-back'):document.getElementById('pc-front');
+        // Clone to avoid 3D transform issues
+        const clone=sourceEl.cloneNode(true);
+        clone.style.cssText=`
+            position:fixed;top:-9999px;left:-9999px;
+            width:240px;height:360px;border-radius:20px;
+            overflow:hidden;transform:none;backface-visibility:visible;
+            -webkit-backface-visibility:visible;
+        `;
+        document.body.appendChild(clone);
+        await new Promise(r=>setTimeout(r,80));
+        const canvas=await html2canvas(clone,{scale:3,useCORS:true,backgroundColor:null,logging:false});
+        document.body.removeChild(clone);
+        const a=document.createElement('a');
+        a.download='k-name-card-'+Date.now()+'.png';
+        a.href=canvas.toDataURL('image/png');
+        a.click();
     }catch(e){alert('Download failed. Try screenshotting manually.');}
     btn.innerHTML=orig;btn.disabled=false;
 }
@@ -608,8 +563,8 @@ async function generateName(){
     document.getElementById('loading-section').style.display='block';
     selectCardStyle(currentCardStyle);
     isFlipped=false;
-    // Reset to back (portrait) view
-    document.getElementById('photocard-wrapper').classList.remove('show-front');
+    document.getElementById('photocard-inner').classList.remove('flipped');
+    // Reset back image
     document.getElementById('pc-back-img').style.display='none';
     document.getElementById('back-loading').style.display='flex';
 
