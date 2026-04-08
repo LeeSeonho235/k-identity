@@ -509,43 +509,47 @@ async function actualDownload(){
     btn.innerHTML='Generating...';btn.disabled=true;
     try{
         const CARD_W=240, CARD_H=360;
-        const sourceEl=isFlipped?document.getElementById('pc-back'):document.getElementById('pc-front');
 
-        // Wrap in a container div so html2canvas clips exactly to card size
-        const wrapper=document.createElement('div');
-        wrapper.style.cssText=`
-            position:fixed;top:-9999px;left:-9999px;
-            width:${CARD_W}px;height:${CARD_H}px;
-            overflow:hidden;border-radius:20px;
-            background:transparent;
-        `;
-        const clone=sourceEl.cloneNode(true);
-        clone.style.cssText=`
-            position:absolute;top:0;left:0;
-            width:${CARD_W}px;height:${CARD_H}px;
-            transform:none;backface-visibility:visible;
-            -webkit-backface-visibility:visible;
-            border-radius:20px;overflow:hidden;
-            display:flex;flex-direction:column;
-        `;
-        wrapper.appendChild(clone);
-        document.body.appendChild(wrapper);
-        await new Promise(r=>setTimeout(r,100));
+        async function captureCard(sourceEl, filename){
+            const wrapper=document.createElement('div');
+            wrapper.style.cssText=`
+                position:fixed;top:-9999px;left:0;
+                width:${CARD_W}px;height:${CARD_H}px;
+                overflow:hidden;border-radius:20px;
+                flex-shrink:0;flex-direction:column;
+            `;
+            const clone=sourceEl.cloneNode(true);
+            // Force exact size, remove all transform/opacity overrides
+            clone.style.cssText=`
+                position:static;
+                width:${CARD_W}px;height:${CARD_H}px;
+                min-width:${CARD_W}px;max-width:${CARD_W}px;
+                min-height:${CARD_H}px;max-height:${CARD_H}px;
+                transform:none;opacity:1;pointer-events:none;
+                border-radius:20px;overflow:hidden;
+                display:flex;flex-direction:column;flex-shrink:0;
+            `;
+            wrapper.appendChild(clone);
+            document.body.appendChild(wrapper);
+            await new Promise(r=>setTimeout(r,120));
+            const canvas=await html2canvas(wrapper,{
+                scale:3,useCORS:true,backgroundColor:null,logging:false,
+                width:CARD_W,height:CARD_H,
+            });
+            document.body.removeChild(wrapper);
+            const a=document.createElement('a');
+            a.download=filename+'-'+Date.now()+'.png';
+            a.href=canvas.toDataURL('image/png');
+            a.click();
+        }
 
-        const canvas=await html2canvas(wrapper,{
-            scale:3,
-            useCORS:true,
-            backgroundColor:null,
-            logging:false,
-            width:CARD_W,
-            height:CARD_H,
-        });
-        document.body.removeChild(wrapper);
+        // Always save BOTH front and back
+        const front=document.getElementById('pc-front');
+        const back=document.getElementById('pc-back');
+        await captureCard(back,'k-name-portrait');
+        await new Promise(r=>setTimeout(r,300));
+        await captureCard(front,'k-name-card');
 
-        const a=document.createElement('a');
-        a.download='k-name-card-'+Date.now()+'.png';
-        a.href=canvas.toDataURL('image/png');
-        a.click();
     }catch(e){alert('Download failed. Try screenshotting manually.');}
     btn.innerHTML=orig;btn.disabled=false;
 }
