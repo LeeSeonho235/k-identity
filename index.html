@@ -10,6 +10,9 @@
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4002075177790525"
+         crossorigin="anonymous"></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
         .kf { font-family: 'Noto Serif KR', serif; }
@@ -244,6 +247,19 @@
                 <span id="txt-download-btn">💾 Download Card · $1</span>
             </button>
         </div>
+    </div>
+
+    <!-- Google AdSense 광고 -->
+    <div class="w-full max-w-xl mb-6">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-4002075177790525"
+             data-ad-slot="9514928949"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>
+             (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
     </div>
 
     <!-- LOGIN MODAL -->
@@ -688,7 +704,7 @@ function applyLang(code){
     document.getElementById('opt-male').textContent=t.optMale;
     document.getElementById('opt-female').textContent=t.optFemale;
     document.getElementById('opt-neutral').textContent=t.optNeutral;
-    document.getElementById('strategy-desc').textContent={sound:t.descSound,meaning:t.descMeaning,kdrama:t.descKdrama}[currentStrategy];
+    document.getElementById('strategy-desc')&&(document.getElementById('strategy-desc').textContent={sound:t.descSound,meaning:t.descMeaning,kdrama:t.descKdrama}[currentStrategy]);
     document.getElementById('lang-menu').classList.add('hidden');
     updateCreditsDisplay();updateAuthUI();
 }
