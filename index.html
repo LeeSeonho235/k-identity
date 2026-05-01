@@ -3,8 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Korean Name Generator - Find Your K-Name ✨</title>
-    <meta name="description" content="Get your perfect Korean name with AI. Includes K-drama portrait and Hanja meaning.">
+
+    <!-- SEO: Title & Description -->
+    <title>Korean Name Generator - Get Your Authentic K-Name with AI ✨</title>
+    <meta name="description" content="Generate your perfect Korean name with AI in seconds. Get a beautiful Hanja meaning, K-drama style portrait, and authentic Korean identity. Free to try — no signup needed.">
+    <meta name="robots" content="index, follow">
+
+    <!-- SEO: Canonical -->
+    <link rel="canonical" href="https://www.knamegenerator.com/" />
+
+    <!-- SEO: Open Graph -->
+    <meta property="og:title" content="Korean Name Generator - Find Your K-Name ✨">
+    <meta property="og:description" content="Get your perfect Korean name with AI. Includes K-drama portrait and Hanja meaning. Free to try!">
+    <meta property="og:url" content="https://www.knamegenerator.com/">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="en_US">
+
+    <!-- SEO: JSON-LD - WebApplication -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Korean Name Generator",
+      "url": "https://www.knamegenerator.com",
+      "description": "AI-powered Korean name generator. Get an authentic Korean name with Hanja meaning and K-drama portrait.",
+      "applicationCategory": "UtilityApplication",
+      "operatingSystem": "Any",
+      "inLanguage": ["en", "ko", "es", "zh", "ja"],
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "description": "Free to try with 3 credits. Unlimited access with paid plans."
+      },
+      "author": { "@type": "Organization", "name": "KNameGenerator" }
+    }
+    </script>
+
+    <!-- SEO: JSON-LD - HowTo -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to Get Your Korean Name",
+      "description": "Generate your authentic Korean name with AI in 3 simple steps.",
+      "totalTime": "PT1M",
+      "estimatedCost": { "@type": "MonetaryAmount", "currency": "USD", "value": "0" },
+      "step": [
+        { "@type": "HowToStep", "position": 1, "name": "Enter Your Name", "text": "Type your English name into the input field. The AI uses it as inspiration — never a transliteration." },
+        { "@type": "HowToStep", "position": 2, "name": "Choose Gender & Vibe", "text": "Select your gender and the vibe you want — Cool, Cute, Elegant, Mysterious, and more." },
+        { "@type": "HowToStep", "position": 3, "name": "Get Your Korean Name", "text": "Click Find My Name and receive your personalized Korean name with Hanja meaning, poetic explanation, and an AI K-drama portrait." }
+      ]
+    }
+    </script>
+
+    <!-- SEO: JSON-LD - FAQ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Is this free to use?", "acceptedAnswer": { "@type": "Answer", "text": "Yes! You get 3 free generations without signing up. Upgrade to a paid plan for unlimited names and downloads." } },
+        { "@type": "Question", "name": "Will my name just be transliterated into Korean?", "acceptedAnswer": { "@type": "Answer", "text": "No. Transliteration (e.g. Mike → 마이크) is explicitly forbidden. You get a name a real Korean parent would proudly give their child." } },
+        { "@type": "Question", "name": "What is Hanja?", "acceptedAnswer": { "@type": "Answer", "text": "Hanja (한자) are Chinese characters used in Korean names. Each carries a specific meaning, like 旻 (sky) or 俊 (talented)." } },
+        { "@type": "Question", "name": "What languages are supported?", "acceptedAnswer": { "@type": "Answer", "text": "English, Korean (한국어), Spanish (Español), Chinese (中文), and Japanese (日本語)." } }
+      ]
+    }
+    </script>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
@@ -21,8 +87,6 @@
         .fade-in { animation:fadeIn 0.5s ease-out; }
         @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
         select { -webkit-appearance:none; appearance:none; }
-
-        /* CARD */
         .photocard { width:240px; height:360px; border-radius:20px; overflow:hidden; position:relative; flex-shrink:0; cursor:pointer; transform-style:preserve-3d; }
         .photocard-inner { width:100%; height:100%; position:relative; transition:transform 0.65s cubic-bezier(0.4,0.2,0.2,1); transform-style:preserve-3d; }
         .photocard-inner.flipped { transform:rotateY(180deg); }
@@ -30,6 +94,7 @@
         .pc-back { transform:rotateY(180deg); }
         .style-pill { cursor:pointer; transition:all 0.15s; border-width:1.5px; border-style:solid; }
         .style-pill.active { transform:scale(1.06); font-weight:800; }
+        details summary::-webkit-details-marker { display: none; }
     </style>
 </head>
 <body class="bg-slate-100 min-h-screen flex flex-col items-center justify-center p-4">
@@ -93,9 +158,7 @@
                     <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" viewBox="0 0 20 20" fill="none" stroke="currentColor"><path d="M5 7l5 6 5-6" stroke-width="2" stroke-linecap="round"/></svg>
                 </div>
             </div>
-            <div>
-                <p class="text-xs text-slate-400 ml-1">✨ AI will find your perfect Korean name based on vibe & gender</p>
-            </div>
+            <p class="text-xs text-slate-400 ml-1">✨ AI will find your perfect Korean name based on vibe & gender</p>
             <button id="generate-btn" onclick="generateName()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-5 rounded-2xl shadow-lg shadow-indigo-100 transition-all text-lg">
                 <span id="txt-generate-btn">Find My Name ✨</span>
             </button>
@@ -113,45 +176,29 @@
                 <div class="grid grid-cols-4 gap-2">
                     <div onclick="selectCardStyle('classic')" id="stylep-classic" class="cursor-pointer flex flex-col items-center gap-1">
                         <div style="width:100%;aspect-ratio:2/3;background:#0a0a1a;border-radius:8px;border:2px solid #c9a84c;display:flex;flex-direction:column;overflow:hidden;">
-                            <div style="flex:1;background:#1a1a3e;display:flex;align-items:center;justify-content:center;">
-                                <p style="margin:0;font-size:16px;font-weight:700;color:#fff;font-family:'Noto Serif KR',serif;">건우</p>
-                            </div>
-                            <div style="padding:3px;background:#0a0a1a;text-align:center;">
-                                <p style="margin:0;font-size:5px;color:#c9a84c;letter-spacing:0.1em;">建·宇</p>
-                            </div>
+                            <div style="flex:1;background:#1a1a3e;display:flex;align-items:center;justify-content:center;"><p style="margin:0;font-size:16px;font-weight:700;color:#fff;font-family:'Noto Serif KR',serif;">건우</p></div>
+                            <div style="padding:3px;background:#0a0a1a;text-align:center;"><p style="margin:0;font-size:5px;color:#c9a84c;letter-spacing:0.1em;">建·宇</p></div>
                         </div>
                         <p id="txt-style-classic" class="text-[9px] font-bold text-amber-600">✦ Classic</p>
                     </div>
                     <div onclick="selectCardStyle('pastel')" id="stylep-pastel" class="cursor-pointer flex flex-col items-center gap-1" style="opacity:0.5;">
                         <div style="width:100%;aspect-ratio:2/3;background:#fff0f5;border-radius:8px;border:2px solid #f4a7c0;display:flex;flex-direction:column;overflow:hidden;">
-                            <div style="flex:1;background:#ffe4ef;display:flex;align-items:center;justify-content:center;">
-                                <p style="margin:0;font-size:16px;font-weight:700;color:#c45a7a;font-family:'Noto Serif KR',serif;">새롬</p>
-                            </div>
-                            <div style="padding:3px;background:#fff0f5;text-align:center;">
-                                <p style="margin:0;font-size:5px;color:#e88aaa;letter-spacing:0.1em;">新·美</p>
-                            </div>
+                            <div style="flex:1;background:#ffe4ef;display:flex;align-items:center;justify-content:center;"><p style="margin:0;font-size:16px;font-weight:700;color:#c45a7a;font-family:'Noto Serif KR',serif;">새롬</p></div>
+                            <div style="padding:3px;background:#fff0f5;text-align:center;"><p style="margin:0;font-size:5px;color:#e88aaa;letter-spacing:0.1em;">新·美</p></div>
                         </div>
                         <p id="txt-style-pastel" class="text-[9px] font-bold text-pink-500">🌸 Pastel</p>
                     </div>
                     <div onclick="selectCardStyle('gen4')" id="stylep-gen4" class="cursor-pointer flex flex-col items-center gap-1" style="opacity:0.5;">
                         <div style="width:100%;aspect-ratio:2/3;background:#0f0f0f;border-radius:8px;border:2px solid #00e5cc;display:flex;flex-direction:column;overflow:hidden;">
-                            <div style="flex:1;background:#0d1a18;display:flex;align-items:center;justify-content:center;">
-                                <p style="margin:0;font-size:16px;font-weight:700;color:#fff;font-family:'Noto Serif KR',serif;">지호</p>
-                            </div>
-                            <div style="padding:3px;background:#0a0a0a;text-align:center;">
-                                <p style="margin:0;font-size:5px;color:#00e5cc;letter-spacing:0.1em;">智·浩</p>
-                            </div>
+                            <div style="flex:1;background:#0d1a18;display:flex;align-items:center;justify-content:center;"><p style="margin:0;font-size:16px;font-weight:700;color:#fff;font-family:'Noto Serif KR',serif;">지호</p></div>
+                            <div style="padding:3px;background:#0a0a0a;text-align:center;"><p style="margin:0;font-size:5px;color:#00e5cc;letter-spacing:0.1em;">智·浩</p></div>
                         </div>
                         <p id="txt-style-gen4" class="text-[9px] font-bold text-cyan-500">⚡ 4th Gen</p>
                     </div>
                     <div onclick="selectCardStyle('luxury')" id="stylep-luxury" class="cursor-pointer flex flex-col items-center gap-1" style="opacity:0.5;">
                         <div style="width:100%;aspect-ratio:2/3;background:#1a1030;border-radius:8px;border:2px solid #9b7fe8;display:flex;flex-direction:column;overflow:hidden;">
-                            <div style="flex:1;background:#120c28;display:flex;align-items:center;justify-content:center;">
-                                <p style="margin:0;font-size:16px;font-weight:700;color:#e8d5ff;font-family:'Noto Serif KR',serif;">민서</p>
-                            </div>
-                            <div style="padding:3px;background:#130c24;text-align:center;">
-                                <p style="margin:0;font-size:5px;color:#9b7fe8;letter-spacing:0.1em;">珉·瑞</p>
-                            </div>
+                            <div style="flex:1;background:#120c28;display:flex;align-items:center;justify-content:center;"><p style="margin:0;font-size:16px;font-weight:700;color:#e8d5ff;font-family:'Noto Serif KR',serif;">민서</p></div>
+                            <div style="padding:3px;background:#130c24;text-align:center;"><p style="margin:0;font-size:5px;color:#9b7fe8;letter-spacing:0.1em;">珉·瑞</p></div>
                         </div>
                         <p id="txt-style-luxury" class="text-[9px] font-bold text-purple-500">💜 Luxury</p>
                     </div>
@@ -162,10 +209,9 @@
         <!-- RESULT -->
         <div id="result-section" style="display:none;" class="mt-6 fade-in">
             <div class="flex justify-center mb-3">
-                <div class="photocard" onclick="toggleCard()" id="photocard-wrapper" style="cursor:pointer;">
+                <div class="photocard" onclick="toggleCard()" id="photocard-wrapper">
                     <div class="photocard-inner" id="photocard-inner">
-
-                        <!-- ===== FRONT ===== -->
+                        <!-- FRONT -->
                         <div class="pc-front" id="pc-front" style="background:#0a0a1a;border:1.5px solid #c9a84c;">
                             <div id="front-topbar" style="height:2px;background:#c9a84c;opacity:0.7;"></div>
                             <div style="height:30%;display:flex;flex-direction:column;justify-content:space-between;padding:10px 16px 8px;">
@@ -206,8 +252,7 @@
                                 <p id="pc-user-info" style="margin:0;font-size:5.5px;letter-spacing:0.1em;color:#ffffff22;text-align:center;"></p>
                             </div>
                         </div>
-
-                        <!-- ===== BACK ===== -->
+                        <!-- BACK -->
                         <div class="pc-back" id="pc-back" style="background:#0a0a1a;border:1.5px solid #c9a84c;display:flex;flex-direction:column;">
                             <div id="pc-back-img-area" style="height:200px;overflow:hidden;position:relative;background:#1a1a3e;flex-shrink:0;">
                                 <div id="back-loading" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
@@ -224,45 +269,125 @@
                 </div>
             </div>
 
-            <!-- TAP HINT - big and animated -->
             <div class="flex justify-center mb-4">
                 <div id="tap-hint-box" class="flex items-center gap-2 bg-slate-800 text-white px-5 py-2.5 rounded-full shadow-md" style="animation:pulse 2s infinite;">
                     <span style="font-size:18px;">👆</span>
                     <p id="tap-hint-text" class="text-sm font-bold tracking-wide" style="margin:0;">Tap card · See Name Card</p>
                 </div>
             </div>
-
-            <!-- Explanation -->
             <p id="k-explain" class="text-sm text-slate-500 text-center leading-relaxed px-2 mb-5"></p>
-
-            <!-- Style pills -->
             <div class="flex gap-1.5 justify-center flex-wrap mb-4">
                 <button onclick="selectCardStyle('classic')" class="style-pill text-[9px] font-bold px-2.5 py-1 rounded-full border-amber-400 text-amber-700 bg-amber-50 active" id="pill-classic">✦ <span id="pill-txt-classic">Classic</span></button>
                 <button onclick="selectCardStyle('pastel')" class="style-pill text-[9px] font-bold px-2.5 py-1 rounded-full border-pink-300 text-pink-600 bg-pink-50" id="pill-pastel">🌸 <span id="pill-txt-pastel">Pastel</span></button>
                 <button onclick="selectCardStyle('gen4')" class="style-pill text-[9px] font-bold px-2.5 py-1 rounded-full border-cyan-400 text-cyan-700 bg-cyan-50" id="pill-gen4">⚡ <span id="pill-txt-gen4">4th Gen</span></button>
                 <button onclick="selectCardStyle('luxury')" class="style-pill text-[9px] font-bold px-2.5 py-1 rounded-full border-purple-400 text-purple-700 bg-purple-50" id="pill-luxury">💜 <span id="pill-txt-luxury">Luxury</span></button>
             </div>
-
             <button id="download-btn" onclick="handleDownload()" class="w-full bg-gradient-to-r from-pink-500 to-violet-600 text-white font-bold py-3 rounded-2xl shadow-lg hover:opacity-90 transition-all text-sm">
                 <span id="txt-download-btn">💾 Download Card · $1</span>
             </button>
         </div>
     </div>
 
-    <!-- Google AdSense 광고 -->
+    <!-- AdSense -->
     <div class="w-full max-w-xl mb-6">
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-4002075177790525"
-             data-ad-slot="9514928949"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-        <script>
-             (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4002075177790525" data-ad-slot="9514928949" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
 
-    <!-- LOGIN MODAL -->
+    <!-- ===== HOW-TO SEO 섹션 ===== -->
+    <section class="w-full max-w-xl mb-8" aria-label="How to use Korean Name Generator">
+
+        <!-- Step by step -->
+        <div class="bg-white rounded-3xl shadow-sm p-8 mb-4">
+            <h2 class="text-xl font-extrabold text-slate-900 mb-6 text-center">How to Get Your Korean Name</h2>
+            <ol class="space-y-5">
+                <li class="flex gap-4 items-start">
+                    <div class="flex-shrink-0 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-extrabold text-sm">1</div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-sm">Enter Your Name</h3>
+                        <p class="text-slate-400 text-xs mt-1 leading-relaxed">Type your English name into the field. Our AI uses it as inspiration — never a phonetic transliteration. You'll get a name a real Korean parent would proudly give.</p>
+                    </div>
+                </li>
+                <li class="flex gap-4 items-start">
+                    <div class="flex-shrink-0 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-extrabold text-sm">2</div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-sm">Choose Gender & Vibe</h3>
+                        <p class="text-slate-400 text-xs mt-1 leading-relaxed">Select your gender and the vibe that suits you — Cool, Cute, Elegant, Mysterious, and more. The AI tailors the name to match your personality.</p>
+                    </div>
+                </li>
+                <li class="flex gap-4 items-start">
+                    <div class="flex-shrink-0 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-extrabold text-sm">3</div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-sm">Get Your Korean Name & Portrait</h3>
+                        <p class="text-slate-400 text-xs mt-1 leading-relaxed">Receive your personalized Korean name with Hanja meaning (漢字), a poetic explanation, and an AI-generated K-drama style portrait. Tap the card to flip between the name card and portrait.</p>
+                    </div>
+                </li>
+            </ol>
+        </div>
+
+        <!-- About Korean Names -->
+        <div class="bg-white rounded-3xl shadow-sm p-8 mb-4">
+            <h2 class="text-xl font-extrabold text-slate-900 mb-4 text-center">What Makes a Korean Name?</h2>
+            <div class="space-y-4 text-slate-500 text-xs leading-relaxed">
+                <div>
+                    <h3 class="font-bold text-slate-700 text-sm mb-1">🀄 Hanja Names (한자 이름)</h3>
+                    <p>Most Korean names are made of two Chinese characters called <strong>Hanja (한자)</strong>. Each character carries a distinct meaning — for example, 旻 means "sky" and 俊 means "talented." The combination creates a unique identity with deep cultural roots.</p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-slate-700 text-sm mb-1">🌿 Pure Korean Names (순우리말)</h3>
+                    <p><strong>Pure Korean names (순우리말)</strong> use native Korean words instead of Hanja. Names like 하늘 (sky) or 빛나 (shining) are growing in popularity as parents embrace Korea's native linguistic heritage.</p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-slate-700 text-sm mb-1">🎭 K-Drama Style</h3>
+                    <p>Korean drama characters have names that feel both beautiful and meaningful — like 서준 (Seo-jun) or 민아 (Min-ah). Our AI draws from this naming culture to give you a name that truly sounds Korean.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ -->
+        <div class="bg-white rounded-3xl shadow-sm p-8">
+            <h2 class="text-xl font-extrabold text-slate-900 mb-5 text-center">Frequently Asked Questions</h2>
+            <div class="space-y-1">
+                <details class="group border-b border-slate-100">
+                    <summary class="flex justify-between items-center cursor-pointer text-sm font-bold text-slate-800 py-3">
+                        Is this free to use?
+                        <svg class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </summary>
+                    <p class="text-slate-400 text-xs pb-3 leading-relaxed">Yes! You get 3 free generations without signing up. Sign in with Google to track your credits. Upgrade to a paid plan for unlimited names and downloads.</p>
+                </details>
+                <details class="group border-b border-slate-100">
+                    <summary class="flex justify-between items-center cursor-pointer text-sm font-bold text-slate-800 py-3">
+                        Will my name just be transliterated into Korean?
+                        <svg class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </summary>
+                    <p class="text-slate-400 text-xs pb-3 leading-relaxed">No — transliteration (e.g. Mike → 마이크) is explicitly forbidden in our AI. You'll get a name that sounds genuinely Korean, one a real Korean parent would proudly give their child.</p>
+                </details>
+                <details class="group border-b border-slate-100">
+                    <summary class="flex justify-between items-center cursor-pointer text-sm font-bold text-slate-800 py-3">
+                        What is Hanja (한자)?
+                        <svg class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </summary>
+                    <p class="text-slate-400 text-xs pb-3 leading-relaxed">Hanja (한자) are Chinese characters used in Korean names. Each character carries a specific meaning, like 旻 (sky) or 俊 (talented). Most Korean names are made of two Hanja characters combined.</p>
+                </details>
+                <details class="group border-b border-slate-100">
+                    <summary class="flex justify-between items-center cursor-pointer text-sm font-bold text-slate-800 py-3">
+                        What languages are supported?
+                        <svg class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </summary>
+                    <p class="text-slate-400 text-xs pb-3 leading-relaxed">English, Korean (한국어), Spanish (Español), Chinese (中文), and Japanese (日本語). Switch anytime with the language button at the top right.</p>
+                </details>
+                <details class="group">
+                    <summary class="flex justify-between items-center cursor-pointer text-sm font-bold text-slate-800 py-3">
+                        Can I download my name card?
+                        <svg class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </summary>
+                    <p class="text-slate-400 text-xs pb-3 leading-relaxed">Yes! Paid plan holders can download both the name card and portrait for free. Free users can download for $1 per card.</p>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- MODALS -->
     <div id="login-modal" style="display:none;pointer-events:none;" class="fixed inset-0 bg-black/40 backdrop-blur-sm items-center justify-center z-50 p-4">
         <div class="bg-white rounded-3xl p-8 w-80 shadow-2xl text-center">
             <div class="text-4xl mb-3">🇰🇷</div>
@@ -276,7 +401,6 @@
         </div>
     </div>
 
-    <!-- NO CREDITS MODAL -->
     <div id="no-credits-modal" style="display:none;pointer-events:none;" class="fixed inset-0 bg-black/40 backdrop-blur-sm items-center justify-center z-50 p-4">
         <div class="bg-white rounded-3xl p-8 w-80 shadow-2xl text-center">
             <div class="text-4xl mb-3">⚡</div>
@@ -290,7 +414,6 @@
         </div>
     </div>
 
-    <!-- AD MODAL -->
     <div id="ad-modal" style="display:none;pointer-events:none;" class="fixed inset-0 bg-black/80 backdrop-blur-sm items-center justify-center z-[60] p-4">
         <div class="bg-white rounded-3xl p-8 w-80 shadow-2xl text-center">
             <h3 id="txt-ad-title" class="text-lg font-extrabold text-slate-900 mb-2">📺 Ad Playing...</h3>
@@ -307,7 +430,6 @@
         </div>
     </div>
 
-    <!-- DOWNLOAD MODAL -->
     <div id="download-modal" style="display:none;pointer-events:none;" class="fixed inset-0 bg-black/40 backdrop-blur-sm items-center justify-center z-50 p-4">
         <div class="bg-white rounded-3xl p-8 w-80 shadow-2xl text-center">
             <div class="text-4xl mb-3">💾</div>
@@ -319,7 +441,6 @@
         </div>
     </div>
 
-    <!-- SAMPLE MODAL -->
     <div id="sample-modal" style="display:none;pointer-events:none;" class="fixed inset-0 bg-black/60 backdrop-blur-sm items-center justify-center z-[70] p-4">
         <div class="bg-white rounded-3xl p-6 w-80 shadow-2xl">
             <h3 id="txt-sample-title" class="text-base font-extrabold text-slate-900 mb-4 text-center">Sample Cards</h3>
@@ -347,391 +468,47 @@
         </div>
     </div>
 
-<style>
-@keyframes spin{to{transform:rotate(360deg)}}
-</style>
-
+<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
 <script>
 let _sp=null,CONFIG={},currentStrategy='sound',currentCardStyle='classic',currentUser=null,userPlan=null,isFlipped=false;
 const FREE_LIMIT=3;
-
-async function loadConfig(){
-    const res=await fetch('/api/config');
-    CONFIG=await res.json();
-    _sp=supabase.createClient(CONFIG.SUPABASE_URL,CONFIG.SUPABASE_ANON_KEY);
-    await init();
-}
-
-// CARD THEMES
-const themes={
-    classic:{bg:'#0a0a1a',border:'#c9a84c',photoBg:'#1a1a3e',footerBg:'#0a0a1a',nameclr:'#fff',accentclr:'#c9a84c',borderRgba:'rgba(201,168,76,0.3)'},
-    pastel: {bg:'#fff0f5',border:'#f4a7c0',photoBg:'#ffe4ef',footerBg:'#fff0f5',nameclr:'#c45a7a',accentclr:'#e88aaa',borderRgba:'rgba(244,167,192,0.3)'},
-    gen4:   {bg:'#0f0f0f',border:'#00e5cc',photoBg:'#0d1a18',footerBg:'#0a0a0a',nameclr:'#fff',accentclr:'#00e5cc',borderRgba:'rgba(0,229,204,0.3)'},
-    luxury: {bg:'#1a1030',border:'#9b7fe8',photoBg:'#120c28',footerBg:'#130c24',nameclr:'#e8d5ff',accentclr:'#9b7fe8',borderRgba:'rgba(155,127,232,0.3)'},
-};
-
-function applyTheme(style){
-    const t=themes[style];
-    const front=document.getElementById('pc-front');
-    const back=document.getElementById('pc-back');
-    if(!front)return;
-    front.style.background=t.bg;
-    front.style.border=`1.5px solid ${t.border}`;
-    document.getElementById('front-topbar').style.background=t.border;
-    document.getElementById('pc-brand').style.color=t.accentclr;
-    document.getElementById('pc-num').style.color=t.accentclr;
-    document.getElementById('pc-kname').style.color=t.nameclr;
-    const engName=document.getElementById('pc-eng-name');
-    if(engName)engName.style.color=t.accentclr;
-    // SVG decos
-    ['deco-svg-1','deco-svg-2'].forEach(id=>{
-        const svg=document.getElementById(id);
-        if(svg){
-            svg.querySelectorAll('line').forEach(l=>l.setAttribute('stroke',t.accentclr));
-            svg.querySelectorAll('circle').forEach(c=>{
-                if(c.getAttribute('fill')==='none')c.setAttribute('stroke',t.accentclr);
-                else c.setAttribute('fill',t.accentclr);
-            });
-        }
-    });
-    // Hanja
-    ['pc-hanja-1','pc-hanja-2','pc-meaning-1','pc-meaning-2'].forEach(id=>{
-        const el=document.getElementById(id);if(el)el.style.color=t.accentclr;
-    });
-    ['hanja-left','hanja-right'].forEach(id=>{
-        const el=document.getElementById(id);
-        if(el)el.querySelectorAll('div').forEach(d=>{if(d.style.width==='1px')d.style.background=t.border;});
-    });
-    const hd=document.getElementById('hanja-divider');if(hd)hd.style.background=t.border;
-    // Back
-    back.style.background=t.bg;
-    back.style.border=`1.5px solid ${t.border}`;
-    document.getElementById('pc-back-img-area').style.background=t.photoBg;
-    document.getElementById('pc-back-footer').style.background=t.footerBg;
-    document.getElementById('pc-back-footer').style.borderTop=`1px solid ${t.borderRgba}`;
-    document.getElementById('pc-kname-back').style.color=t.nameclr;
-    document.getElementById('pc-meaning-back').style.color=t.accentclr;
-    const spinner=document.querySelector('#back-loading div');
-    if(spinner)spinner.style.borderColor=`${t.accentclr} transparent transparent transparent`;
-}
-
-function selectCardStyle(style){
-    currentCardStyle=style;
-    ['classic','pastel','gen4','luxury'].forEach(s=>{
-        const p=document.getElementById('stylep-'+s);
-        if(p)p.style.opacity=s===style?'1':'0.5';
-        const pill=document.getElementById('pill-'+s);
-        if(pill)pill.classList.toggle('active',s===style);
-    });
-    applyTheme(style);
-}
-
-// FLIP
-// CARD TOGGLE
-function toggleCard(){
-    if(isFlipped) showBack(); else showFront();
-}
-function showFront(){
-    isFlipped=true;
-    document.getElementById('photocard-inner').classList.add('flipped');
-    const h=document.getElementById('tap-hint-text');
-    if(h)h.textContent='Tap card · See Portrait';
-}
-function showBack(){
-    isFlipped=false;
-    document.getElementById('photocard-inner').classList.remove('flipped');
-    const h=document.getElementById('tap-hint-text');
-    if(h)h.textContent='Tap card · See Name Card';
-}
-function flipCard(){ toggleCard(); } // legacy alias
-
-// MODALS
+async function loadConfig(){const res=await fetch('/api/config');CONFIG=await res.json();_sp=supabase.createClient(CONFIG.SUPABASE_URL,CONFIG.SUPABASE_ANON_KEY);await init();}
+const themes={classic:{bg:'#0a0a1a',border:'#c9a84c',photoBg:'#1a1a3e',footerBg:'#0a0a1a',nameclr:'#fff',accentclr:'#c9a84c',borderRgba:'rgba(201,168,76,0.3)'},pastel:{bg:'#fff0f5',border:'#f4a7c0',photoBg:'#ffe4ef',footerBg:'#fff0f5',nameclr:'#c45a7a',accentclr:'#e88aaa',borderRgba:'rgba(244,167,192,0.3)'},gen4:{bg:'#0f0f0f',border:'#00e5cc',photoBg:'#0d1a18',footerBg:'#0a0a0a',nameclr:'#fff',accentclr:'#00e5cc',borderRgba:'rgba(0,229,204,0.3)'},luxury:{bg:'#1a1030',border:'#9b7fe8',photoBg:'#120c28',footerBg:'#130c24',nameclr:'#e8d5ff',accentclr:'#9b7fe8',borderRgba:'rgba(155,127,232,0.3)'}};
+function applyTheme(style){const t=themes[style];const front=document.getElementById('pc-front');const back=document.getElementById('pc-back');if(!front)return;front.style.background=t.bg;front.style.border=`1.5px solid ${t.border}`;document.getElementById('front-topbar').style.background=t.border;document.getElementById('pc-brand').style.color=t.accentclr;document.getElementById('pc-num').style.color=t.accentclr;document.getElementById('pc-kname').style.color=t.nameclr;const engName=document.getElementById('pc-eng-name');if(engName)engName.style.color=t.accentclr;['deco-svg-1','deco-svg-2'].forEach(id=>{const svg=document.getElementById(id);if(svg){svg.querySelectorAll('line').forEach(l=>l.setAttribute('stroke',t.accentclr));svg.querySelectorAll('circle').forEach(c=>{if(c.getAttribute('fill')==='none')c.setAttribute('stroke',t.accentclr);else c.setAttribute('fill',t.accentclr);});}});['pc-hanja-1','pc-hanja-2','pc-meaning-1','pc-meaning-2'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.color=t.accentclr;});['hanja-left','hanja-right'].forEach(id=>{const el=document.getElementById(id);if(el)el.querySelectorAll('div').forEach(d=>{if(d.style.width==='1px')d.style.background=t.border;});});const hd=document.getElementById('hanja-divider');if(hd)hd.style.background=t.border;back.style.background=t.bg;back.style.border=`1.5px solid ${t.border}`;document.getElementById('pc-back-img-area').style.background=t.photoBg;document.getElementById('pc-back-footer').style.background=t.footerBg;document.getElementById('pc-back-footer').style.borderTop=`1px solid ${t.borderRgba}`;document.getElementById('pc-kname-back').style.color=t.nameclr;document.getElementById('pc-meaning-back').style.color=t.accentclr;const spinner=document.querySelector('#back-loading div');if(spinner)spinner.style.borderColor=`${t.accentclr} transparent transparent transparent`;}
+function selectCardStyle(style){currentCardStyle=style;['classic','pastel','gen4','luxury'].forEach(s=>{const p=document.getElementById('stylep-'+s);if(p)p.style.opacity=s===style?'1':'0.5';const pill=document.getElementById('pill-'+s);if(pill)pill.classList.toggle('active',s===style);});applyTheme(style);}
+function toggleCard(){if(isFlipped)showBack();else showFront();}
+function showFront(){isFlipped=true;document.getElementById('photocard-inner').classList.add('flipped');const h=document.getElementById('tap-hint-text');if(h)h.textContent='Tap card · See Portrait';}
+function showBack(){isFlipped=false;document.getElementById('photocard-inner').classList.remove('flipped');const h=document.getElementById('tap-hint-text');if(h)h.textContent='Tap card · See Name Card';}
+function flipCard(){toggleCard();}
 function showModal(id){const m=document.getElementById(id);m.style.display='flex';m.style.pointerEvents='auto';}
 function closeModal(id){const m=document.getElementById(id);m.style.display='none';m.style.pointerEvents='none';}
 function openLoginModal(){showModal('login-modal');}
 function openSampleModal(){closeModal('download-modal');showModal('sample-modal');}
-['login-modal','no-credits-modal','download-modal','sample-modal','ad-modal'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el)el.addEventListener('click',function(e){if(e.target===this)closeModal(id);});
-});
-
-// AUTH
+['login-modal','no-credits-modal','download-modal','sample-modal','ad-modal'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('click',function(e){if(e.target===this)closeModal(id);});});
 async function signInWithGoogle(){await _sp.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin}});}
 async function signOut(){await _sp.auth.signOut();currentUser=null;userPlan=null;updateAuthUI();updateCreditsDisplay();}
-
-// AD
 let adTimer=null;
-function startWatchAd(){
-    closeModal('no-credits-modal');showModal('ad-modal');
-    let s=5;
-    const cd=document.getElementById('ad-countdown'),st=document.getElementById('ad-skip-timer'),btn=document.getElementById('ad-skip-btn'),pb=document.getElementById('ad-progress-bar');
-    cd.textContent=s;st.textContent=s+'s';btn.disabled=true;pb.style.width='0%';
-    setTimeout(()=>{pb.style.width='100%';},100);
-    adTimer=setInterval(()=>{s--;cd.textContent=s;st.textContent=s+'s';if(s<=0){clearInterval(adTimer);btn.disabled=false;btn.className='w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-2xl text-sm';btn.innerHTML='Claim 1 Credit ✓';st.textContent='✓';}},1000);
-}
-function skipAd(){
-    clearInterval(adTimer);closeModal('ad-modal');
-    const used=parseInt(localStorage.getItem('k_used')||'0');
-    if(used>0)localStorage.setItem('k_used',used-1);
-    updateCreditsDisplay();updateAuthUI();alert('🎉 +1 credit!');
-}
-
-// DOWNLOAD
-function handleDownload(){
-    const hasPlan=userPlan==='annual'||userPlan==='month'||userPlan==='week';
-    if(hasPlan)actualDownload();
-    else if(!currentUser)openLoginModal();
-    else showModal('download-modal');
-}
-async function proceedDownloadPayment(){
-    closeModal('download-modal');
-    const{data:{user}}=await _sp.auth.getUser();
-    if(!user?.email){openLoginModal();return;}
-    const orderId='dl_'+Date.now()+'_'+Math.random().toString(36).substr(2,9);
-    try{
-        const r=await PortOne.requestPayment({storeId:CONFIG.PORTONE_STORE_ID,channelKey:CONFIG.PORTONE_CHANNEL_KEY_PAYPAL,paymentId:orderId,orderName:'Korean Name Card Download',totalAmount:1,currency:'USD',payMethod:'PAYPAL',customer:{email:user.email},redirectUrl:window.location.origin+'/?downloaded=1'});
-        if(r?.paymentId)actualDownload();
-    }catch(e){if(e?.code!=='USER_CANCEL')alert('Payment failed.');}
-}
-async function actualDownload(){
-    const btn=document.getElementById('download-btn'),orig=btn.innerHTML;
-    btn.innerHTML='Saving...';btn.disabled=true;
-    try{
-        const W=240,H=360;
-        async function capture(el,fname){
-            const wrap=document.createElement('div');
-            wrap.style.cssText=`position:fixed;left:-9999px;top:0;width:${W}px;height:${H}px;overflow:hidden;border-radius:20px;`;
-            const cl=el.cloneNode(true);
-            cl.style.cssText=`width:${W}px;height:${H}px;min-width:${W}px;min-height:${H}px;max-width:${W}px;max-height:${H}px;overflow:hidden;border-radius:20px;display:flex;flex-direction:column;transform:none;opacity:1;`;
-            wrap.appendChild(cl);
-            document.body.appendChild(wrap);
-            await new Promise(r=>setTimeout(r,150));
-            const c=await html2canvas(wrap,{scale:3,useCORS:true,backgroundColor:null,logging:false,width:W,height:H});
-            document.body.removeChild(wrap);
-            const a=document.createElement('a');
-            a.download=fname+'-'+Date.now()+'.png';
-            a.href=c.toDataURL('image/png');
-            a.click();
-        }
-        // Save portrait (back) first, then name card (front)
-        await capture(document.getElementById('pc-back'),'k-portrait');
-        await new Promise(r=>setTimeout(r,400));
-        await capture(document.getElementById('pc-front'),'k-namecard');
-    }catch(e){alert('Download failed.');}
-    btn.innerHTML=orig;btn.disabled=false;
-}
-
-// PLAN
-async function fetchUserPlan(email){
-    try{
-        const r=await fetch('/api/my-plan?email='+encodeURIComponent(email));
-        const d=await r.json();
-        return d.plan||null;
-    }catch{return null;}
-}
+function startWatchAd(){closeModal('no-credits-modal');showModal('ad-modal');let s=5;const cd=document.getElementById('ad-countdown'),st=document.getElementById('ad-skip-timer'),btn=document.getElementById('ad-skip-btn'),pb=document.getElementById('ad-progress-bar');cd.textContent=s;st.textContent=s+'s';btn.disabled=true;pb.style.width='0%';setTimeout(()=>{pb.style.width='100%';},100);adTimer=setInterval(()=>{s--;cd.textContent=s;st.textContent=s+'s';if(s<=0){clearInterval(adTimer);btn.disabled=false;btn.className='w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-2xl text-sm';btn.innerHTML='Claim 1 Credit ✓';st.textContent='✓';}},1000);}
+function skipAd(){clearInterval(adTimer);closeModal('ad-modal');const used=parseInt(localStorage.getItem('k_used')||'0');if(used>0)localStorage.setItem('k_used',used-1);updateCreditsDisplay();updateAuthUI();alert('🎉 +1 credit!');}
+function handleDownload(){const hasPlan=userPlan==='annual'||userPlan==='month'||userPlan==='week';if(hasPlan)actualDownload();else if(!currentUser)openLoginModal();else showModal('download-modal');}
+async function proceedDownloadPayment(){closeModal('download-modal');const{data:{user}}=await _sp.auth.getUser();if(!user?.email){openLoginModal();return;}const orderId='dl_'+Date.now()+'_'+Math.random().toString(36).substr(2,9);try{const r=await PortOne.requestPayment({storeId:CONFIG.PORTONE_STORE_ID,channelKey:CONFIG.PORTONE_CHANNEL_KEY_PAYPAL,paymentId:orderId,orderName:'Korean Name Card Download',totalAmount:100,currency:'USD',payMethod:'PAYPAL',customer:{email:user.email},redirectUrl:window.location.origin+'/?downloaded=1'});if(r?.paymentId)actualDownload();}catch(e){if(e?.code!=='USER_CANCEL')alert('Payment failed.');}}
+async function actualDownload(){const btn=document.getElementById('download-btn'),orig=btn.innerHTML;btn.innerHTML='Saving...';btn.disabled=true;try{const W=240,H=360;async function capture(el,fname){const wrap=document.createElement('div');wrap.style.cssText=`position:fixed;left:-9999px;top:0;width:${W}px;height:${H}px;overflow:hidden;border-radius:20px;`;const cl=el.cloneNode(true);cl.style.cssText=`width:${W}px;height:${H}px;min-width:${W}px;min-height:${H}px;max-width:${W}px;max-height:${H}px;overflow:hidden;border-radius:20px;display:flex;flex-direction:column;transform:none;opacity:1;`;wrap.appendChild(cl);document.body.appendChild(wrap);await new Promise(r=>setTimeout(r,150));const c=await html2canvas(wrap,{scale:3,useCORS:true,backgroundColor:null,logging:false,width:W,height:H});document.body.removeChild(wrap);const a=document.createElement('a');a.download=fname+'-'+Date.now()+'.png';a.href=c.toDataURL('image/png');a.click();}await capture(document.getElementById('pc-back'),'k-portrait');await new Promise(r=>setTimeout(r,400));await capture(document.getElementById('pc-front'),'k-namecard');}catch(e){alert('Download failed.');}btn.innerHTML=orig;btn.disabled=false;}
+async function fetchUserPlan(email){try{const r=await fetch('/api/my-plan?email='+encodeURIComponent(email));const d=await r.json();return d.plan||null;}catch{return null;}}
 function getGuestCredits(){return Math.max(0,FREE_LIMIT-parseInt(localStorage.getItem('k_used')||'0'));}
-function updateCreditsDisplay(){
-    const el=document.getElementById('credits-display');
-    const t=i18n[localStorage.getItem('web_lang')||'en']||i18n.en;
-    if(userPlan==='annual'||userPlan==='month'||userPlan==='week'){
-        el.textContent=userPlan==='week'?t.weekActive:t.unlimited;
-        el.style.color=userPlan==='week'?'#6366f1':'#10b981';
-    }else{
-        const c=getGuestCredits();
-        el.textContent=t.credits.replace('{n}',c);
-        el.style.color=c===0?'#f87171':'#94a3b8';
-    }
-}
-function updateAuthUI(){
-    const show=id=>{const el=document.getElementById(id);if(el)el.style.display='flex';};
-    const hide=id=>{const el=document.getElementById(id);if(el)el.style.display='none';};
-    const t=i18n[localStorage.getItem('web_lang')||'en']||i18n.en;
-    if(currentUser){
-        hide('google-login-btn');show('user-profile');
-        document.getElementById('user-email').textContent=currentUser.email;
-        if(userPlan){hide('buy-pass-user-btn');const b=document.getElementById('plan-badge');b.textContent='✓ '+userPlan.toUpperCase();b.style.display='inline-flex';}
-        else{show('buy-pass-user-btn');hide('plan-badge');}
-    }else{show('google-login-btn');hide('user-profile');hide('buy-pass-user-btn');hide('plan-badge');}
-    const dl=document.getElementById('txt-download-btn');
-    if(dl)dl.textContent=userPlan?t.downloadFree:t.downloadPaid;
-}
-
-// STRATEGY
-const stratMap={sound:'sound similarity to the name',meaning:'meaningful Hanja characters that reflect the personality and vibe',kdrama:'trendy K-drama style naming conventions used for main characters'};
-function setStrategy(s){
-    currentStrategy=s;
-    const t=i18n[localStorage.getItem('web_lang')||'en']||i18n.en;
-    ['sound','meaning','kdrama'].forEach(id=>{
-        const b=document.getElementById('strat-'+id);
-        b.className=id===s?'flex-1 text-[10px] font-bold py-2 rounded-xl bg-white shadow text-indigo-600 transition-all':'flex-1 text-[10px] font-bold py-2 rounded-xl text-slate-500 transition-all';
-    });
-    document.getElementById('strategy-desc').textContent={sound:t.descSound,meaning:t.descMeaning,kdrama:t.descKdrama}[s];
-}
-
-// GENERATE
-async function generateName(){
-    const name=document.getElementById('name-input').value.trim();
-    if(!name){const inp=document.getElementById('name-input');inp.classList.add('border-red-400');inp.focus();setTimeout(()=>inp.classList.remove('border-red-400'),1500);return;}
-    const hasPlan = userPlan === 'annual' || userPlan === 'month' || userPlan === 'week';
-    if(!hasPlan){
-        const c=getGuestCredits();
-        if(c<=0){if(currentUser)showModal('no-credits-modal');else openLoginModal();return;}
-        localStorage.setItem('k_used',parseInt(localStorage.getItem('k_used')||'0')+1);
-        updateCreditsDisplay();updateAuthUI();
-    }
-    const gender=document.getElementById('gender-select').value;
-    const vibe=document.getElementById('vibe-select').value;
-    const lang=localStorage.getItem('web_lang')||'en';
-
-    document.getElementById('result-section').style.display='none';
-    document.getElementById('loading-section').style.display='block';
-    selectCardStyle(currentCardStyle);
-    isFlipped=false;
-    document.getElementById('photocard-inner').classList.remove('flipped');
-    // Reset back image
-    document.getElementById('pc-back-img').style.display='none';
-    document.getElementById('back-loading').style.display='flex';
-
-    const btn=document.getElementById('generate-btn');btn.disabled=true;btn.style.opacity='0.6';
-
-    try{
-        const params=new URLSearchParams({english_name:name,vibe,gender,lang,strategy:'K-drama lead character naming style — beautiful, meaningful, and naturally Korean',style:'kdrama'});
-        const res=await fetch('/api/generate-k-identity?'+params);
-        const data=await res.json();
-
-        // Parse name & hanja
-        const full=data.k_name||'';
-        const isPure=data.is_pure||false;
-        const hanjaMatch=full.match(/\(([^)]+)\)/);
-        const koreanName=full.replace(/\([^)]+\)/,'').trim();
-        const hanjaOnly=hanjaMatch?'('+hanjaMatch[1]+')':'';
-        const meaningStr=data.meaning||'';
-
-        // Front card
-        document.getElementById('pc-kname').textContent=koreanName;
-        document.getElementById('pc-user-info').textContent=name+' · '+gender+' · '+vibe;
-        const engNameEl=document.getElementById('pc-eng-name');
-        if(engNameEl)engNameEl.textContent=name.toUpperCase();
-
-        // Parse hanja for front card
-        if(isPure){
-            // Pure Korean name - show special markers
-            document.getElementById('pc-hanja-1').textContent='순';
-            document.getElementById('pc-meaning-1').textContent='PURE';
-            document.getElementById('pc-hanja-2').textContent='우리';
-            document.getElementById('pc-meaning-2').textContent='KOREAN';
-            document.getElementById('hanja-section').style.display='flex';
-        } else {
-            const parts=meaningStr.split('·').map(s=>s.trim()).filter(s=>s);
-            if(parts.length>=2){
-                const m1=parts[0].match(/([\u4e00-\u9fff])\s*[（(]([^)）]+)[)）]/) || [null,parts[0].charAt(0),parts[0]];
-                const m2=parts[1].match(/([\u4e00-\u9fff])\s*[（(]([^)）]+)[)）]/) || [null,parts[1].charAt(0),parts[1]];
-                document.getElementById('pc-hanja-1').textContent=m1[1]||'';
-                document.getElementById('pc-meaning-1').textContent=(m1[2]||'').trim().toUpperCase();
-                document.getElementById('pc-hanja-2').textContent=m2[1]||'';
-                document.getElementById('pc-meaning-2').textContent=(m2[2]||'').trim().toUpperCase();
-            } else if(parts.length===1){
-                const m1=parts[0].match(/([\u4e00-\u9fff])\s*[（(]([^)）]+)[)）]/);
-                document.getElementById('pc-hanja-1').textContent=m1?m1[1]:'';
-                document.getElementById('pc-meaning-1').textContent=m1?(m1[2]||'').trim().toUpperCase():parts[0].toUpperCase();
-                document.getElementById('pc-hanja-2').textContent='';
-                document.getElementById('pc-meaning-2').textContent='';
-            }
-            document.getElementById('hanja-section').style.display='flex';
-        }
-
-        // Back card - clean format
-        const backName=koreanName+(hanjaOnly?hanjaOnly:(isPure?' (순우리말)':''));
-        document.getElementById('pc-kname-back').textContent=backName;
-        document.getElementById('pc-meaning-back').textContent=meaningStr;
-        // Explanation
-        document.getElementById('k-explain').textContent=data.explain||'';
-
-        // Load back image
-        if(data.image_url){
-            const img=document.getElementById('pc-back-img');
-            img.src=data.image_url;
-            img.onload=()=>{img.style.display='block';document.getElementById('back-loading').style.display='none';};
-            img.onerror=()=>{document.getElementById('back-loading').innerHTML='<p style="color:#ffffff55;font-size:10px;">Image unavailable</p>';};
-        }
-
-        applyTheme(currentCardStyle);
-        document.getElementById('loading-section').style.display='none';
-        document.getElementById('result-section').style.display='block';
-        updateAuthUI();
-        // 시작은 Portrait(뒷면), 1초 후 Name Card로 뒤집고, 1.8초 후 다시 Portrait으로
-        showBack();
-        setTimeout(()=>{
-            showFront();
-            setTimeout(()=>{ showBack(); }, 1800);
-        }, 1000);
-    }catch(e){document.getElementById('loading-section').style.display='none';alert('Something went wrong.');}
-    btn.disabled=false;btn.style.opacity='1';
-}
-
-// I18N
+function updateCreditsDisplay(){const el=document.getElementById('credits-display');const t=i18n[localStorage.getItem('web_lang')||'en']||i18n.en;if(userPlan==='annual'||userPlan==='month'||userPlan==='week'){el.textContent=userPlan==='week'?t.weekActive:t.unlimited;el.style.color=userPlan==='week'?'#6366f1':'#10b981';}else{const c=getGuestCredits();el.textContent=t.credits.replace('{n}',c);el.style.color=c===0?'#f87171':'#94a3b8';}}
+function updateAuthUI(){const show=id=>{const el=document.getElementById(id);if(el)el.style.display='flex';};const hide=id=>{const el=document.getElementById(id);if(el)el.style.display='none';};const t=i18n[localStorage.getItem('web_lang')||'en']||i18n.en;if(currentUser){hide('google-login-btn');show('user-profile');document.getElementById('user-email').textContent=currentUser.email;if(userPlan){hide('buy-pass-user-btn');const b=document.getElementById('plan-badge');b.textContent='✓ '+userPlan.toUpperCase();b.style.display='inline-flex';}else{show('buy-pass-user-btn');hide('plan-badge');}}else{show('google-login-btn');hide('user-profile');hide('buy-pass-user-btn');hide('plan-badge');}const dl=document.getElementById('txt-download-btn');if(dl)dl.textContent=userPlan?t.downloadFree:t.downloadPaid;}
+function setStrategy(s){currentStrategy=s;const t=i18n[localStorage.getItem('web_lang')||'en']||i18n.en;['sound','meaning','kdrama'].forEach(id=>{const b=document.getElementById('strat-'+id);if(b)b.className=id===s?'flex-1 text-[10px] font-bold py-2 rounded-xl bg-white shadow text-indigo-600 transition-all':'flex-1 text-[10px] font-bold py-2 rounded-xl text-slate-500 transition-all';});const sd=document.getElementById('strategy-desc');if(sd)sd.textContent={sound:t.descSound,meaning:t.descMeaning,kdrama:t.descKdrama}[s];}
+async function generateName(){const name=document.getElementById('name-input').value.trim();if(!name){const inp=document.getElementById('name-input');inp.classList.add('border-red-400');inp.focus();setTimeout(()=>inp.classList.remove('border-red-400'),1500);return;}const hasPlan=userPlan==='annual'||userPlan==='month'||userPlan==='week';if(!hasPlan){const c=getGuestCredits();if(c<=0){if(currentUser)showModal('no-credits-modal');else openLoginModal();return;}localStorage.setItem('k_used',parseInt(localStorage.getItem('k_used')||'0')+1);updateCreditsDisplay();updateAuthUI();}const gender=document.getElementById('gender-select').value;const vibe=document.getElementById('vibe-select').value;const lang=localStorage.getItem('web_lang')||'en';document.getElementById('result-section').style.display='none';document.getElementById('loading-section').style.display='block';selectCardStyle(currentCardStyle);isFlipped=false;document.getElementById('photocard-inner').classList.remove('flipped');document.getElementById('pc-back-img').style.display='none';document.getElementById('back-loading').style.display='flex';const btn=document.getElementById('generate-btn');btn.disabled=true;btn.style.opacity='0.6';try{const params=new URLSearchParams({english_name:name,vibe,gender,lang,strategy:'K-drama lead character naming style — beautiful, meaningful, and naturally Korean',style:'kdrama'});const res=await fetch('/api/generate-k-identity?'+params);const data=await res.json();const full=data.k_name||'';const isPure=data.is_pure||false;const hanjaMatch=full.match(/\(([^)]+)\)/);const koreanName=full.replace(/\([^)]+\)/,'').trim();const hanjaOnly=hanjaMatch?'('+hanjaMatch[1]+')':'';const meaningStr=data.meaning||'';document.getElementById('pc-kname').textContent=koreanName;document.getElementById('pc-user-info').textContent=name+' · '+gender+' · '+vibe;const engNameEl=document.getElementById('pc-eng-name');if(engNameEl)engNameEl.textContent=name.toUpperCase();if(isPure){document.getElementById('pc-hanja-1').textContent='순';document.getElementById('pc-meaning-1').textContent='PURE';document.getElementById('pc-hanja-2').textContent='우리';document.getElementById('pc-meaning-2').textContent='KOREAN';document.getElementById('hanja-section').style.display='flex';}else{const parts=meaningStr.split('·').map(s=>s.trim()).filter(s=>s);if(parts.length>=2){const m1=parts[0].match(/([\u4e00-\u9fff])\s*[（(]([^)）]+)[)）]/)||[null,parts[0].charAt(0),parts[0]];const m2=parts[1].match(/([\u4e00-\u9fff])\s*[（(]([^)）]+)[)）]/)||[null,parts[1].charAt(0),parts[1]];document.getElementById('pc-hanja-1').textContent=m1[1]||'';document.getElementById('pc-meaning-1').textContent=(m1[2]||'').trim().toUpperCase();document.getElementById('pc-hanja-2').textContent=m2[1]||'';document.getElementById('pc-meaning-2').textContent=(m2[2]||'').trim().toUpperCase();}else if(parts.length===1){const m1=parts[0].match(/([\u4e00-\u9fff])\s*[（(]([^)）]+)[)）]/);document.getElementById('pc-hanja-1').textContent=m1?m1[1]:'';document.getElementById('pc-meaning-1').textContent=m1?(m1[2]||'').trim().toUpperCase():parts[0].toUpperCase();document.getElementById('pc-hanja-2').textContent='';document.getElementById('pc-meaning-2').textContent='';}document.getElementById('hanja-section').style.display='flex';}const backName=koreanName+(hanjaOnly?hanjaOnly:(isPure?' (순우리말)':''));document.getElementById('pc-kname-back').textContent=backName;document.getElementById('pc-meaning-back').textContent=meaningStr;document.getElementById('k-explain').textContent=data.explain||'';if(data.image_url){const img=document.getElementById('pc-back-img');img.src=data.image_url;img.onload=()=>{img.style.display='block';document.getElementById('back-loading').style.display='none';};img.onerror=()=>{document.getElementById('back-loading').innerHTML='<p style="color:#ffffff55;font-size:10px;">Image unavailable</p>';};}applyTheme(currentCardStyle);document.getElementById('loading-section').style.display='none';document.getElementById('result-section').style.display='block';updateAuthUI();showBack();setTimeout(()=>{showFront();setTimeout(()=>{showBack();},1800);},1000);}catch(e){document.getElementById('loading-section').style.display='none';alert('Something went wrong.');}btn.disabled=false;btn.style.opacity='1';}
 const langs=[{code:'en',flag:'🇺🇸',name:'English'},{code:'ko',flag:'🇰🇷',name:'한국어'},{code:'es',flag:'🇪🇸',name:'Español'},{code:'zh',flag:'🇨🇳',name:'中文'},{code:'ja',flag:'🇯🇵',name:'日本語'}];
-const i18n={
-    en:{title:'Korean Name Generator',subtitle:'Discover your perfect Korean identity',placeholder:'Your name...',styleLabel:'Choose Style',stratSound:'Sound',stratMeaning:'Meaning',stratKdrama:'K-Drama',descSound:'Sounds similar to your name',descMeaning:'Beautiful Hanja matching your personality',descKdrama:'Trendy K-drama character style',generateBtn:'Find My Name ✨',loading:'Consulting the ancients...',pickStyle:'Pick card style while waiting',tapHint:'Tap card to flip',credits:'CREDITS: {n} LEFT',unlimited:'UNLIMITED ACCESS',weekActive:'WEEK PASS ACTIVE',downloadFree:'💾 Download Card (Free)',downloadPaid:'💾 Download Card · $1',buyPass:'Buy Pass',logout:'Logout',modalTitle:'Sign in to continue',modalSub:'Get 3 free credits · Upgrade for unlimited names',googleBtn:'Continue with Google',cancel:'Cancel',noCreditsTitle:'Out of Credits',noCreditsDesc:'Watch a short ad to get 1 credit, or upgrade.',watchAd:'📺 Watch Ad (+1 Credit)',buyPassBtn:'✨ Buy Pass (Unlimited)',adTitle:'📺 Ad Playing...',adLabel:'Advertisement',skipAd:'Skip Ad',dlTitle:'Download Your K-Card',dlDesc:'Pay $1 to download in full quality',payPaypal:'🌐 Pay $1 with PayPal',viewSample:'👁 View Sample Cards',sampleTitle:'Sample Cards',sampleNote:'Flip for oriental AI portrait on back',dlMine:'💾 Download Mine · $1',close:'Close',styleClassic:'Classic',stylePastel:'Pastel',styleGen4:'4th Gen',styleLuxury:'Luxury',optMale:'Male',optFemale:'Female',optNeutral:'Neutral',successMsg:'Payment successful! Unlimited access unlocked.'},
-    ko:{title:'한국 이름 생성기',subtitle:'나만의 완벽한 한국 이름을 찾아보세요',placeholder:'이름을 입력하세요...',styleLabel:'스타일 선택',stratSound:'발음',stratMeaning:'의미',stratKdrama:'K-드라마',descSound:'이름과 발음이 비슷한 한국어 이름',descMeaning:'성격과 분위기를 담은 한자 이름',descKdrama:'드라마 주인공 스타일 이름',generateBtn:'이름 찾기 ✨',loading:'이름을 신중하게 짓는 중...',pickStyle:'기다리는 동안 카드 스타일 선택',tapHint:'카드를 탭하여 뒤집기',credits:'크레딧: {n}개 남음',unlimited:'무제한 이용 중',weekActive:'1주일 패스 이용 중',downloadFree:'💾 카드 다운로드 (무료)',downloadPaid:'💾 카드 다운로드 · $1',buyPass:'패스 구매',logout:'로그아웃',modalTitle:'계속하려면 로그인하세요',modalSub:'무료 3회 이용 · 업그레이드로 무제한',googleBtn:'Google로 계속하기',cancel:'취소',noCreditsTitle:'크레딧 소진',noCreditsDesc:'광고를 보고 크레딧 1개를 받거나 업그레이드하세요.',watchAd:'📺 광고 보기 (+1 크레딧)',buyPassBtn:'✨ 패스 구매 (무제한)',adTitle:'📺 광고 재생 중...',adLabel:'광고',skipAd:'광고 건너뛰기',dlTitle:'K-카드 다운로드',dlDesc:'$1을 지불하고 고화질로 다운로드하세요',payPaypal:'🌐 PayPal로 $1 결제',viewSample:'👁 샘플 카드 보기',sampleTitle:'샘플 카드',sampleNote:'뒤집으면 동양풍 AI 초상화가 나와요',dlMine:'💾 내 카드 다운로드 · $1',close:'닫기',styleClassic:'클래식',stylePastel:'파스텔',styleGen4:'4세대',styleLuxury:'럭셔리',optMale:'남성',optFemale:'여성',optNeutral:'중성',successMsg:'결제가 완료되었습니다! 무제한 이용권이 활성화되었습니다.'},
-    es:{title:'Generador de Nombres Coreanos',subtitle:'Descubre tu identidad coreana perfecta',placeholder:'Tu nombre...',styleLabel:'Elige estilo',stratSound:'Sonido',stratMeaning:'Significado',stratKdrama:'K-Drama',descSound:'Suena similar a tu nombre',descMeaning:'Hermosos caracteres Hanja para tu personalidad',descKdrama:'Estilo de personaje principal K-drama',generateBtn:'Encuentra Mi Nombre ✨',loading:'Consultando a los ancestros...',pickStyle:'Elige el estilo mientras esperas',tapHint:'Toca la tarjeta para girar',credits:'CRÉDITOS: {n} RESTANTES',unlimited:'ACCESO ILIMITADO',weekActive:'PASE SEMANAL ACTIVO',downloadFree:'💾 Descargar tarjeta (Gratis)',downloadPaid:'💾 Descargar tarjeta · $1',buyPass:'Comprar pase',logout:'Cerrar sesión',modalTitle:'Inicia sesión para continuar',modalSub:'3 créditos gratis · Mejora para acceso ilimitado',googleBtn:'Continuar con Google',cancel:'Cancelar',noCreditsTitle:'Sin créditos',noCreditsDesc:'Mira un anuncio para obtener 1 crédito, o mejora.',watchAd:'📺 Ver anuncio (+1 crédito)',buyPassBtn:'✨ Comprar pase (Ilimitado)',adTitle:'📺 Anuncio en reproducción...',adLabel:'Publicidad',skipAd:'Omitir anuncio',dlTitle:'Descarga tu tarjeta K',dlDesc:'Paga $1 para descargar en alta calidad',payPaypal:'🌐 Pagar $1 con PayPal',viewSample:'👁 Ver tarjetas de muestra',sampleTitle:'Tarjetas de muestra',sampleNote:'Gira para ver el retrato oriental IA',dlMine:'💾 Descargar la mía · $1',close:'Cerrar',styleClassic:'Clásico',stylePastel:'Pastel',styleGen4:'4ª Gen',styleLuxury:'Lujo',optMale:'Masculino',optFemale:'Femenino',optNeutral:'Neutro',successMsg:'¡Pago completado! Acceso ilimitado desbloqueado.'},
-    zh:{title:'韩文名字生成器',subtitle:'找到您完美的韩国名字',placeholder:'您的名字...',styleLabel:'选择风格',stratSound:'音似',stratMeaning:'含义',stratKdrama:'韩剧',descSound:'发音与您的名字相似',descMeaning:'反映个性的美丽汉字名',descKdrama:'韩剧主角命名风格',generateBtn:'找到我的名字 ✨',loading:'正在咨询命名大师...',pickStyle:'等待时选择卡片风格',tapHint:'点击卡片翻转',credits:'剩余积分：{n}',unlimited:'无限次使用',weekActive:'周卡有效中',downloadFree:'💾 下载卡片（免费）',downloadPaid:'💾 下载卡片 · $1',buyPass:'购买通行证',logout:'退出登录',modalTitle:'登录以继续',modalSub:'免费3次 · 升级享无限次数',googleBtn:'使用Google继续',cancel:'取消',noCreditsTitle:'积分不足',noCreditsDesc:'观看广告获得1积分，或升级。',watchAd:'📺 看广告（+1积分）',buyPassBtn:'✨ 购买通行证（无限）',adTitle:'📺 广告播放中...',adLabel:'广告',skipAd:'跳过广告',dlTitle:'下载您的K名片',dlDesc:'支付$1以高质量下载',payPaypal:'🌐 PayPal支付$1',viewSample:'👁 查看样品卡片',sampleTitle:'样品卡片',sampleNote:'翻转查看东方风格AI肖像',dlMine:'💾 下载我的 · $1',close:'关闭',styleClassic:'经典',stylePastel:'粉彩',styleGen4:'第四代',styleLuxury:'奢华',optMale:'男性',optFemale:'女性',optNeutral:'中性',successMsg:'支付成功！无限访问已解锁。'},
-    ja:{title:'韓国名前ジェネレーター',subtitle:'あなただけの韓国名を見つけよう',placeholder:'お名前...',styleLabel:'スタイルを選択',stratSound:'音',stratMeaning:'意味',stratKdrama:'Kドラマ',descSound:'あなたの名前に音が似た韓国名',descMeaning:'個性に合った漢字の名前',descKdrama:'Kドラマ主人公スタイルの名前',generateBtn:'名前を見つける ✨',loading:'名前を考え中...',pickStyle:'待っている間にスタイルを選択',tapHint:'カードをタップして裏返す',credits:'クレジット残り：{n}',unlimited:'無制限アクセス中',weekActive:'週間パス有効中',downloadFree:'💾 カードをダウンロード（無料）',downloadPaid:'💾 カードをダウンロード · $1',buyPass:'パス購入',logout:'ログアウト',modalTitle:'続けるにはサインイン',modalSub:'無料3回 · アップグレードで無制限',googleBtn:'Googleで続ける',cancel:'キャンセル',noCreditsTitle:'クレジット不足',noCreditsDesc:'広告を見て1クレジット獲得、またはアップグレード。',watchAd:'📺 広告を見る（+1クレジット）',buyPassBtn:'✨ パス購入（無制限）',adTitle:'📺 広告再生中...',adLabel:'広告',skipAd:'広告をスキップ',dlTitle:'Kカードをダウンロード',dlDesc:'$1を支払って高画質でダウンロード',payPaypal:'🌐 PayPalで$1支払い',viewSample:'👁 サンプルカードを見る',sampleTitle:'サンプルカード',sampleNote:'裏面に東洋風AIポートレートが表示されます',dlMine:'💾 自分のをダウンロード · $1',close:'閉じる',styleClassic:'クラシック',stylePastel:'パステル',styleGen4:'4世代',styleLuxury:'ラグジュアリー',optMale:'男性',optFemale:'女性',optNeutral:'中性',successMsg:'支払い完了！無制限アクセスが解放されました。'},
-};
-
-function applyLang(code){
-    localStorage.setItem('web_lang',code);
-    const l=langs.find(x=>x.code===code)||langs[0];
-    const t=i18n[code]||i18n.en;
-    document.getElementById('lang-flag').textContent=l.flag;
-    document.getElementById('lang-label').textContent=l.name;
-    const ids={
-        'txt-title':t.title,'txt-subtitle':t.subtitle,'txt-style-label':t.styleLabel,
-        'txt-strat-sound':t.stratSound,'txt-strat-meaning':t.stratMeaning,'txt-strat-kdrama':t.stratKdrama,
-        'txt-generate-btn':t.generateBtn,'txt-loading':t.loading,'txt-pick-style':t.pickStyle,'txt-tap-hint':t.tapHint,
-        'txt-style-classic':t.styleClassic,'txt-style-pastel':t.stylePastel,'txt-style-gen4':t.styleGen4,'txt-style-luxury':t.styleLuxury,
-        'pill-txt-classic':t.styleClassic,'pill-txt-pastel':t.stylePastel,'pill-txt-gen4':t.styleGen4,'pill-txt-luxury':t.styleLuxury,
-        'txt-buy-pass':t.buyPass,'btn-logout':t.logout,
-        'txt-modal-title':t.modalTitle,'txt-modal-sub':t.modalSub,'txt-google-btn':t.googleBtn,'txt-cancel-btn':t.cancel,
-        'txt-no-credits-title':t.noCreditsTitle,'txt-no-credits-desc':t.noCreditsDesc,'txt-watch-ad':t.watchAd,'txt-buy-pass-btn':t.buyPassBtn,'txt-cancel-btn2':t.cancel,
-        'txt-ad-title':t.adTitle,'txt-ad-label':t.adLabel,'txt-skip-ad':t.skipAd,
-        'txt-dl-title':t.dlTitle,'txt-dl-desc':t.dlDesc,'txt-pay-paypal':t.payPaypal,'txt-view-sample':t.viewSample,'txt-cancel-dl':t.cancel,
-        'txt-sample-title':t.sampleTitle,'txt-sample-note':t.sampleNote,'txt-dl-mine':t.dlMine,'txt-close-sample':t.close,
-        'txt-success-msg':t.successMsg,
-    };
-    Object.entries(ids).forEach(([id,val])=>{const el=document.getElementById(id);if(el)el.textContent=val;});
-    document.getElementById('name-input').placeholder=t.placeholder;
-    document.getElementById('opt-male').textContent=t.optMale;
-    document.getElementById('opt-female').textContent=t.optFemale;
-    document.getElementById('opt-neutral').textContent=t.optNeutral;
-    document.getElementById('strategy-desc')&&(document.getElementById('strategy-desc').textContent={sound:t.descSound,meaning:t.descMeaning,kdrama:t.descKdrama}[currentStrategy]);
-    document.getElementById('lang-menu').classList.add('hidden');
-    updateCreditsDisplay();updateAuthUI();
-}
-
-const menu=document.getElementById('lang-menu');
-langs.forEach(l=>{const b=document.createElement('button');b.className='flex w-full items-center gap-2 px-3 py-2 text-[11px] font-semibold text-slate-700 hover:bg-slate-50';b.innerHTML='<span>'+l.flag+'</span><span>'+l.name+'</span>';b.onclick=()=>applyLang(l.code);menu.appendChild(b);});
+const i18n={en:{title:'Korean Name Generator',subtitle:'Discover your perfect Korean identity',placeholder:'Your name...',styleLabel:'Choose Style',stratSound:'Sound',stratMeaning:'Meaning',stratKdrama:'K-Drama',descSound:'Sounds similar to your name',descMeaning:'Beautiful Hanja matching your personality',descKdrama:'Trendy K-drama character style',generateBtn:'Find My Name ✨',loading:'Consulting the ancients...',pickStyle:'Pick card style while waiting',tapHint:'Tap card to flip',credits:'CREDITS: {n} LEFT',unlimited:'UNLIMITED ACCESS',weekActive:'WEEK PASS ACTIVE',downloadFree:'💾 Download Card (Free)',downloadPaid:'💾 Download Card · $1',buyPass:'Buy Pass',logout:'Logout',modalTitle:'Sign in to continue',modalSub:'Get 3 free credits · Upgrade for unlimited names',googleBtn:'Continue with Google',cancel:'Cancel',noCreditsTitle:'Out of Credits',noCreditsDesc:'Watch a short ad to get 1 credit, or upgrade.',watchAd:'📺 Watch Ad (+1 Credit)',buyPassBtn:'✨ Buy Pass (Unlimited)',adTitle:'📺 Ad Playing...',adLabel:'Advertisement',skipAd:'Skip Ad',dlTitle:'Download Your K-Card',dlDesc:'Pay $1 to download in full quality',payPaypal:'🌐 Pay $1 with PayPal',viewSample:'👁 View Sample Cards',sampleTitle:'Sample Cards',sampleNote:'Flip for oriental AI portrait on back',dlMine:'💾 Download Mine · $1',close:'Close',styleClassic:'Classic',stylePastel:'Pastel',styleGen4:'4th Gen',styleLuxury:'Luxury',optMale:'Male',optFemale:'Female',optNeutral:'Neutral',successMsg:'Payment successful! Unlimited access unlocked.'},ko:{title:'한국 이름 생성기',subtitle:'나만의 완벽한 한국 이름을 찾아보세요',placeholder:'이름을 입력하세요...',styleLabel:'스타일 선택',stratSound:'발음',stratMeaning:'의미',stratKdrama:'K-드라마',descSound:'이름과 발음이 비슷한 한국어 이름',descMeaning:'성격과 분위기를 담은 한자 이름',descKdrama:'드라마 주인공 스타일 이름',generateBtn:'이름 찾기 ✨',loading:'이름을 신중하게 짓는 중...',pickStyle:'기다리는 동안 카드 스타일 선택',tapHint:'카드를 탭하여 뒤집기',credits:'크레딧: {n}개 남음',unlimited:'무제한 이용 중',weekActive:'1주일 패스 이용 중',downloadFree:'💾 카드 다운로드 (무료)',downloadPaid:'💾 카드 다운로드 · $1',buyPass:'패스 구매',logout:'로그아웃',modalTitle:'계속하려면 로그인하세요',modalSub:'무료 3회 이용 · 업그레이드로 무제한',googleBtn:'Google로 계속하기',cancel:'취소',noCreditsTitle:'크레딧 소진',noCreditsDesc:'광고를 보고 크레딧 1개를 받거나 업그레이드하세요.',watchAd:'📺 광고 보기 (+1 크레딧)',buyPassBtn:'✨ 패스 구매 (무제한)',adTitle:'📺 광고 재생 중...',adLabel:'광고',skipAd:'광고 건너뛰기',dlTitle:'K-카드 다운로드',dlDesc:'$1을 지불하고 고화질로 다운로드하세요',payPaypal:'🌐 PayPal로 $1 결제',viewSample:'👁 샘플 카드 보기',sampleTitle:'샘플 카드',sampleNote:'뒤집으면 동양풍 AI 초상화가 나와요',dlMine:'💾 내 카드 다운로드 · $1',close:'닫기',styleClassic:'클래식',stylePastel:'파스텔',styleGen4:'4세대',styleLuxury:'럭셔리',optMale:'남성',optFemale:'여성',optNeutral:'중성',successMsg:'결제가 완료되었습니다! 무제한 이용권이 활성화되었습니다.'},es:{title:'Generador de Nombres Coreanos',subtitle:'Descubre tu identidad coreana perfecta',placeholder:'Tu nombre...',styleLabel:'Elige estilo',stratSound:'Sonido',stratMeaning:'Significado',stratKdrama:'K-Drama',descSound:'Suena similar a tu nombre',descMeaning:'Hermosos caracteres Hanja para tu personalidad',descKdrama:'Estilo de personaje principal K-drama',generateBtn:'Encuentra Mi Nombre ✨',loading:'Consultando a los ancestros...',pickStyle:'Elige el estilo mientras esperas',tapHint:'Toca la tarjeta para girar',credits:'CRÉDITOS: {n} RESTANTES',unlimited:'ACCESO ILIMITADO',weekActive:'PASE SEMANAL ACTIVO',downloadFree:'💾 Descargar tarjeta (Gratis)',downloadPaid:'💾 Descargar tarjeta · $1',buyPass:'Comprar pase',logout:'Cerrar sesión',modalTitle:'Inicia sesión para continuar',modalSub:'3 créditos gratis · Mejora para acceso ilimitado',googleBtn:'Continuar con Google',cancel:'Cancelar',noCreditsTitle:'Sin créditos',noCreditsDesc:'Mira un anuncio para obtener 1 crédito, o mejora.',watchAd:'📺 Ver anuncio (+1 crédito)',buyPassBtn:'✨ Comprar pase (Ilimitado)',adTitle:'📺 Anuncio en reproducción...',adLabel:'Publicidad',skipAd:'Omitir anuncio',dlTitle:'Descarga tu tarjeta K',dlDesc:'Paga $1 para descargar en alta calidad',payPaypal:'🌐 Pagar $1 con PayPal',viewSample:'👁 Ver tarjetas de muestra',sampleTitle:'Tarjetas de muestra',sampleNote:'Gira para ver el retrato oriental IA',dlMine:'💾 Descargar la mía · $1',close:'Cerrar',styleClassic:'Clásico',stylePastel:'Pastel',styleGen4:'4ª Gen',styleLuxury:'Lujo',optMale:'Masculino',optFemale:'Femenino',optNeutral:'Neutro',successMsg:'¡Pago completado! Acceso ilimitado desbloqueado.'},zh:{title:'韩文名字生成器',subtitle:'找到您完美的韩国名字',placeholder:'您的名字...',styleLabel:'选择风格',stratSound:'音似',stratMeaning:'含义',stratKdrama:'韩剧',descSound:'发音与您的名字相似',descMeaning:'反映个性的美丽汉字名',descKdrama:'韩剧主角命名风格',generateBtn:'找到我的名字 ✨',loading:'正在咨询命名大师...',pickStyle:'等待时选择卡片风格',tapHint:'点击卡片翻转',credits:'剩余积分：{n}',unlimited:'无限次使用',weekActive:'周卡有效中',downloadFree:'💾 下载卡片（免费）',downloadPaid:'💾 下载卡片 · $1',buyPass:'购买通行证',logout:'退出登录',modalTitle:'登录以继续',modalSub:'免费3次 · 升级享无限次数',googleBtn:'使用Google继续',cancel:'取消',noCreditsTitle:'积分不足',noCreditsDesc:'观看广告获得1积分，或升级。',watchAd:'📺 看广告（+1积分）',buyPassBtn:'✨ 购买通行证（无限）',adTitle:'📺 广告播放中...',adLabel:'广告',skipAd:'跳过广告',dlTitle:'下载您的K名片',dlDesc:'支付$1以高质量下载',payPaypal:'🌐 PayPal支付$1',viewSample:'👁 查看样品卡片',sampleTitle:'样品卡片',sampleNote:'翻转查看东方风格AI肖像',dlMine:'💾 下载我的 · $1',close:'关闭',styleClassic:'经典',stylePastel:'粉彩',styleGen4:'第四代',styleLuxury:'奢华',optMale:'男性',optFemale:'女性',optNeutral:'中性',successMsg:'支付成功！无限访问已解锁。'},ja:{title:'韓国名前ジェネレーター',subtitle:'あなただけの韓国名を見つけよう',placeholder:'お名前...',styleLabel:'スタイルを選択',stratSound:'音',stratMeaning:'意味',stratKdrama:'Kドラマ',descSound:'あなたの名前に音が似た韓国名',descMeaning:'個性に合った漢字の名前',descKdrama:'Kドラマ主人公スタイルの名前',generateBtn:'名前を見つける ✨',loading:'名前を考え中...',pickStyle:'待っている間にスタイルを選択',tapHint:'カードをタップして裏返す',credits:'クレジット残り：{n}',unlimited:'無制限アクセス中',weekActive:'週間パス有効中',downloadFree:'💾 カードをダウンロード（無料）',downloadPaid:'💾 カードをダウンロード · $1',buyPass:'パス購入',logout:'ログアウト',modalTitle:'続けるにはサインイン',modalSub:'無料3回 · アップグレードで無制限',googleBtn:'Googleで続ける',cancel:'キャンセル',noCreditsTitle:'クレジット不足',noCreditsDesc:'広告を見て1クレジット獲得、またはアップグレード。',watchAd:'📺 広告を見る（+1クレジット）',buyPassBtn:'✨ パス購入（無制限）',adTitle:'📺 広告再生中...',adLabel:'広告',skipAd:'広告をスキップ',dlTitle:'Kカードをダウンロード',dlDesc:'$1を支払って高画質でダウンロード',payPaypal:'🌐 PayPalで$1支払い',viewSample:'👁 サンプルカードを見る',sampleTitle:'サンプルカード',sampleNote:'裏面に東洋風AIポートレートが表示されます',dlMine:'💾 自分のをダウンロード · $1',close:'閉じる',styleClassic:'クラシック',stylePastel:'パステル',styleGen4:'4世代',styleLuxury:'ラグジュアリー',optMale:'男性',optFemale:'女性',optNeutral:'中性',successMsg:'支払い完了！無制限アクセスが解放されました。'}};
+function applyLang(code){localStorage.setItem('web_lang',code);const l=langs.find(x=>x.code===code)||langs[0];const t=i18n[code]||i18n.en;document.getElementById('lang-flag').textContent=l.flag;document.getElementById('lang-label').textContent=l.name;const ids={'txt-title':t.title,'txt-subtitle':t.subtitle,'txt-generate-btn':t.generateBtn,'txt-loading':t.loading,'txt-pick-style':t.pickStyle,'txt-style-classic':t.styleClassic,'txt-style-pastel':t.stylePastel,'txt-style-gen4':t.styleGen4,'txt-style-luxury':t.styleLuxury,'pill-txt-classic':t.styleClassic,'pill-txt-pastel':t.stylePastel,'pill-txt-gen4':t.styleGen4,'pill-txt-luxury':t.styleLuxury,'txt-buy-pass':t.buyPass,'btn-logout':t.logout,'txt-modal-title':t.modalTitle,'txt-modal-sub':t.modalSub,'txt-google-btn':t.googleBtn,'txt-cancel-btn':t.cancel,'txt-no-credits-title':t.noCreditsTitle,'txt-no-credits-desc':t.noCreditsDesc,'txt-watch-ad':t.watchAd,'txt-buy-pass-btn':t.buyPassBtn,'txt-cancel-btn2':t.cancel,'txt-ad-title':t.adTitle,'txt-ad-label':t.adLabel,'txt-skip-ad':t.skipAd,'txt-dl-title':t.dlTitle,'txt-dl-desc':t.dlDesc,'txt-pay-paypal':t.payPaypal,'txt-view-sample':t.viewSample,'txt-cancel-dl':t.cancel,'txt-sample-title':t.sampleTitle,'txt-sample-note':t.sampleNote,'txt-dl-mine':t.dlMine,'txt-close-sample':t.close,'txt-success-msg':t.successMsg};Object.entries(ids).forEach(([id,val])=>{const el=document.getElementById(id);if(el)el.textContent=val;});document.getElementById('name-input').placeholder=t.placeholder;document.getElementById('opt-male').textContent=t.optMale;document.getElementById('opt-female').textContent=t.optFemale;document.getElementById('opt-neutral').textContent=t.optNeutral;document.getElementById('lang-menu').classList.add('hidden');updateCreditsDisplay();updateAuthUI();}
+const menu=document.getElementById('lang-menu');langs.forEach(l=>{const b=document.createElement('button');b.className='flex w-full items-center gap-2 px-3 py-2 text-[11px] font-semibold text-slate-700 hover:bg-slate-50';b.innerHTML='<span>'+l.flag+'</span><span>'+l.name+'</span>';b.onclick=()=>applyLang(l.code);menu.appendChild(b);});
 document.getElementById('lang-toggle').onclick=e=>{e.stopPropagation();document.getElementById('lang-menu').classList.toggle('hidden');};
 document.addEventListener('click',()=>document.getElementById('lang-menu').classList.add('hidden'));
-
-// BANNERS
 const urlP=new URLSearchParams(window.location.search);
 if(urlP.get('success')==='1'){const b=document.getElementById('success-banner');b.style.display='block';setTimeout(()=>{b.style.display='none';},5000);history.replaceState({},'','/');}
 if(urlP.get('downloaded')==='1'){actualDownload();history.replaceState({},'','/');}
-
-// INIT
-async function init(){
-    applyLang(localStorage.getItem('web_lang')||'en');
-    selectCardStyle('classic');setStrategy('sound');
-    const{data:{session}}=await _sp.auth.getSession();
-    if(session?.user){currentUser=session.user;userPlan=await fetchUserPlan(currentUser.email);}
-    updateAuthUI();updateCreditsDisplay();
-    _sp.auth.onAuthStateChange(async(event,session)=>{
-        if(session?.user){currentUser=session.user;userPlan=await fetchUserPlan(currentUser.email);closeModal('login-modal');if(!userPlan&&getGuestCredits()===0)setTimeout(()=>showModal('no-credits-modal'),500);}
-        else{currentUser=null;userPlan=null;}
-        updateAuthUI();updateCreditsDisplay();
-    });
-}
+async function init(){applyLang(localStorage.getItem('web_lang')||'en');selectCardStyle('classic');setStrategy('sound');const{data:{session}}=await _sp.auth.getSession();if(session?.user){currentUser=session.user;userPlan=await fetchUserPlan(currentUser.email);}updateAuthUI();updateCreditsDisplay();_sp.auth.onAuthStateChange(async(event,session)=>{if(session?.user){currentUser=session.user;userPlan=await fetchUserPlan(currentUser.email);closeModal('login-modal');if(!userPlan&&getGuestCredits()===0)setTimeout(()=>showModal('no-credits-modal'),500);}else{currentUser=null;userPlan=null;}updateAuthUI();updateCreditsDisplay();});}
 loadConfig();
 </script>
 </body>
