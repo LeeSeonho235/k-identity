@@ -98,6 +98,21 @@
         </div>
     </div>
 
+    <!-- PAYMENT CONFIRM MODAL -->
+    <div id="confirm-modal" style="display:none;pointer-events:none;" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8 text-center">
+            <div class="text-4xl mb-3">🌐</div>
+            <h3 class="text-xl font-extrabold text-slate-900 mb-1" id="confirm-plan-name"></h3>
+            <p class="text-3xl font-extrabold text-indigo-600 mb-1" id="confirm-price"></p>
+            <p class="text-xs text-slate-400 mb-6">Paid securely via PayPal</p>
+            <button onclick="confirmAndPay()"
+                class="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-2xl transition-all text-sm mb-3">
+                🌐 Pay with PayPal
+            </button>
+            <button onclick="closeConfirmModal()" class="text-xs text-slate-400 hover:underline w-full">Cancel</button>
+        </div>
+    </div>
+
     <!-- REFUND MODAL -->
     <div id="refund-modal" style="display:none;pointer-events:none;" class="fixed inset-0 bg-black/60 backdrop-blur-sm items-center justify-center z-[100] p-4">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[85vh] overflow-y-auto">
@@ -167,8 +182,33 @@ async function loadConfig() {
 
 // PayPal USD 금액 (센트 단위)
 const PAYPAL_AMOUNTS = { week: 400, month: 800, annual: 4500 };
+const DISPLAY_PRICES = { week: '$4', month: '$8', annual: '$45' };
+const PLAN_LABELS = { week: '1 Week Pass', month: '1 Month Pass', annual: '1 Year Pass' };
 
-async function requestPayment(planType, orderName) {
+let _pendingPlan = null;
+
+function requestPayment(planType, orderName) {
+    _pendingPlan = { planType, orderName };
+    document.getElementById('confirm-plan-name').textContent = PLAN_LABELS[planType];
+    document.getElementById('confirm-price').textContent = DISPLAY_PRICES[planType];
+    const m = document.getElementById('confirm-modal');
+    m.style.display = 'flex'; m.style.pointerEvents = 'auto';
+}
+function closeConfirmModal() {
+    const m = document.getElementById('confirm-modal');
+    m.style.display = 'none'; m.style.pointerEvents = 'none';
+    _pendingPlan = null;
+}
+document.getElementById('confirm-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeConfirmModal();
+});
+
+async function confirmAndPay() {
+    closeConfirmModal();
+    if (!_pendingPlan) return;
+    const { planType, orderName } = _pendingPlan;
+    _pendingPlan = null;
+
     const { data: { user } } = await _sp.auth.getUser();
     if (!user?.email) {
         alert('Please sign in first to purchase a plan.');
