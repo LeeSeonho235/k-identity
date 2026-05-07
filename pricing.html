@@ -210,6 +210,13 @@ async function confirmAndPay() {
     const { planType, orderName } = _pendingPlan;
     _pendingPlan = null;
 
+    // ✅ CONFIG 확인!
+    if (!CONFIG.PORTONE_STORE_ID || !CONFIG.PORTONE_CHANNEL_KEY_PAYPAL) {
+        console.error('CONFIG not loaded:', CONFIG);
+        alert('Payment system not ready. Please refresh the page and try again.');
+        return;
+    }
+
     console.log('Checking user...');
     const { data: { user } } = await _sp.auth.getUser();
     if (!user?.email) {
@@ -324,10 +331,12 @@ document.getElementById('lang-toggle').onclick = (e) => {
 document.addEventListener('click', () => document.getElementById('lang-menu').classList.add('hidden'));
 
 applyLang(localStorage.getItem('web_lang') || 'en');
-loadConfig();
 
-// Event listeners
-document.addEventListener('DOMContentLoaded', function() {
+// Event listeners - AFTER config loads
+(async function init() {
+    await loadConfig();  // ← Config 로드 완료 대기!
+    console.log('Config loaded:', CONFIG);
+    
     // Buy buttons
     const buyButtons = document.querySelectorAll('.buy-plan-btn');
     buyButtons.forEach(btn => {
@@ -355,7 +364,9 @@ document.addEventListener('DOMContentLoaded', function() {
             closeConfirmModal();
         });
     }
-});
+    
+    console.log('Event listeners registered!');
+})();
 </script>
 </body>
 </html>
