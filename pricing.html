@@ -49,8 +49,7 @@
                     <li>🖼️ <span id="txt-week-f2">AI K-drama portraits</span></li>
                     <li>📥 <span id="txt-week-f3">Download card feature</span></li>
                 </ul>
-                <button onclick="requestPayment('week', 'Korean Name Generator - 1 Week Pass')"
-                    class="w-full py-3 rounded-xl bg-slate-700 text-white font-bold hover:bg-slate-600 transition-colors" id="btn-week">Buy</button>
+                <button data-plan="week" data-order="Korean Name Generator - 1 Week Pass" class="buy-plan-btn w-full py-3 rounded-xl bg-slate-700 text-white font-bold hover:bg-slate-600 transition-colors" id="btn-week">Buy</button>
             </div>
 
             <!-- Month -->
@@ -67,8 +66,7 @@
                     <li>🖼️ <span id="txt-month-f2">AI K-drama portraits</span></li>
                     <li>🌐 <span id="txt-month-f3">All 5 languages supported</span></li>
                 </ul>
-                <button onclick="requestPayment('month', 'Korean Name Generator - 1 Month Pass')"
-                    class="w-full py-3 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-700 transition-colors" id="btn-month">Buy</button>
+                <button data-plan="month" data-order="Korean Name Generator - 1 Month Pass" class="buy-plan-btn w-full py-3 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-700 transition-colors" id="btn-month">Buy</button>
             </div>
 
             <!-- Annual -->
@@ -86,8 +84,7 @@
                     <li>🖼️ <span id="txt-annual-f2">AI K-drama portraits</span></li>
                     <li>🏆 <span id="txt-annual-f3">Best value plan</span></li>
                 </ul>
-                <button onclick="requestPayment('annual', 'Korean Name Generator - 1 Year Pass')"
-                    class="w-full py-3 rounded-xl bg-green-600 text-white font-bold hover:bg-green-700 transition-colors" id="btn-annual">Buy</button>
+                <button data-plan="annual" data-order="Korean Name Generator - 1 Year Pass" class="buy-plan-btn w-full py-3 rounded-xl bg-green-600 text-white font-bold hover:bg-green-700 transition-colors" id="btn-annual">Buy</button>
             </div>
         </div>
 
@@ -105,11 +102,11 @@
             <h3 class="text-xl font-extrabold text-slate-900 mb-1" id="confirm-plan-name"></h3>
             <p class="text-3xl font-extrabold text-indigo-600 mb-1" id="confirm-price"></p>
             <p class="text-xs text-slate-400 mb-6">Paid securely via PayPal</p>
-            <button onclick="confirmAndPay()"
+            <button id="confirm-pay-btn"
                 class="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-2xl transition-all text-sm mb-3">
                 🌐 Pay with PayPal
             </button>
-            <button onclick="closeConfirmModal()" class="text-xs text-slate-400 hover:underline w-full">Cancel</button>
+            <button id="confirm-cancel-btn" class="text-xs text-slate-400 hover:underline w-full">Cancel</button>
         </div>
     </div>
 
@@ -328,6 +325,37 @@ document.addEventListener('click', () => document.getElementById('lang-menu').cl
 
 applyLang(localStorage.getItem('web_lang') || 'en');
 loadConfig();
+
+// Event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    // Buy buttons
+    const buyButtons = document.querySelectorAll('.buy-plan-btn');
+    buyButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const plan = this.getAttribute('data-plan');
+            const order = this.getAttribute('data-order');
+            console.log('Buy clicked:', plan, order);
+            requestPayment(plan, order);
+        });
+    });
+    
+    // Confirm modal buttons
+    const confirmPayBtn = document.getElementById('confirm-pay-btn');
+    const confirmCancelBtn = document.getElementById('confirm-cancel-btn');
+    
+    if (confirmPayBtn) {
+        confirmPayBtn.addEventListener('click', function() {
+            console.log('PayPal button clicked!');
+            confirmAndPay();
+        });
+    }
+    
+    if (confirmCancelBtn) {
+        confirmCancelBtn.addEventListener('click', function() {
+            closeConfirmModal();
+        });
+    }
+});
 </script>
 </body>
 </html>
