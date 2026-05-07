@@ -204,21 +204,29 @@ document.getElementById('confirm-modal').addEventListener('click', function(e) {
 });
 
 async function confirmAndPay() {
+    console.log('confirmAndPay called');
     closeConfirmModal();
-    if (!_pendingPlan) return;
+    if (!_pendingPlan) {
+        console.error('No pending plan');
+        return;
+    }
     const { planType, orderName } = _pendingPlan;
     _pendingPlan = null;
 
+    console.log('Checking user...');
     const { data: { user } } = await _sp.auth.getUser();
     if (!user?.email) {
         alert('Please sign in first to purchase a plan.');
         return;
     }
+    console.log('User email:', user.email);
 
     const orderId = 'kname_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     const totalAmount = PAYPAL_AMOUNTS[planType];
+    console.log('PayPal request:', { orderId, totalAmount, planType });
 
     try {
+        console.log('Calling PortOne...');
         const response = await PortOne.requestPayment({
             storeId: CONFIG.PORTONE_STORE_ID,
             channelKey: CONFIG.PORTONE_CHANNEL_KEY_PAYPAL,
@@ -230,6 +238,7 @@ async function confirmAndPay() {
             customer: { email: user.email },
             redirectUrl: window.location.origin + '/success?plan=' + planType + '&email=' + encodeURIComponent(user.email),
         });
+        console.log('PortOne response:', response);
 
         if (response?.paymentId) {
             window.location.href = '/success?plan=' + planType + '&paymentId=' + response.paymentId + '&email=' + encodeURIComponent(user.email);
@@ -237,7 +246,7 @@ async function confirmAndPay() {
     } catch(e) {
         console.error('Payment error:', e);
         if (e?.code !== 'USER_CANCEL') {
-            alert('Payment failed.\n\nError: ' + (e?.message || e?.code || JSON.stringify(e)));
+            alert('Payment failed.\n\nError: ' + (e?.message || e?.code || JSON.stringify(e)) + '\n\nCheck console for details.');
         }
     }
 }
