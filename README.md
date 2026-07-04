@@ -1,6 +1,6 @@
 # K-Name Generator
 
-Korean name generator for foreigners — enter your English name and get a Korean name with Hanja meanings and an AI-generated portrait card.
+Korean name generator for foreigners enter your English name and get a Korean name with Hanja meanings and an AI-generated portrait card.
 
 > Previously live at **knamegenerator.com** (now archived)
 
