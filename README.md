@@ -36,7 +36,6 @@ Users can choose from 4 visual styles for their name card:
 
 Classic · Pastel · 4th Gen · Luxury
 
-<img width="1134" height="424" alt="스크린샷 2026-07-05 13 48 40" src="https://github.com/user-attachments/assets/b2ea82d3-860c-447b-a894-d67329bec722" />
 <img width="1121" height="437" alt="스크린샷 2026-07-05 13 50 42" src="https://github.com/user-attachments/assets/4cde1ac1-f668-4067-9ba8-7021709b5bf7" />
 
 ## Tech Stack
