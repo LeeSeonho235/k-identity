@@ -8,6 +8,11 @@ Korean name generator for foreigners enter your English name and get a Korean na
 
 <img width="501" alt="Main Screen" src="https://github.com/user-attachments/assets/627a0e5c-2fb5-499b-ae9e-cd073c73305d" />
 <img width="504" alt="Name Card Front" src="https://github.com/user-attachments/assets/a5b77c34-f000-4e0b-9c99-f9c30a477b74" />
+<img width="226" height="321" alt="스크린샷 2026-07-04 17 06 24 복사본" src="https://github.com/user-attachments/assets/b6b78adb-d021-489f-9d0f-6498118308c2" />
+<img width="217" height="319" alt="스크린샷 2026-07-04 17 06 32" src="https://github.com/user-attachments/assets/814a63c7-35f0-4768-bbeb-dd5c8bfc1e54" />
+
+
+
 
 ## What It Does
 
@@ -33,8 +38,10 @@ Users can choose from 4 visual styles for their name card:
 
 Classic · Pastel · 4th Gen · Luxury
 
-<img width="226" alt="Card Back" src="https://github.com/user-attachments/assets/420bdd24-b37d-4868-9d7d-09ca9eecac2b" />
-<img width="217" alt="Card Front" src="https://github.com/user-attachments/assets/825fd771-a6f8-47a7-9323-e67944198d26" />
+<img width="806" height="316" alt="스크린샷 2026-07-05 13 13 19" src="https://github.com/user-attachments/assets/9fadb253-a29d-4bc4-9f28-420928658865" />
+<img width="834" height="341" alt="스크린샷 2026-07-05 13 14 33" src="https://github.com/user-attachments/assets/38671d8d-4d60-43b8-8ec1-e848dfd75eb6" />
+
+
 
 ## Tech Stack
 
