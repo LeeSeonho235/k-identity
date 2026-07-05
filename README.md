@@ -37,7 +37,8 @@ Users can choose from 4 visual styles for their name card:
 Classic · Pastel · 4th Gen · Luxury
 
 <img width="1134" height="424" alt="스크린샷 2026-07-05 13 48 40" src="https://github.com/user-attachments/assets/b2ea82d3-860c-447b-a894-d67329bec722" />
-<img width="834" height="341" alt="스크린샷 2026-07-05 13 14 33" src="https://github.com/user-attachments/assets/624589bd-664b-42b3-832c-6c694f8622bf" />
+![Uploading 스크린샷 2026-07-05 13.50.42.png…]()
+
 
 
 <!-- Back cards (Hanja side) -->
