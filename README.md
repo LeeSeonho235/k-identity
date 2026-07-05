@@ -38,8 +38,483 @@ Users can choose from 4 visual styles for their name card:
 
 Classic · Pastel · 4th Gen · Luxury
 
-<img width="806" height="316" alt="스크린샷 2026-07-05 13 13 19" src="https://github.com/user-attachments/assets/9fadb253-a29d-4bc4-9f28-420928658865" />
-<img width="834" height="341" alt="스크린샷 2026-07-05 13 14 33" src="https://github.com/user-attachments/assets/38671d8d-4d60-43b8-8ec1-e848dfd75eb6" />
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { 
+    background: #0d1117; 
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    gap: 60px;
+  }
+
+  h2 {
+    color: #e6edf3;
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .row {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .card-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .style-label {
+    color: #8b949e;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .card {
+    width: 220px;
+    height: 320px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ===== BACK CARDS (Hanja side) ===== */
+
+  /* Classic */
+  .classic-back {
+    background: #1a1d2e;
+    border: 2px solid #c8a84e;
+  }
+  .classic-back .top-label { color: #c8a84e; }
+  .classic-back .eng-name { color: #c8a84e; }
+  .classic-back .kor-name { color: #ffffff; }
+  .classic-back .hanja-char { color: #c8a84e; }
+  .classic-back .hanja-meaning { color: #c8a84e; }
+  .classic-back .divider { background: #c8a84e; }
+  .classic-back .dot { border-color: #c8a84e; }
+  .classic-back .bottom-info { color: #8b8b8b; }
+
+  /* Pastel */
+  .pastel-back {
+    background: #fce4ec;
+    border: 2px solid #f8bbd0;
+  }
+  .pastel-back .top-label { color: #e91e63; }
+  .pastel-back .eng-name { color: #e91e63; }
+  .pastel-back .kor-name { color: #880e4f; }
+  .pastel-back .hanja-char { color: #e91e63; }
+  .pastel-back .hanja-meaning { color: #ad1457; }
+  .pastel-back .divider { background: #f48fb1; }
+  .pastel-back .dot { border-color: #f48fb1; }
+  .pastel-back .bottom-info { color: #c2185b; }
+
+  /* 4th Gen */
+  .gen4-back {
+    background: #0a0a0a;
+    border: 2px solid #00e5ff;
+    box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+  }
+  .gen4-back .top-label { color: #00e5ff; }
+  .gen4-back .eng-name { color: #00e5ff; }
+  .gen4-back .kor-name { color: #ffffff; }
+  .gen4-back .hanja-char { color: #00e5ff; text-shadow: 0 0 10px rgba(0, 229, 255, 0.5); }
+  .gen4-back .hanja-meaning { color: #00e5ff; }
+  .gen4-back .divider { background: #00e5ff; }
+  .gen4-back .dot { border-color: #00e5ff; }
+  .gen4-back .bottom-info { color: #546e7a; }
+
+  /* Luxury */
+  .luxury-back {
+    background: #1a0a2e;
+    border: 2px solid #b388ff;
+  }
+  .luxury-back .top-label { color: #ce93d8; }
+  .luxury-back .eng-name { color: #ce93d8; }
+  .luxury-back .kor-name { color: #e1bee7; }
+  .luxury-back .hanja-char { color: #ce93d8; }
+  .luxury-back .hanja-meaning { color: #ba68c8; }
+  .luxury-back .divider { background: #9c27b0; }
+  .luxury-back .dot { border-color: #9c27b0; }
+  .luxury-back .bottom-info { color: #7b1fa2; }
+
+  /* ===== FRONT CARDS (Portrait side) ===== */
+
+  .classic-front {
+    background: #1a1d2e;
+    border: 2px solid #c8a84e;
+  }
+  .classic-front .portrait-ring { border-color: #c8a84e; }
+  .classic-front .front-name { color: #ffffff; }
+  .classic-front .front-meaning { color: #c8a84e; }
+  .classic-front .front-label { color: #c8a84e; }
+
+  .pastel-front {
+    background: #fce4ec;
+    border: 2px solid #f8bbd0;
+  }
+  .pastel-front .portrait-ring { border-color: #f48fb1; }
+  .pastel-front .front-name { color: #880e4f; }
+  .pastel-front .front-meaning { color: #e91e63; }
+  .pastel-front .front-label { color: #e91e63; }
+
+  .gen4-front {
+    background: #0a0a0a;
+    border: 2px solid #00e5ff;
+    box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+  }
+  .gen4-front .portrait-ring { border-color: #00e5ff; box-shadow: 0 0 10px rgba(0, 229, 255, 0.3); }
+  .gen4-front .front-name { color: #ffffff; }
+  .gen4-front .front-meaning { color: #00e5ff; }
+  .gen4-front .front-label { color: #00e5ff; }
+
+  .luxury-front {
+    background: #1a0a2e;
+    border: 2px solid #b388ff;
+  }
+  .luxury-front .portrait-ring { border-color: #b388ff; }
+  .luxury-front .front-name { color: #e1bee7; }
+  .luxury-front .front-meaning { color: #ce93d8; }
+  .luxury-front .front-label { color: #ce93d8; }
+
+  /* ===== Shared card elements ===== */
+  .top-label {
+    font-size: 11px;
+    letter-spacing: 4px;
+    font-weight: 700;
+    position: absolute;
+    top: 16px;
+  }
+  .eng-name {
+    font-size: 20px;
+    letter-spacing: 8px;
+    font-weight: 600;
+    margin-top: 10px;
+  }
+  .divider-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 12px 0;
+    width: 70%;
+  }
+  .divider {
+    flex: 1;
+    height: 1px;
+  }
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    border: 1px solid;
+  }
+  .kor-name {
+    font-size: 56px;
+    font-weight: 700;
+    letter-spacing: 12px;
+  }
+  .hanja-row {
+    display: flex;
+    gap: 40px;
+    margin-top: 8px;
+  }
+  .hanja-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .hanja-char {
+    font-size: 32px;
+    font-weight: 600;
+  }
+  .hanja-sep {
+    width: 1px;
+    height: 30px;
+    opacity: 0.3;
+  }
+  .hanja-meaning {
+    font-size: 10px;
+    letter-spacing: 2px;
+    font-weight: 600;
+  }
+  .bottom-info {
+    position: absolute;
+    bottom: 12px;
+    font-size: 9px;
+    letter-spacing: 1px;
+  }
+
+  /* Front card elements */
+  .front-label {
+    font-size: 11px;
+    letter-spacing: 4px;
+    font-weight: 700;
+    position: absolute;
+    top: 16px;
+  }
+  .portrait-ring {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    border: 2px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.05);
+  }
+  .portrait-placeholder {
+    font-size: 48px;
+  }
+  .front-bottom {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+    background: rgba(0,0,0,0.7);
+    border-radius: 0 0 14px 14px;
+  }
+  .pastel-front .front-bottom {
+    background: rgba(136, 14, 79, 0.1);
+  }
+  .front-name {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .front-meaning {
+    font-size: 11px;
+    letter-spacing: 2px;
+    font-weight: 500;
+  }
+
+  .section-label {
+    color: #8b949e;
+    font-size: 12px;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Back cards (Hanja side) -->
+<div>
+  <div class="row">
+    <!-- Classic Back -->
+    <div class="card-wrapper">
+      <span class="style-label" style="color:#c8a84e;">✦ CLASSIC</span>
+      <div class="card classic-back">
+        <span class="top-label">K · N A M E</span>
+        <span class="eng-name">J U L Y</span>
+        <div class="divider-line">
+          <div class="divider"></div>
+          <div class="dot"></div>
+          <div class="divider"></div>
+        </div>
+        <span class="kor-name">주 아</span>
+        <div class="divider-line">
+          <div class="divider"></div>
+          <div class="dot"></div>
+          <div class="divider"></div>
+        </div>
+        <div class="hanja-row">
+          <div class="hanja-item">
+            <span class="hanja-char">珠</span>
+            <span class="hanja-meaning">PEARL</span>
+          </div>
+          <div class="hanja-item">
+            <span class="hanja-char">雅</span>
+            <span class="hanja-meaning">ELEGANT</span>
+          </div>
+        </div>
+        <span class="bottom-info">july · female · Cool</span>
+      </div>
+    </div>
+
+    <!-- Pastel Back -->
+    <div class="card-wrapper">
+      <span class="style-label" style="color:#f48fb1;">✿ PASTEL</span>
+      <div class="card pastel-back">
+        <span class="top-label">K · N A M E</span>
+        <span class="eng-name">J U L Y</span>
+        <div class="divider-line">
+          <div class="divider"></div>
+          <div class="dot"></div>
+          <div class="divider"></div>
+        </div>
+        <span class="kor-name">주 아</span>
+        <div class="divider-line">
+          <div class="divider"></div>
+          <div class="dot"></div>
+          <div class="divider"></div>
+        </div>
+        <div class="hanja-row">
+          <div class="hanja-item">
+            <span class="hanja-char">珠</span>
+            <span class="hanja-meaning">PEARL</span>
+          </div>
+          <div class="hanja-item">
+            <span class="hanja-char">雅</span>
+            <span class="hanja-meaning">ELEGANT</span>
+          </div>
+        </div>
+        <span class="bottom-info">july · female · Cool</span>
+      </div>
+    </div>
+
+    <!-- 4th Gen Back -->
+    <div class="card-wrapper">
+      <span class="style-label" style="color:#00e5ff;">⚡ 4TH GEN</span>
+      <div class="card gen4-back">
+        <span class="top-label">K · N A M E</span>
+        <span class="eng-name">J U L Y</span>
+        <div class="divider-line">
+          <div class="divider"></div>
+          <div class="dot"></div>
+          <div class="divider"></div>
+        </div>
+        <span class="kor-name">주 아</span>
+        <div class="divider-line">
+          <div class="divider"></div>
+          <div class="dot"></div>
+          <div class="divider"></div>
+        </div>
+        <div class="hanja-row">
+          <div class="hanja-item">
+            <span class="hanja-char">珠</span>
+            <span class="hanja-meaning">PEARL</span>
+          </div>
+          <div class="hanja-item">
+            <span class="hanja-char">雅</span>
+            <span class="hanja-meaning">ELEGANT</span>
+          </div>
+        </div>
+        <span class="bottom-info">july · female · Cool</span>
+      </div>
+    </div>
+
+    <!-- Luxury Back -->
+    <div class="card-wrapper">
+      <span class="style-label" style="color:#ce93d8;">♥ LUXURY</span>
+      <div class="card luxury-back">
+        <span class="top-label">✦ K · N A M E ✦</span>
+        <span class="eng-name">J U L Y</span>
+        <div class="divider-line">
+          <div class="divider"></div>
+          <div class="dot"></div>
+          <div class="divider"></div>
+        </div>
+        <span class="kor-name">주 아</span>
+        <div class="divider-line">
+          <div class="divider"></div>
+          <div class="dot"></div>
+          <div class="divider"></div>
+        </div>
+        <div class="hanja-row">
+          <div class="hanja-item">
+            <span class="hanja-char">珠</span>
+            <span class="hanja-meaning">PEARL</span>
+          </div>
+          <div class="hanja-item">
+            <span class="hanja-char">雅</span>
+            <span class="hanja-meaning">ELEGANT</span>
+          </div>
+        </div>
+        <span class="bottom-info">july · female · Cool</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Front cards (Portrait side) -->
+<div>
+  <div class="row">
+    <!-- Classic Front -->
+    <div class="card-wrapper">
+      <span class="style-label" style="color:#8b949e;">FRONT</span>
+      <div class="card classic-front">
+        <span class="front-label">K · N A M E</span>
+        <div class="portrait-ring">
+          <span class="portrait-placeholder">👩</span>
+        </div>
+        <div class="front-bottom">
+          <div class="front-name">주아(珠雅)</div>
+          <div class="front-meaning">珠 (PEARL) · 雅 (ELEGANT)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pastel Front -->
+    <div class="card-wrapper">
+      <span class="style-label" style="color:#8b949e;">FRONT</span>
+      <div class="card pastel-front">
+        <span class="front-label">✦ K · N A M E ✦</span>
+        <div class="portrait-ring">
+          <span class="portrait-placeholder">👩</span>
+        </div>
+        <div class="front-bottom">
+          <div class="front-name">주아(珠雅)</div>
+          <div class="front-meaning">珠 (PEARL) · 雅 (ELEGANT)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4th Gen Front -->
+    <div class="card-wrapper">
+      <span class="style-label" style="color:#8b949e;">FRONT</span>
+      <div class="card gen4-front">
+        <span class="front-label">K · N A M E</span>
+        <div class="portrait-ring">
+          <span class="portrait-placeholder">👩</span>
+        </div>
+        <div class="front-bottom">
+          <div class="front-name">주아(珠雅)</div>
+          <div class="front-meaning">珠 (PEARL) · 雅 (ELEGANT)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Luxury Front -->
+    <div class="card-wrapper">
+      <span class="style-label" style="color:#8b949e;">FRONT</span>
+      <div class="card luxury-front">
+        <span class="front-label">✦ K · N A M E ✦</span>
+        <div class="portrait-ring">
+          <span class="portrait-placeholder">👩</span>
+        </div>
+        <div class="front-bottom">
+          <div class="front-name">주아(珠雅)</div>
+          <div class="front-meaning">珠 (PEARL) · 雅 (ELEGANT)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
 
 
 
